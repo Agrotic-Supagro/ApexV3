@@ -4,6 +4,8 @@
     "codelyzer"
   ],
   "rules": {
+    "no-string-literal": false,
+    "object-literal-shorthand": false,
     "array-type": false,
     "arrow-parens": false,
     "deprecation": {

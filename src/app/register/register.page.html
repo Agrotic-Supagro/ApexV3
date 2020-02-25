@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Créer votre compte</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title class="ion-text-center">Vos informations</ion-card-title>
+    </ion-card-header>
+    <form [formGroup]="registrationForm" (ngSubmit)="registerForm()">
+      <ion-item>
+        <ion-label position="floating">Prénom</ion-label>
+        <ion-input autocapitalize inputmode="text" formControlName="prenom"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.prenom">
+        <ng-container *ngIf="prenom.hasError(error.type) && (prenom.dirty || prenom.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Nom</ion-label>
+        <ion-input autocapitalize inputmode="text" formControlName="nom"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.nom">
+        <ng-container *ngIf="nom.hasError(error.type) && (nom.dirty || nom.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Email</ion-label>
+        <ion-input inputmode="text" formControlName="email"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.email">
+        <ng-container *ngIf="email.hasError(error.type) && (email.dirty || email.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+
+      <ion-item>
+        <ion-label position="floating">Structure</ion-label>
+        <ion-input inputmode="text" formControlName="structure"></ion-input>
+      </ion-item>
+
+      <ion-item >
+        <ion-label position="floating">Mot de passe</ion-label>
+        <ion-input type="password" formControlName="mot_de_passe"></ion-input>
+      </ion-item>
+      <div *ngFor="let error of errorMessages.mot_de_passe">
+        <ng-container *ngIf="mot_de_passe.hasError(error.type) && (mot_de_passe.dirty || mot_de_passe.touched)">
+          <small class="error-message">{{error.message}}</small>
+        </ng-container>
+      </div>
+      <div class="ion-text-center register-button">
+        <ion-button type="submit" [disabled]="!registrationForm.valid">S'enregistrer</ion-button>
+      </div>
+    </form>
+  </ion-card>
+</ion-content>

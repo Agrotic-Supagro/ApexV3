@@ -1,0 +1,47 @@
+<ion-header>
+    <ion-toolbar color="primary" class="ion-text-center">
+      <ion-title>ApexWeb Authentification</ion-title>
+    </ion-toolbar>
+  </ion-header>
+   
+  <ion-content class="ion-padding">
+   
+    <ion-row>
+      <ion-col size="12" size-sm="10" offset-sm="1" size-md="8" offset-md="2" size-lg="6" offset-lg="3" size-xl="4"
+        offset-xl="4">
+   
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title class="ion-text-center">Votre compte</ion-card-title>
+          </ion-card-header>
+   
+          <ion-card-content>
+   
+            <ion-item lines="none">
+              <ion-label position="stacked">Email</ion-label>
+              <ion-input type="email" placeholder="Email" name="email" [(ngModel)]="credentials.email"></ion-input>
+            </ion-item>
+   
+            <ion-item lines="none">
+              <ion-label position="stacked">Mot de passe</ion-label>
+              <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="credentials.mot_de_passe">
+              </ion-input>
+            </ion-item>
+   
+            <ion-button (click)="login()" expand="block">Se connecter</ion-button>
+            <ion-button expand="block" color="secondary" routerLink="/register" routerDirection="forward">S'inscrire</ion-button>
+   
+            <ion-item lines="none">
+              <div class="forgetpw" (click)="forgetpwd()">Mot de passe oublié ?</div>
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+   
+        <ion-button (click)="drop()" expand="block">Drop</ion-button>
+        <ion-button (click)="insert()" expand="block">Insert</ion-button>
+        <ion-button (click)="create()" expand="block">create</ion-button>
+
+      </ion-col>
+    </ion-row>
+   
+  </ion-content>
