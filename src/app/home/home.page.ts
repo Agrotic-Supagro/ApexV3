@@ -1,11 +1,9 @@
-import { User } from './../services/user-service';
 import { Component } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 import { Platform } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-
-const TOKEN_KEY = 'TOKEN_KEY';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -18,6 +16,7 @@ export class HomePage {
   constructor(
     private plt: Platform,
     private storage: Storage,
+    private router: Router,
     private auth: AuthenticationService,
     private database: DatabaseService
     ) {
@@ -32,5 +31,8 @@ export class HomePage {
 
   public logout() {
     this.auth.logout();
+  }
+  public tuto() {
+    this.router.navigateByUrl('/tutorial');
   }
 }
