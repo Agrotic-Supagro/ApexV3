@@ -4,6 +4,7 @@ import { DatabaseService } from '../services/database.service';
 import { Platform, MenuController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
+import { LocationTrackerService } from '../services/location-tracker.service';
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,8 @@ import { Router } from '@angular/router';
 })
 export class HomePage {
   user;
+  lat;
+  lng;
 
   constructor(
     private plt: Platform,
@@ -19,9 +22,11 @@ export class HomePage {
     public menuCtrl: MenuController,
     private router: Router,
     private auth: AuthenticationService,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private locationTracker: LocationTrackerService
     ) {
     this.plt.ready().then(() => {
+      this.locationTracker.startTracking();
       this.storage.get('TOKEN_KEY').then(val => {
         this.database.getCurrentUser(val).then(data => {
           this.user = data;

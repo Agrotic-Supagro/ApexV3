@@ -13,9 +13,9 @@ export class ParcelleApexPage implements OnInit {
 
   public thresholdApex = THRESHOLD_APEX;
   public numberApex = 0;
-  public numberof0value;
-  public numberof1value;
-  public numberof2value;
+  public numberApex0;
+  public numberApex1;
+  public numberApex2;
   public isList = false;
   public categorie;
   public nomParcelle;
@@ -27,16 +27,16 @@ export class ParcelleApexPage implements OnInit {
   ngOnInit() {
   }
 
-  public addvalue(apexvalue) {
+  public addapex(apexvalue) {
     if (apexvalue === '2') {
-      this.numberof2value++;
+      this.numberApex2++;
       this.vibration.vibrate(80);
     } else {
       if (apexvalue === '1') {
-        this.numberof1value++;
+        this.numberApex1++;
         this.vibration.vibrate(220);
       } else {
-        this.numberof0value++;
+        this.numberApex0++;
         this.vibration.vibrate(80);
       }
     }

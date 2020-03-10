@@ -14,6 +14,7 @@ import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
+import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 
 
 @NgModule({
@@ -25,6 +26,7 @@ import { Vibration } from '@ionic-native/vibration/ngx';
     SplashScreen,
     SQLite,
     Vibration,
+    BackgroundGeolocation,
     EmailComposer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
