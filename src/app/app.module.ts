@@ -15,7 +15,7 @@ import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
-
+import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +28,7 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx'
     Vibration,
     BackgroundGeolocation,
     EmailComposer,
+    ScreenOrientation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

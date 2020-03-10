@@ -53,7 +53,7 @@ export class DatabaseService {
   }
 
   private createTables(): void {
-    const requete = 'CREATE TABLE IF NOT EXISTS utilisateur ('
+    const requeteUserTable = 'CREATE TABLE IF NOT EXISTS utilisateur ('
     + 'id_utilisateur TEXT NOT NULL PRIMARY KEY UNIQUE,'
     + 'prenom TEXT,'
     + 'nom TEXT,'
@@ -67,7 +67,7 @@ export class DatabaseService {
     + 'etat INTEGER DEFAULT 0'
     + ')';
 
-    this.database.executeSql(requete, [])
+    this.database.executeSql(requeteUserTable, [])
       .then(() => {
         console.log('Success requet create table User');
       })

@@ -9,13 +9,13 @@
         <ion-list *ngFor="let pages of navigate">
         <ion-menu-toggle auto-hide="true">
           <ion-item [routerLink]="pages.url" routerDirection="forward">
-              <ion-icon [name]="pages.icon" slot="start"></ion-icon>
+              <ion-icon [name]="pages.icon" slot="start" color="primary"></ion-icon>
                  {{pages.title}} 
           </ion-item>
         </ion-menu-toggle>
         </ion-list>
         <ion-item button (click)="logout()" routerDirection="forward"> 
-          <ion-icon name="close-circle" slot="start"></ion-icon> Déconnexion
+          <ion-icon name="close-circle" slot="start" color="warning"></ion-icon> Déconnexion
         </ion-item>
       </ion-content>
     </ion-menu>
