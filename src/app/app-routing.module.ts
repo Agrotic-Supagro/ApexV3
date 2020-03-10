@@ -47,7 +47,7 @@ const routes: Routes = [{
   {
     path: 'parcelle-input',
     loadChildren: () => import('./parcelle-input/parcelle-input.module').then( m => m.ParcelleInputPageModule)
-  },
+  }
 ];
 
 @NgModule({

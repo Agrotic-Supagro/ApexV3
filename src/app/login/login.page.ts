@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { Router } from '@angular/router';
-import { AlertController, ToastController } from '@ionic/angular';
+import { AlertController, ToastController, MenuController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
-import { EmailComposer } from '@ionic-native/email-composer/ngx';
 
 @Component({
   selector: 'app-login',
@@ -21,13 +20,17 @@ export class LoginPage implements OnInit {
               private alertCtrl: AlertController,
               private router: Router,
               public toastController: ToastController,
-              private emailComposer: EmailComposer,
+              public menuCtrl: MenuController,
               private database: DatabaseService
               ) { }
 
   ngOnInit() {
 
   }
+
+  ionViewWillEnter() {
+    this.menuCtrl.enable(false);
+   }
 
   login() {
     console.log(this.credentials);

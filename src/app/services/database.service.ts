@@ -110,6 +110,7 @@ export class DatabaseService {
       this.user = {
         id_utilisateur: data.rows.item(0).id_utilisateur,
         nom: data.rows.item(0).nom,
+        email: data.rows.item(0).email,
         model_ifv: data.rows.item(0).model_ifv,
         token: data.rows.item(0).token
       };
@@ -173,4 +174,5 @@ export class DatabaseService {
       // this.loadDevelopers();
     });
   }
+
 }

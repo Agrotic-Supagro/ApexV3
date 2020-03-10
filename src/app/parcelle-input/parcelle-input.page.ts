@@ -7,9 +7,42 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ParcelleInputPage implements OnInit {
 
+  public isList = false;
+  public categorie;
+  public nomParcelle;
+  public selectParcelle;
+  public numberof0value;
+  public numberof1value;
+  public numberof2value;
+  public myDate;
+  public dateDay: any = new Date().toLocaleDateString('fr-FR');
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  public closeRognee() {
+    // todo
+  }
+
+  public closeModal() {
+    // todo
+  }
+
+  public resetNomParcelle() {
+    // todo
+  }
+
+  public changeClass() {
+    // todo
+  }
+
+  public addParcelle() {
+    // todo
+  }
+
+  public onCancel() {
+    // todo
+  }
 }

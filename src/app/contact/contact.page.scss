@@ -1,0 +1,46 @@
+.toolbar-header{
+    --background: rgba(76,185,196,1);
+    --background: -moz-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
+    --background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(76,185,196,1)), color-stop(100%, rgba(61,211,174,1)));
+    --background: -webkit-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
+    --background: -o-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
+    --background: -ms-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
+    --background: linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
+    --color:#ffffff;
+}
+
+.pjustify {
+    text-align: justify;
+}
+
+.txt {
+    background-color: #e7e7e7;
+}
+
+.titleh {
+    color: #b4b20d;
+}
+
+
+.imglogo {
+    height: 50px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.imglogo2 {
+    height: 70px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tablelogo {
+    width: 100%;
+}
+
+.centerclass {
+    text-align: center;
+}

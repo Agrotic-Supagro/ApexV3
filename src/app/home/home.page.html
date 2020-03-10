@@ -1,17 +1,24 @@
 <ion-header>
-  <ion-buttons slot="start">
-    <ion-menu-button></ion-menu-button>
+  <ion-toolbar class="toolbar-header">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
     </ion-buttons>
-  <ion-toolbar color="primary" class="ion-text-center">
-    <ion-title>Home !</ion-title>
+    <ion-title>Accueil</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
-    <div class="ion-text-center">
-        <ion-button type="submit" (click)="logout()" >Log out</ion-button>
-    </div>    
-    <div class="ion-text-center">
-      <ion-button type="submit" (click)="tuto()" >Tuto</ion-button>
-  </div>
+  <h3 class="centerclass">Nouvelle observation</h3>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <img src="assets/imgs/leaf.png" class="imgnav box" (click)="openParcelleApex()" />
+      </ion-col>
+      <ion-col>
+        <img src="assets/imgs/rang.png" class="imgnav box" (click)="openParcelleInput()" />
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  <h3 class="centerclass">Liste des parcelles</h3>
+ 
 </ion-content>

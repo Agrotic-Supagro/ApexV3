@@ -1,9 +1,88 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>parcelle-apex</ion-title>
+  <ion-toolbar [ngClass]='categorie' class="toolbar-header">
+    <ion-grid *ngIf="nomParcelle">
+        <ion-row (click)="resetNomParcelle()">
+          <ion-col>
+            <ion-title>{{nomParcelle}}</ion-title>
+          </ion-col>
+          <ion-col col-auto>
+            <ion-title>
+              <ion-icon name="create"></ion-icon>
+            </ion-title>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    <div *ngIf="!nomParcelle">
+      <table class="parcelle">
+        <tr>
+          <td>
+            <ion-item class="shadowInput" *ngIf="isList">
+              <ion-label>Choisir une parcelle</ion-label>
+              <ion-select [(ngModel)]="nomParcelle" okText="Ok" cancelText="Annuler" (ionCancel)="onCancel()"
+                (ionChange)="changeClass()">
+                <ion-select-option *ngFor="let nomParcelle of selectParcelle" value="nomParcelle.nom"
+                selectedText="nomParcelle.check">{{nomParcelle.nom}}</ion-select-option>
+              </ion-select>
+            </ion-item>
+            <ion-item *ngIf="!isList" class="al-right graycolor">
+              <i>Ajouter le nom d'une parcelle -></i>
+            </ion-item>
+          </td>
+          <td class="al-right">
+            <ion-button small (tap)="addParcelle()">
+              <ion-icon name="add-circle"></ion-icon>
+            </ion-button></td>
+        </tr>
+      </table>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-
+<ion-content class="card-background-page">
+  <ion-grid>
+    <ion-row (click)="addvalue('2')" class="box boxtop">
+      <ion-col>
+        <img src="assets/imgs/stadeP.jpg" class="imgBox" />
+      </ion-col>
+      <ion-col>
+        <span class="apex-title">Pleine croissance</span>
+      </ion-col>
+    </ion-row>
+    <ion-row (click)="addvalue('1')" class="box boxbottom">
+      <ion-col>
+        <img src="assets/imgs/stadeR.jpg" class="imgBox" />
+      </ion-col>
+      <ion-col>
+        <span class="apex-title">Croissance ralentie</span>
+      </ion-col>
+    </ion-row>
+    <ion-row (click)="addvalue('0')" class="box boxmiddle">
+      <ion-col>
+        <img src="assets/imgs/stadeC.jpg" class="imgBox" />
+      </ion-col>
+      <ion-col>
+        <span class="apex-title">Croissance arrétée</span>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="rognee">
+      <ion-button expand="block" color="danger" (tap)="closeRognee()" >
+        <ion-icon src="../../../assets/icon/cisaille.svg"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="compute">
+      <ng-container *ngIf="numberApex < thresholdApex; else elseTemplate">
+        <ion-button expand="block" color="dark" (tap)="apexAlert()" > Observation :
+          {{numberApex}}/{{thresholdApex}}</ion-button>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <ion-button expand="block" (tap)="closeModal()" >Calculer ({{numberApex}} apex)
+        </ion-button>
+      </ng-template>
+    </div>
+  </ion-toolbar>
+</ion-footer>

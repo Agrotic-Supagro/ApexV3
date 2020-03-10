@@ -13,6 +13,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
+import { Vibration } from '@ionic-native/vibration/ngx';
+
 
 @NgModule({
   declarations: [AppComponent],
@@ -22,6 +24,7 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
     StatusBar,
     SplashScreen,
     SQLite,
+    Vibration,
     EmailComposer,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
