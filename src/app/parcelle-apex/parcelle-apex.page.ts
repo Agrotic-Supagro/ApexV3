@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Vibration } from '@ionic-native/vibration/ngx';
-
+import { DatabaseService } from '../services/database.service';
 
 const THRESHOLD_APEX = 50;
 
@@ -21,8 +21,11 @@ export class ParcelleApexPage implements OnInit {
   public nomParcelle;
   public selectParcelle;
   constructor(
-    public vibration: Vibration
-  ) { }
+    public vibration: Vibration,
+    private database: DatabaseService,
+  ) {
+    console.log(this.database.user.nom);
+  }
 
   ngOnInit() {
   }

@@ -16,6 +16,7 @@ import { EmailComposer } from '@ionic-native/email-composer/ngx';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { Device } from '@ionic-native/device/ngx';
 
 @NgModule({
   declarations: [AppComponent],
@@ -28,6 +29,7 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
     Vibration,
     BackgroundGeolocation,
     EmailComposer,
+    Device,
     ScreenOrientation,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],

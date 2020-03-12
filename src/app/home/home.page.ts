@@ -12,9 +12,7 @@ import { LocationTrackerService } from '../services/location-tracker.service';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  user;
-  lat;
-  lng;
+  public user: any;
 
   constructor(
     private plt: Platform,
