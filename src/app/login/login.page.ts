@@ -55,7 +55,7 @@ export class LoginPage implements OnInit {
   }
 
   drop() {
-    this.database.droptable();
+    this.database.droptable('session');
   }
   create() {
     this.database.open();

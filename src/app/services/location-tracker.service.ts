@@ -18,21 +18,24 @@ export class LocationTrackerService {
   ) { }
 
   startTracking() {
+    console.log('start tracking');
     const config = {
       desiredAccuracy: 10,
       stationaryRadius: 20,
       distanceFilter: 20,
-      debug: false,
+      debug: true,
       enableHighAccuracy : true,
       stopOnTerminate: false, // enable this to clear background location settings when the app terminates
-      interval: 2000
+      interval: 1000,
+      startOnBoot: true
     };
 
     this.backgroundGeolocation.configure(config).then(() => {
       this.backgroundGeolocation
         .on(BackgroundGeolocationEvents.location)
         .subscribe((location: BackgroundGeolocationResponse) => {
-          console.log(location.latitude);
+          console.log('>> Longitude : ' + location.longitude);
+          console.log('>> Latitude : ' + location.latitude);
           this.zone.run(() => {
             this.lat = location.latitude;
             this.lng = location.longitude;

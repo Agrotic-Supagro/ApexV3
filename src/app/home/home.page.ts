@@ -13,6 +13,8 @@ import { LocationTrackerService } from '../services/location-tracker.service';
 })
 export class HomePage {
   public user: any;
+  lat;
+  lng;
 
   constructor(
     private plt: Platform,
@@ -25,6 +27,9 @@ export class HomePage {
     ) {
     this.plt.ready().then(() => {
       this.locationTracker.startTracking();
+      this.lat = this.locationTracker.getLatitude();
+      this.lng = this.locationTracker.getLongitude();
+
       this.storage.get('TOKEN_KEY').then(val => {
         this.database.getCurrentUser(val).then(data => {
           this.user = data;
