@@ -2,6 +2,11 @@ ion-content{
   --ion-background-color: white;
 }
 
+ion-content ion-card{
+    //background: yellow!important;
+    width: 100%;
+  }
+
 .toolbar-header{
     --background: rgba(76,185,196,1);
     --background: -moz-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
@@ -223,10 +228,10 @@ ion-content{
   }
 
   .colorblue{
-      background-color: #006C83;
+      --background: #006C83;
   }
   .colorgreen{
-      background-color: #C5DC68;
+    --background: #C5DC68;
   }
 
   .alertInput {

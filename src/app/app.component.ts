@@ -5,6 +5,7 @@ import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthenticationService } from './services/authentication.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
+import { LocationTrackerService } from './services/location-tracker.service';
 
 @Component({
   selector: 'app-root',
@@ -18,6 +19,7 @@ export class AppComponent {
     private auth: AuthenticationService,
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
+    private locationTracker: LocationTrackerService,
     private screenOrientation: ScreenOrientation
   ) {
     this.sideMenu();
@@ -28,6 +30,7 @@ export class AppComponent {
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
+      this.locationTracker.startTracking();
       this.splashScreen.hide();
     });
   }

@@ -2,6 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { BackgroundGeolocation,
   BackgroundGeolocationEvents,
   BackgroundGeolocationResponse } from '@ionic-native/background-geolocation/ngx';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class LocationTrackerService {
 
   constructor(
     public zone: NgZone,
+    public geolocation: Geolocation,
     public backgroundGeolocation: BackgroundGeolocation
   ) { }
 
@@ -23,7 +25,7 @@ export class LocationTrackerService {
       desiredAccuracy: 10,
       stationaryRadius: 20,
       distanceFilter: 20,
-      debug: true,
+      debug: false,
       enableHighAccuracy : true,
       stopOnTerminate: false, // enable this to clear background location settings when the app terminates
       interval: 1000,
@@ -47,20 +49,21 @@ export class LocationTrackerService {
 
     this.backgroundGeolocation.start();
 
-    /*const options = {
+    const options = {
       frequency: 2000,
       enableHighAccuracy: true
     };
 
-    this.watch = this.geolocation.watchPosition(options).filter((p: any) => p.code === undefined).subscribe((position: Geoposition) => {
+    this.watch = this.geolocation.watchPosition(options)
+    .subscribe((data) => {
 
       // Run update inside of Angular's zone
       this.zone.run(() => {
-        this.lat = position.coords.latitude;
-        this.lng = position.coords.longitude;
+        this.lat = data.coords.latitude;
+        this.lng = data.coords.longitude;
       });
 
-    });*/
+    });
   }
 
   getLongitude() {

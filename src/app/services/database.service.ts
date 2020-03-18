@@ -3,7 +3,7 @@ import { User } from './user-service';
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 import { Platform } from '@ionic/angular';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, of, from } from 'rxjs';
 import { Device } from '@ionic-native/device/ngx';
 import { Parcelle } from './parcelle-service';
 
@@ -102,7 +102,7 @@ export class DatabaseService {
     + 'id_session TEXT PRIMARY KEY UNIQUE,'
     + 'date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
     + 'date_maj TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
-    + 'date_session TIMESTAMP DEFAULT CURRENT_TIMESTAMP,'
+    + 'date_session TIMESTAMP,'
     + 'apex0 INTEGER,'
     + 'apex1 INTEGER,'
     + 'apex2 INTEGER,'
@@ -200,8 +200,9 @@ export class DatabaseService {
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(sessionData).map(function(_) { return sessionData[_]; });
 
-    return this.database.executeSql('INSERT OR IGNORE INTO session (id_session, apex0, apex1, apex2, id_observateur, id_parcelle, etat) '
-    + 'VALUES (?, ?, ?, ?, ?, ?, ?)', dataTosql)
+    // tslint:disable-next-line:max-line-length
+    return this.database.executeSql('INSERT OR IGNORE INTO session (id_session, date_session, apex0, apex1, apex2, id_observateur, id_parcelle, etat) '
+    + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?)', dataTosql)
     .then(data => {
       // this.loadDevelopers();
     });
@@ -381,115 +382,116 @@ export class DatabaseService {
     });
   }
 
+  getAllParcelle(dataSql) {
+    this.parcelles = [];
+    return this.database.executeSql(
+      'SELECT * FROM utilisateur_parcelle '
+    + 'JOIN parcelle '
+    + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
+    + 'JOIN session '
+    + 'ON parcelle.id_parcelle = session.id_parcelle '
+    + 'WHERE id_utilisateur = ? '
+    + 'AND utilisateur_parcelle.statut !=0 '
+    + 'AND utilisateur_parcelle.etat != 2 '
+    + 'GROUP BY session.id_parcelle '
+    + 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?'
+    , dataSql).then(dataUserParcelle => {
+      if (dataUserParcelle.rows.length > 0) {
+        for (let i = 0; i < dataUserParcelle.rows.length; i++) {
+          // console.log(dataUserParcelle.rows.item(i));
+          const idParcelle = dataUserParcelle.rows.item(i).id_parcelle;
+
+          this.database.executeSql(
+            'SELECT * FROM session '
+          + 'JOIN parcelle '
+          + 'ON parcelle.id_parcelle = session.id_parcelle '
+          + 'WHERE parcelle.id_parcelle = ? '
+          + 'AND session.etat != 2 '
+          + 'AND parcelle.etat != 2 '
+          + 'ORDER BY session.date_session DESC LIMIT 2'
+          , [idParcelle]).then(dataParcelle => {
+            if (dataParcelle.rows.length > 0) {
+              const apex0: number = dataParcelle.rows.item(0).apex0;
+              const apex1: number = dataParcelle.rows.item(0).apex1;
+              const apex2: number = dataParcelle.rows.item(0).apex2;
+              const moyenne = ((apex0) + (apex1 / 2)) / (apex0 + apex1 + apex2);
+              const tauxApex0: number = apex0 / (apex2 + apex0 + apex1) * 100;
+              const tauxApex1: number = apex1 / (apex2 + apex0 + apex1) * 100;
+              const tauxApex2: number = apex2 / (apex2 + apex0 + apex1) * 100;
+              const apexValues = [Math.round(tauxApex0), Math.round(tauxApex1), Math.round(tauxApex2)];
+                // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
+                // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
+              let ifvClasse = 3;
+              if (apex0 === 999) {
+                ifvClasse = 4;
+              } else {
+                // GESTION DES CLASSES
+                if (moyenne >= 0.75) {
+                  ifvClasse = 0;
+                } else {
+                  if (tauxApex0 >= 5) {
+                    ifvClasse = 1;
+                  } else {
+                    if (tauxApex2 <= 90) {
+                      ifvClasse = 2;
+                    }
+                  }
+                }
+              }
+              // GESTION DYNAMIQUE CROISSANCE
+              // dynamique : 0 = stable, 1 = croissance, -1 = decroissance, neutre =2
+              let dynamique = 2;
+              if (dataParcelle.rows.length === 2) {
+                dynamique = 0;
+                const apex0Old = dataParcelle.rows.item(1).apex0;
+                const apex1Old = dataParcelle.rows.item(1).apex1;
+                const apex2Old = dataParcelle.rows.item(1).apex2;
+                const moyenneOld = ((apex0Old) + (apex1Old / 2)) / (apex0Old + apex1Old + apex2Old);
+                const diffMoyenne = moyenneOld - moyenne;
+                if (diffMoyenne > 0.2) {
+                  dynamique = -1;
+                } else {
+                  if (diffMoyenne < -0.2) {
+                    dynamique = 1;
+                  }
+                }
+              }
+
+              this.parcelles.push({
+                id_parcelle: dataParcelle.rows.item(0).id_parcelle,
+                nom_parcelle: dataParcelle.rows.item(0).nom_parcelle,
+                date_session: dataParcelle.rows.item(0).date_session,
+                apex: apexValues,
+                dynamique: dynamique,
+                ifv_classe: ifvClasse,
+                proprietaire: dataParcelle.rows.item(0).id_proprietaire,
+              });
+            }
+          });
+        }
+      }
+    });
+  }
+
   getListParcelle() {
     return this.database.executeSql('SELECT * FROM parcelle LEFT JOIN utilisateur_parcelle '
     + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
-    + 'WHERE utilisateur_parcelle.id_utilisateur = ? ', [this.user.id_utilisateur]).then(data => {
+    + 'WHERE utilisateur_parcelle.id_utilisateur = ? '
+    + 'ORDER BY  parcelle.nom_parcelle ASC', [this.user.id_utilisateur]).then(data => {
       console.log ('>> Nb Parcelle (current user) :' + data.rows.length);
       const parcelleList = [];
       if (data.rows.length > 0) {
         for (let i = 0; i < data.rows.length; i++) {
           parcelleList.push({
             id_parcelle: data.rows.item(i).id_parcelle,
-            nom_parcelle: data.rows.item(i).nom_parcelle
+            nom_parcelle: data.rows.item(i).nom_parcelle,
+            id_proprietaire: data.rows.item(i).id_proprietaire
            });
         }
-      }
-      this.parcelleList = parcelleList;
-      return this.parcelleList;
-    });
-  }
-
-  getParcelles(dataSql) {
-    // https://devdactic.com/ionic-4-sqlite-queries/
-    // tslint:disable-next-line:only-arrow-functions
-    const dataTosql = Object.keys(dataSql).map(function(_) {
-      return dataSql[_];
-    });
-
-    const query = 'SELECT session.id_parcelle FROM session ' +
-      'JOIN parcelle ON parcelle.id_parcelle = session.id_parcelle ' +
-      'JOIN utilisateur_parcelle ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle ' +
-      'WHERE utilisateur_parcelle.id_utilisateur = ? AND parcelle.etat != 2 ' +
-      'GROUP BY session.id_parcelle ' +
-      'ORDER BY session.date_session DESC LIMIT ? OFFSET ?';
-
-    return this.database.executeSql(query, dataTosql).then(data => {
-      if (data == null) {
-        console.log('no session yet');
-        return;
-      }
-      if (data.rows) {
-        if (data.rows.length > 0) {
-          for (let i = 0; i < data.rows.length; i++) {
-            console.log('>> Method GetParcell : ID Parcelle : ' + data.rows.item(i).id_parcelle);
-            const idParcelle = data.rows.item(i).id_parcelle;
-            const query2 = 'SELECT * FROM session' +
-              'WHERE id_parcelle = ? AND etat !=2 ' +
-              'ORDER BY date_session DESC LIMIT 2';
-
-            this.database.executeSql(query2, [idParcelle]).then(data2 => {
-              if (data2.rows.length > 0) {
-                const apex0: number = data2.rows.item(0).apex0;
-                const apex1: number = data2.rows.item(0).apex1;
-                const apex2: number = data2.rows.item(0).apex2;
-                const moyenne = ((apex0) + (apex1 / 2)) / (apex0 + apex1 + apex2);
-                const tauxApex0: number = apex0 / (apex2 + apex0 + apex1) * 100;
-                const tauxApex1: number = apex1 / (apex2 + apex0 + apex1) * 100;
-                const tauxApex2: number = apex2 / (apex2 + apex0 + apex1) * 100;
-                const apexValues = [Math.round(tauxApex0), Math.round(tauxApex1), Math.round(tauxApex2)];
-
-                // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
-                // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
-                let ifvClasse = 3;
-                if (apex0 === 999) {
-                  ifvClasse = 4;
-                } else {
-                  // GESTION DES CLASSES
-                  if (moyenne >= 0.75) {
-                    ifvClasse = 0;
-                  } else {
-                    if (tauxApex0 >= 5) {
-                      ifvClasse = 1;
-                    } else {
-                      if (tauxApex2 <= 90) {
-                        ifvClasse = 2;
-                      }
-                    }
-                  }
-                }
-
-                // GESTION DYNAMIQUE CROISSANCE
-                // dynamique : 0 = neutre, 1 = croissance, -1 = decroissance
-                let dynamique = 0;
-                if (data2.rows.length === 2) {
-                  const apex0Old = data2.rows.item(1).apex0;
-                  const apex1Old = data2.rows.item(1).apex1;
-                  const apex2Old = data2.rows.item(1).apex2;
-                  const moyenneOld = ((apex0Old) + (apex1Old / 2)) / (apex0Old + apex1Old + apex2Old);
-                  const diffMoyenne = moyenneOld - moyenne;
-                  if (diffMoyenne > 0.2) {
-                    dynamique = -1;
-                  } else {
-                    if (diffMoyenne < -0.2) {
-                      dynamique = 1;
-                    }
-                  }
-                }
-
-                this.parcelles.push({
-                  id_parcelle: data2.rows.item(0).id_parcelle,
-                  nom_parcelle: data2.rows.item(0).nom_parcelle,
-                  date_session: data2.rows.item(0).date_session,
-                  apex: apexValues,
-                  dynamique: dynamique,
-                  ifv_classe: ifvClasse,
-                  proprietaire: data2.rows.item(0).id_observateur
-                });
-              }
-            });
-          }
-        }
+        this.parcelleList = parcelleList;
+        return this.parcelleList;
+      } else {
+        return null;
       }
     });
   }
@@ -521,7 +523,7 @@ export class DatabaseService {
 
   // DROP TABLE
   droptable(table) {
-    this.database.executeSql('DROP TABLE ?', [table])
+    this.database.executeSql('DROP TABLE session')
     .then(() => {
       console.log('Success requet drop table ' + table);
     })
