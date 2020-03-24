@@ -1,3 +1,4 @@
+import { ParcelleApexPageModule } from './parcelle-apex/parcelle-apex.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -30,7 +31,8 @@ import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.mo
     AppRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
-    ParcelleInputPageModule
+    ParcelleInputPageModule,
+    ParcelleApexPageModule
   ],
   providers: [
     StatusBar,

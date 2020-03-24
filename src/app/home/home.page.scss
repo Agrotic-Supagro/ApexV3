@@ -1,255 +1,287 @@
-ion-content{
-  --ion-background-color: white;
+ion-content {
+    --ion-background-color: white;
 }
 
-ion-content ion-card{
+ion-content ion-card {
     //background: yellow!important;
     width: 100%;
-  }
-
-.toolbar-header{
-    --background: rgba(76,185,196,1);
-    --background: -moz-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
-    --background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(76,185,196,1)), color-stop(100%, rgba(61,211,174,1)));
-    --background: -webkit-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
-    --background: -o-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
-    --background: -ms-linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
-    --background: linear-gradient(45deg, rgba(76,185,196,1) 0%, rgba(61,211,174,1) 100%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
-    --color:#ffffff;
 }
 
-.smallmenu{
-      width: 30px;
-      height: 30px;
-  }
-  .parcelleRognee{
-      margin: auto; /* eh oui, tout bêtement */
-      color: #656565;
-  }
+.vaten {
+    display: none;
+}
 
-  .iconRognee{
-      margin-left: auto;
-      margin-right: auto;
-      height: 80px;
-      width: 80px;
-  }
+.toolbar-header {
+    --background: rgba(76, 185, 196, 1);
+    --background: -moz-linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
+    --background: -webkit-gradient(left bottom, right top, color-stop(0%, rgba(76, 185, 196, 1)), color-stop(100%, rgba(61, 211, 174, 1)));
+    --background: -webkit-linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
+    --background: -o-linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
+    --background: -ms-linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
+    --background: linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1);
+    --color: #ffffff;
+}
 
-  .box{
-      //background-color: rgba(194, 194, 194, 0.5);
-      box-shadow: 2px 2px 3px rgb(82, 82, 82);
-      margin-left: 20px;
-      margin-right: 20px;
-    }
+.smallmenu {
+    width: 30px;
+    height: 30px;
+}
 
-  .imgnav{
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-      height: 80px;
-      border-radius: 50%;
-    }
+.parcelleRognee {
+    margin: auto;
+    /* eh oui, tout bêtement */
+    color: #656565;
+}
 
-  .pieCard{
-      height: 100px;
-  }
-  .pieCardHidde{
-      visibility:hidden;
-      display: none;
-  }
-  .chart{
-      width: 60%;
-   }
+.iconRognee {
+    margin-left: auto;
+    margin-right: auto;
+    height: 80px;
+    width: 80px;
+}
 
-  .homePage{
-      margin-top: 0.3em !important;
-  }
-  .scorebon{
-      background-color: rgba(150, 247, 155, 0.616);
-  }
-  .scoremoyen{
-      background-color: rgba(241, 183, 106, 0.616);
-  }
-  .scoremauvais{
-      background-color: rgba(247, 150, 150, 0.616);
-  }
-  .scorehorrible{
-      background-color: rgba(0, 0, 0, 0.308);
-  }
-  .datebad{
-      color: rgb(221, 221, 221);
-  }
+.box {
+    //background-color: rgba(194, 194, 194, 0.5);
+    box-shadow: 2px 2px 3px rgb(82, 82, 82);
+    margin-left: 20px;
+    margin-right: 20px;
+}
 
-  .absente{
-      border: #494949 solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      text-align: center;
-      font-weight: bold;
-      background-color: rgb(204, 255, 255);
-  }
-  .absenteLight{
-      border: white solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      text-align: center;
-      background-color: rgba(204, 255, 255, 0.15);
-  }
-  .modereeLight{
-      border: white solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      text-align: center;
-      background-color: rgba(255, 255, 153, 0.15);
-  }
-  .moderee{
-      border: #494949 solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      font-weight: bold;
-      text-align: center;
-      background-color: rgb(255, 255, 153);
-  }
-  .importante{
-      border: #494949 solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      font-weight: bold;
-      text-align: center;
-      background-color: rgb(255, 204, 0);
-  }
-  .importanteLight{
-      border: white solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      text-align: center;
-      background-color: rgba(255, 204, 0, 0.15);
-  }
-  .forte{
-      border: #494949 solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      font-weight: bold;
-      text-align: center;
-      background-color: rgb(255, 102, 0);
-  }
-  .forteLight{
-      border: white solid 1px;
-      width: 25%;
-      font-size: 0.8em;
-      text-align: center;
-      background-color: rgba(255, 102, 0, 0.15);
-  }
+.imgnav {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 80px;
+    border-radius: 50%;
+}
 
-  .titlecard{
-      background-color: #86919b;
-      color: white;
-      font-variant: small-caps;
-      font-weight: bold;
-      text-align: center;
-      font-size: 1.3em;
-      padding: 0.1em;
-      margin-bottom: 0.1em;
-  }
+.pieCard {
+    height: 100px;
+}
 
-  .fleche{
-      margin-left: auto;
-      margin-right: auto;
-  }
+.pieCardHidde {
+    visibility: hidden;
+    display: none;
+}
 
-  .constrainteHydrique{
-      margin-left: auto;
-      margin-right: auto;
-      height: 1.5em;
-      width: 100%;
-  }
+.chart {
+    width: 150px;
+    height: 90px;
+}
+
+.homePage {
+    margin-top: 0.3em !important;
+}
+
+.scorebon {
+    background-color: rgba(150, 247, 155, 0.616);
+}
+
+.scoremoyen {
+    background-color: rgba(241, 183, 106, 0.616);
+}
+
+.scoremauvais {
+    background-color: rgba(247, 150, 150, 0.616);
+}
+
+.scorehorrible {
+    background-color: rgba(0, 0, 0, 0.308);
+}
+
+.datebad {
+    color: rgb(221, 221, 221);
+}
+
+.absente {
+    border: #494949 solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    text-align: center;
+    font-weight: bold;
+    background-color: rgb(204, 255, 255);
+}
+
+.absenteLight {
+    border: white solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    text-align: center;
+    background-color: rgba(204, 255, 255, 0.15);
+}
+
+.modereeLight {
+    border: white solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    text-align: center;
+    background-color: rgba(255, 255, 153, 0.15);
+}
+
+.moderee {
+    border: #494949 solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgb(255, 255, 153);
+}
+
+.importante {
+    border: #494949 solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgb(255, 204, 0);
+}
+
+.importanteLight {
+    border: white solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    text-align: center;
+    background-color: rgba(255, 204, 0, 0.15);
+}
+
+.forte {
+    border: #494949 solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    background-color: rgb(255, 102, 0);
+}
+
+.forteLight {
+    border: white solid 1px;
+    width: 25%;
+    font-size: 0.8em;
+    text-align: center;
+    background-color: rgba(255, 102, 0, 0.15);
+}
+
+.classIVF {
+    color: rgba(0, 0, 0);
+}
+
+.titlecard {
+    background-color: #86919b;
+    color: white;
+    font-variant: small-caps;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3em;
+    padding: 0.1em;
+    margin-bottom: 0.1em;
+}
+
+.fleche {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.constrainteHydrique {
+    margin-left: auto;
+    margin-right: auto;
+    height: 1.5em;
+    width: 100%;
+}
 
 
-  .subtitlecard{
-      font-weight: bold;
-  }
+.subtitlecard {
+    font-weight: bold;
+}
 
-  .titleCH{
-      font-weight: bold;
-      background-color: lavender;
-      margin-bottom: 0.4em;
-  }
+.titleCH {
+    font-weight: bold;
+    background-color: lavender;
+    margin-bottom: 0.4em;
+}
 
-  .globalcard{
-      text-align: center;
-      //margin: auto;
-  }
+.globalcard {
+    text-align: center;
+    //margin: auto;
+}
 
-  .deletebutton{
-      font-size: 22px;
-  }
+.deletebutton {
+    font-size: 22px;
+}
 
-  .centerclass{
-      text-align: center;
-  }
+.centerclass {
+    text-align: center;
+}
 
-  .imglogo{
-      display: block;
-      height: 30px;
-  }
+.imglogo {
+    display: block;
+    height: 30px;
+}
 
-  .fleche{
-      height: 40px;
-      width: 40px;
-  }
+.fleche {
+    height: 40px;
+    width: 40px;
+}
 
-  .tableGPS{
-      text-align: center;
-      width: 100%;
-  }
+.tableGPS {
+    text-align: center;
+    width: 100%;
+}
 
-  .result{
-      width: 100%;
-      color: rgb(0, 0, 0);
-  }
+.result {
+    width: 100%;
+    color: rgb(0, 0, 0);
+}
 
-  .iconslice{
-      font-size: 35px;
-  }
+.iconslice {
+    font-size: 35px;
+}
 
-  .rightSide{
-      text-align: right;
-      margin-right: 20px;
-  }
+.rightSide {
+    text-align: right;
+    margin-right: 20px;
+}
 
-  .marginbutton{
-      margin-left: 20px;
-      
-  }
+.marginbutton {
+    margin-left: 20px;
 
-  ion-footer{
-      text-align: center;
-      background-color: white;
-  }
+}
 
-  .colorblue{
-      --background: #006C83;
-  }
-  .colorgreen{
+ion-footer {
+    text-align: center;
+    background-color: white;
+}
+
+.colorblue {
+    --background: #006C83;
+    height: 25px;
+}
+
+.colorgreen {
     --background: #C5DC68;
-  }
+    height: 25px;
+}
+.smallbutton{
+    height: 25px;
+}
+.alertInput {
+    button.alert-button:nth-child(1) {
+        color: rgb(255, 123, 0);
+    }
 
-  .alertInput {
-button.alert-button:nth-child(1) {
-  color:rgb(255, 123, 0);
-}
-button.alert-button:nth-child(2) {
-  font-weight: bold;
-}
-button.alert-button:nth-child(3) {
-  font-weight: bold;
-}
+    button.alert-button:nth-child(2) {
+        font-weight: bold;
+    }
+
+    button.alert-button:nth-child(3) {
+        font-weight: bold;
+    }
 }
 
 .alertInput button.alert-button-group {
-width: 33.33%;
+    width: 33.33%;
 }
 
 .alertInput .alert-button-group-vertical {
-flex-direction: row ;
+    flex-direction: row;
 }

@@ -15,9 +15,14 @@ const DATABASE_APEX_NAME = 'dataApexV312.db';
 export class DatabaseService {
   isOpen = false;
   database: SQLiteObject;
-  parcelles: Parcelle[];
+  parcelles: any = [];
   user: User;
   parcelleList: ParcelleName[];
+  listId: any = [];
+
+  private storage: SQLiteObject;
+  songsList = new BehaviorSubject([]);
+  private isDbReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(
     private plt: Platform,
@@ -39,6 +44,69 @@ export class DatabaseService {
     });
 
   }
+
+ // Get list
+ getSongs(dataSql) {
+  this.songsList = new BehaviorSubject([]);
+  // this.parcelles = [];
+  return this.database.executeSql(
+    'SELECT * FROM utilisateur_parcelle '
+    + 'JOIN parcelle '
+    + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
+    + 'JOIN session '
+    + 'ON parcelle.id_parcelle = session.id_parcelle '
+    + 'WHERE id_utilisateur = ? '
+    + 'AND utilisateur_parcelle.statut !=0 '
+    + 'AND utilisateur_parcelle.etat != 2 '
+    + 'GROUP BY session.id_parcelle '
+    + 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?'
+    , dataSql).then(res => {
+    const idParcelle = [];
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        console.log(res.rows.item(i).id_parcelle);
+        idParcelle.push(res.rows.item(i).id_parcelle);
+      }
+    }
+    return idParcelle;
+  })
+  .then(res => {
+    console.log(res);
+    // tslint:disable-next-line:prefer-for-of
+    for (let k = 0; k < res.length; k++) {
+      this.getSession(res[k]);
+    }
+    /*
+        const items: Parcelle[] = [];
+    if (res.rows.length > 0) {
+      for (let i = 0; i < dataUserParcelle.rows.length; i++) {
+        console.log(dataUserParcelle.rows.item(i).id_parcelle);
+        this.listId.push(dataUserParcelle.rows.item(i).id_parcelle);
+      }
+      for (let i = 0; i < res.rows.length; i++) {
+        items.push({
+          id_parcelle: res.rows.item(i).id_parcelle,
+          nom_parcelle: res.rows.item(i).nom_parcelle,
+          date_session: res.rows.item(i).date_session,
+          apex: [1, 2, 3],
+          dynamique: 1,
+          ifv_classe: 1,
+          proprietaire: res.rows.item(i).id_proprietaire
+         });
+      }
+    }
+    this.songsList.next(items);
+    */
+  });
+}
+
+dbState() {
+  return this.isDbReady.asObservable();
+}
+
+fetchSongs(): Observable<Parcelle[]> {
+  return this.songsList.asObservable();
+}
 
   public open() {
     this.createDatabaseApexV3();
@@ -156,6 +224,8 @@ export class DatabaseService {
         console.log('Success requet create table Observation');
       })
       .catch(e => console.log('Fail table Observation | ' + e));
+
+    this.isDbReady.next(true);
   }
 
   // ADD METHODS
@@ -208,15 +278,18 @@ export class DatabaseService {
     });
   }
 
-  addObservation(observationData) {
-    // Methode pour recuperer les valeurs dans un json simple
-    // tslint:disable-next-line:only-arrow-functions
-    const dataTosql = Object.keys(observationData).map(function(_) { return observationData[_]; });
-
-    return this.database.executeSql('INSERT OR IGNORE INTO observation (apex_value, latitude, longitude, id_session, id_observateur, etat) '
-    + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
-    .then(data => {
-      // this.loadDevelopers();
+  addObservation(listOfObservation) {
+    console.log('>> Save Observation');
+    listOfObservation.forEach(observationData => {
+      // console.log(observationData);
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(observationData).map(function(_) { return observationData[_]; });
+      this.database.executeSql('INSERT OR IGNORE INTO observation '
+      + '(apex_value, latitude, longitude, id_session, id_observateur, etat) '
+      + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
+      .then(data => {
+        // this.loadDevelopers();
+      });
     });
   }
 
@@ -382,6 +455,113 @@ export class DatabaseService {
     });
   }
 
+
+  getAllParcelleTest(dataSql) {
+    return this.getListId(dataSql).then(data => {
+      this.parcelles = [];
+      // tslint:disable-next-line:prefer-for-of
+      for (let k = 0; k < data.length; k++) {
+        this.getSession(data[k]);
+      }
+    })
+    .then(_ => {
+      console.log(this.parcelles);
+      return this.parcelles;
+    });
+  }
+
+  getSession(idParcelle) {
+    const parcelleTemp = [];
+    return this.database.executeSql(
+      'SELECT * FROM session '
+    + 'JOIN parcelle '
+    + 'ON parcelle.id_parcelle = session.id_parcelle '
+    + 'WHERE parcelle.id_parcelle = ? '
+    + 'AND session.etat != 2 '
+    + 'AND parcelle.etat != 2 '
+    + 'ORDER BY session.date_session DESC LIMIT 2'
+    , [idParcelle]).then(dataParcelle => {
+      if (dataParcelle.rows.length > 0) {
+        const apex0: number = dataParcelle.rows.item(0).apex0;
+        const apex1: number = dataParcelle.rows.item(0).apex1;
+        const apex2: number = dataParcelle.rows.item(0).apex2;
+        const moyenne = ((apex0) + (apex1 / 2)) / (apex0 + apex1 + apex2);
+        const tauxApex0: number = apex0 / (apex2 + apex0 + apex1) * 100;
+        const tauxApex1: number = apex1 / (apex2 + apex0 + apex1) * 100;
+        const tauxApex2: number = apex2 / (apex2 + apex0 + apex1) * 100;
+        const apexValues = [Math.round(tauxApex0), Math.round(tauxApex1), Math.round(tauxApex2)];
+          // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
+          // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
+        let ifvClasse = 3;
+        if (apex0 === 999) {
+          ifvClasse = 4;
+        } else {
+          // GESTION DES CLASSES
+          if (moyenne >= 0.75) {
+            ifvClasse = 0;
+          } else {
+            if (tauxApex0 >= 5) {
+              ifvClasse = 1;
+            } else {
+              if (tauxApex2 <= 90) {
+                ifvClasse = 2;
+              }
+            }
+          }
+        }
+        // GESTION DYNAMIQUE CROISSANCE
+        // dynamique : 0 = stable, 1 = croissance, -1 = decroissance, neutre =2
+        let dynamique = 2;
+        if (dataParcelle.rows.length === 2) {
+          dynamique = 0;
+          const apex0Old = dataParcelle.rows.item(1).apex0;
+          const apex1Old = dataParcelle.rows.item(1).apex1;
+          const apex2Old = dataParcelle.rows.item(1).apex2;
+          const moyenneOld = ((apex0Old) + (apex1Old / 2)) / (apex0Old + apex1Old + apex2Old);
+          const diffMoyenne = moyenneOld - moyenne;
+          if (diffMoyenne > 0.2) {
+            dynamique = -1;
+          } else {
+            if (diffMoyenne < -0.2) {
+              dynamique = 1;
+            }
+          }
+        }
+        parcelleTemp.push({
+          id_parcelle: dataParcelle.rows.item(0).id_parcelle,
+          nom_parcelle: dataParcelle.rows.item(0).nom_parcelle,
+          date_session: dataParcelle.rows.item(0).date_session,
+          apex: apexValues,
+          dynamique: dynamique,
+          ifv_classe: ifvClasse,
+          proprietaire: dataParcelle.rows.item(0).id_proprietaire
+        });
+      }
+      this.songsList.next(parcelleTemp);
+    });
+  }
+
+  getListId(dataSql) {
+    return this.database.executeSql(
+      'SELECT * FROM utilisateur_parcelle '
+    + 'JOIN parcelle '
+    + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
+    + 'JOIN session '
+    + 'ON parcelle.id_parcelle = session.id_parcelle '
+    + 'WHERE id_utilisateur = ? '
+    + 'AND utilisateur_parcelle.statut !=0 '
+    + 'AND utilisateur_parcelle.etat != 2 '
+    + 'GROUP BY session.id_parcelle '
+    + 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?'
+    , dataSql).then(dataUserParcelle => {
+      for (let i = 0; i < dataUserParcelle.rows.length; i++) {
+        console.log(dataUserParcelle.rows.item(i).id_parcelle);
+        this.listId.push(dataUserParcelle.rows.item(i).id_parcelle);
+      }
+      return this.listId;
+    });
+  }
+
   getAllParcelle(dataSql) {
     this.parcelles = [];
     return this.database.executeSql(
@@ -522,12 +702,30 @@ export class DatabaseService {
   }
 
   // DROP TABLE
-  droptable(table) {
-    this.database.executeSql('DROP TABLE session')
+  droptable() {
+    this.database.executeSql('DELETE FROM \'session\'', [])
     .then(() => {
-      console.log('Success requet drop table ' + table);
+      console.log('Success requet drop table ');
     })
-    .catch(e => console.log('Fail drop table ' + table + ' | ' + e));
+    .catch(e => console.log('Fail drop table  | ' + e));
+
+    this.database.executeSql('DELETE FROM \'observation\'', [])
+    .then(() => {
+      console.log('Success requet drop table ');
+    })
+    .catch(e => console.log('Fail drop table  | ' + e));
+
+    this.database.executeSql('DELETE FROM \'parcelle\'', [])
+    .then(() => {
+      console.log('Success requet drop table ');
+    })
+    .catch(e => console.log('Fail drop table  | ' + e));
+
+    this.database.executeSql('DELETE FROM \'utilisateur_parcelle\'', [])
+    .then(() => {
+      console.log('Success requet drop table ');
+    })
+    .catch(e => console.log(e));
   }
 
 

@@ -8,6 +8,10 @@
 </ion-header>
 
 <ion-content>
+  <!--<canvas #barChart width="50" height="50"></canvas>-->
+  <!--<canvas #barChart></canvas>-->
+  <canvas id="barChart" class="vaten"></canvas>
+  
   <h3 class="centerclass">Nouvelle observation</h3>
   <ion-grid>
     <ion-row>
@@ -20,6 +24,29 @@
     </ion-row>
   </ion-grid>
   <h3 class="centerclass">Liste des parcelles</h3>
+  <ion-grid>
+    <ion-radio-group (ionChange)="changeFilter()" [(ngModel)]="filter">
+    <ion-row>
+      <ion-col>
+        <ion-item>
+          Tri par :
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-item>
+          <ion-label>Date</ion-label>
+          <ion-radio value="date" ></ion-radio>
+        </ion-item>
+      </ion-col>
+      <ion-item>
+        <ion-label>Nom</ion-label>
+        <ion-radio value="nom" ></ion-radio>
+      </ion-item>
+      <ion-col>
+      </ion-col>
+    </ion-row>
+  </ion-radio-group>
+  </ion-grid>
   <ion-list>
     <ion-item-sliding #item *ngFor="let parcelle of parcelles">
       <ion-item>
@@ -27,14 +54,15 @@
           <ion-card-content>
             <p class="titlecard">{{parcelle.nom_parcelle}}</p>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>
+            <!--<canvas id="{{parcelle.nom_parcelle}}" ></canvas>-->
+            <img id="{{parcelle.nom_parcelle}}" src="" class="imgchart" />
             <p class="subtitlecard" >Dynamique de la croissance</p>
             <img *ngIf="parcelle.dynamique == 2" src="assets/imgs/f0.jpg" class="fleche" />
             <img *ngIf="parcelle.dynamique == 1" src="assets/imgs/f1.jpg" class="fleche" />
             <img *ngIf="parcelle.dynamique == 0" src="assets/imgs/f2.jpg" class="fleche" />
             <img *ngIf="parcelle.dynamique == -1" src="assets/imgs/f3.jpg" class="fleche" />
-
             <p class="titleCH">Interprétation de la contrainte hydrique</p>
-            <ion-grid>
+            <ion-grid class="classIVF">
               <ion-row>
                 <ion-col [ngClass]="(parcelle.ifv_classe == 0) ? 'absente' : 'absenteLight'">
                   Absente
@@ -57,8 +85,8 @@
   </ion-list>
 </ion-content>
 <ion-footer>
-  <ion-button *ngIf="offset == 0" small color="light" >Prec.</ion-button>
+  <ion-button *ngIf="offset == 0" small color="light" class="smallbutton" >Prec.</ion-button>
   <ion-button *ngIf="offset != 0" small class="colorblue" (click)="loadless()">Prec.</ion-button>
-  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()" >Suiv.</ion-button>
-  <ion-button *ngIf="limiteMax" small color="light" >Suiv.</ion-button>
+  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()">Suiv.</ion-button>
+  <ion-button *ngIf="limiteMax" small color="light" class="smallbutton" >Suiv.</ion-button>
 </ion-footer>
