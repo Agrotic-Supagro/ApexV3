@@ -138,6 +138,27 @@ export class ParcelleApexPage implements OnInit {
   }
 
   public async parcelleEcimee() {
+    const alertEcimee = await this.alertCtrl.create({
+      message: 'Marquer la parcelle comme écimée ?',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel: blah');
+          }
+        }, {
+          text: 'Oui',
+          handler: () => {
+            this.saveEcimee();
+          }
+        }
+      ]
+    });
+    await alertEcimee.present();
+  }
+
+  public async saveEcimee() {
     if (this.idParcelle !== null) {
       const dateSession = this.dateformat.getDatetime(this.myDate);
       console.log('>> Save Session - Proprietaire Id : ' + this.idProprietaire);

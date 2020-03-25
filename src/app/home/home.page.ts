@@ -25,6 +25,7 @@ export class HomePage {
   Data: any[] = [];
   url: any;
   filter = 'date';
+  canvasIdIncrement = 0;
 
   constructor(
     private plt: Platform,
@@ -165,20 +166,23 @@ export class HomePage {
   }
 
   makeChart(data) {
-
-    // const canvas = document.getElementById(data.nom_parcelle) as HTMLCanvasElement;
+    const idCanvas = 'cn_' + this.canvasIdIncrement;
+    const para = document.createElement('canvas');
+    para.id = idCanvas;
+    const element = document.getElementById(data.nom_parcelle);
+    element.appendChild(para);
+    const canvas = document.getElementById(idCanvas) as HTMLCanvasElement;
 
     // SI ON VEUT REMPLACER LE CHART PAR SON IMAGE
-    const canvas = document.getElementById('barChart') as HTMLCanvasElement;
-    canvas.style.display = 'none';
+    // const canvas = document.getElementById('barChart') as HTMLCanvasElement;
+    // canvas.style.display = 'none';
 
     const ctx = canvas.getContext('2d');
+
     const toSave = new Chart(ctx, {
         type: 'pie',
         data: {
-          // SI ON VEUT REMPLACER LE CHART PAR SON IMAGE
             labels: [data.apex[0] + '% Pleine croissance', data.apex[1] + '% Croissance ralentie', data.apex[2] + '% Croissance arrétée'],
-            // labels: ['% Pleine croissance', '% Croissance ralentie', '% Croissance arrétée'],
             datasets: [{
               backgroundColor: [
                 '#2C6109',
@@ -201,9 +205,11 @@ export class HomePage {
          title: {
           display: false,
         },
-        responsive: false,
-        height: 80,
-        width: 150,
+        responsive: true,
+        // SI ON VEUT METTRE EN IMAGE PREFERER
+        // responsive: true,
+        // height: 80,
+        // width: 150,
         maintainAspectRatio: false,
         legend: {
           position: 'left',
@@ -211,11 +217,12 @@ export class HomePage {
         }
     }
     });
-
+    canvas.classList.add('dynamiqueChart');
+    this.canvasIdIncrement ++;
     // IMAGE A PARTIR DU CHARTJS
-    const x = document.getElementById(data.nom_parcelle);
-    x.setAttribute('src', toSave.toBase64Image());
-    toSave.destroy();
+    // const x = document.getElementById(data.nom_parcelle);
+    // x.setAttribute('src', toSave.toBase64Image());
+    // toSave.destroy();
   }
 
   changeFilter() {

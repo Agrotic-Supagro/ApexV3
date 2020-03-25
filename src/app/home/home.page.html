@@ -8,8 +8,6 @@
 </ion-header>
 
 <ion-content>
-  <!--<canvas #barChart width="50" height="50"></canvas>-->
-  <!--<canvas #barChart></canvas>-->
   <canvas id="barChart" class="vaten"></canvas>
   
   <h3 class="centerclass">Nouvelle observation</h3>
@@ -54,8 +52,19 @@
           <ion-card-content>
             <p class="titlecard">{{parcelle.nom_parcelle}}</p>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>
-            <!--<canvas id="{{parcelle.nom_parcelle}}" ></canvas>-->
-            <img id="{{parcelle.nom_parcelle}}" src="" class="imgchart" />
+            <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart"></div>
+            <ng-template #ecimee>
+              <ion-grid>
+                <ion-row>
+                  <ion-col >
+                    <img src="assets/imgs/rognee.png" class="iconRognee"/>
+                  </ion-col>
+                  <ion-col class="parcelleRognee"> 
+                    Parcelle écimée
+                  </ion-col>
+                </ion-row>
+              </ion-grid>
+            </ng-template>
             <p class="subtitlecard" >Dynamique de la croissance</p>
             <img *ngIf="parcelle.dynamique == 2" src="assets/imgs/f0.jpg" class="fleche" />
             <img *ngIf="parcelle.dynamique == 1" src="assets/imgs/f1.jpg" class="fleche" />
