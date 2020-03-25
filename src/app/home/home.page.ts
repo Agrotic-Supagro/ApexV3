@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
 import { Chart } from 'chart.js';
 import { ParcelleApexPage } from '../parcelle-apex/parcelle-apex.page';
+import { ParcelleInfoPage } from '../parcelle-info/parcelle-info.page';
 
 @Component({
   selector: 'app-home',
@@ -61,8 +62,30 @@ export class HomePage {
     this.menuCtrl.enable(true);
   }
 
-
-
+  public async parcelleInfo(parcelle) {
+    const modal = await this.modalController.create({
+      component: ParcelleInfoPage,
+      componentProps: {
+        idUser: this.user.id_utilisateur,
+        parcelle: parcelle
+      }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      this.offset = 0;
+      const datasql = [this.user.id_utilisateur, this.offset];
+      this.database.getAllParcelle(datasql).then( dataParcelle => {
+        this.parcelles = this.database.parcelles;
+        console.log('Dissmiss Parcelle Info');
+        this.limiteMax = false;
+      }).then(res => {
+        this.computeChart();
+        this.changeFilter();
+      });
+      // this.dataReturned = dataReturned.data;
+      // alert('Modal Sent Data :'+ dataReturned);
+    });
+    return await modal.present();
+  }
 
   public async openParcelleApex() {
     const modal = await this.modalController.create({
@@ -255,4 +278,5 @@ export class HomePage {
     }
       console.log(this.parcelles);
   }
+
 }

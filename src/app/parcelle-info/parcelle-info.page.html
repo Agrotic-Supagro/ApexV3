@@ -1,9 +1,64 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-title>parcelle-info</ion-title>
+  <ion-toolbar class="toolbar-header title_center">
+    <ion-title>{{parcelle.nom_parcelle}}</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <ion-card>
+    <ion-card-header>
+      <span class="titleCard">Suivi de la croissance</span>
+    </ion-card-header>
+    <ion-card-content class="cardChart" >
+        <canvas #lineCanvasCroissance></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      <span class="titleCard">Interprétation contrainte hydrique</span>
+    </ion-card-header>
+    <ion-card-content class="cardChart" >
+      <canvas #lineCanvasContrainte></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header (click)="isList = !isList">
+      <ion-icon name="caret-up-outline" *ngIf="isList"></ion-icon>
+      <ion-icon name="caret-down-outline" *ngIf="!isList"></ion-icon>
+      <span class="titleCard">Liste des observations</span>
+    </ion-card-header>
+    <ion-card-content *ngIf="isList">
+      To do
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header (click)="isRename = !isRename">
+      <ion-icon name="caret-up-outline" *ngIf="isRename"></ion-icon>
+      <ion-icon name="caret-down-outline" *ngIf="!isRename"></ion-icon>
+      <span class="titleCard">Renommer la parcelle</span>
+    </ion-card-header>
+    <ion-card-content *ngIf="isRename">
+      To do
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header (click)="isDelete = !isDelete">
+      <ion-icon name="caret-up-outline" *ngIf="isDelete"></ion-icon>
+      <ion-icon name="caret-down-outline" *ngIf="!isDelete"></ion-icon>
+      <span class="titleCard">Supprimer la parcelle</span>
+    </ion-card-header>
+    <ion-card-content *ngIf="isDelete">
+      <p>Cette action est irréversible et supprimera toutes les informations concernant la parcelle {{parcelle.nom_parcelle}}.</p>
+      <ion-button expand="block" color="danger" (click)="deleteParcelle()">Supprimer</ion-button>
+    </ion-card-content>
+  </ion-card>
 
 </ion-content>
+
+<ion-footer>
+  <ion-button expand="block" (click)="close()" > Fermer </ion-button>
+</ion-footer>

@@ -25,22 +25,22 @@
   <ion-grid>
     <ion-radio-group (ionChange)="changeFilter()" [(ngModel)]="filter">
     <ion-row>
-      <ion-col>
+      <ion-col size="4">
         <ion-item>
           Tri par :
         </ion-item>
       </ion-col>
-      <ion-col>
+      <ion-col size="4">
         <ion-item>
           <ion-label>Date</ion-label>
           <ion-radio value="date" ></ion-radio>
         </ion-item>
       </ion-col>
-      <ion-item>
-        <ion-label>Nom</ion-label>
-        <ion-radio value="nom" ></ion-radio>
-      </ion-item>
       <ion-col>
+        <ion-item>
+          <ion-label>Nom</ion-label>
+          <ion-radio value="nom" ></ion-radio>
+        </ion-item>
       </ion-col>
     </ion-row>
   </ion-radio-group>
@@ -48,7 +48,7 @@
   <ion-list>
     <ion-item-sliding #item *ngFor="let parcelle of parcelles">
       <ion-item>
-        <ion-card class="globalcard">
+        <ion-card class="globalcard" (click)="parcelleInfo(parcelle)">
           <ion-card-content>
             <p class="titlecard">{{parcelle.nom_parcelle}}</p>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>

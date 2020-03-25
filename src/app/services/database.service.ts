@@ -76,27 +76,6 @@ export class DatabaseService {
     for (let k = 0; k < res.length; k++) {
       this.getSession(res[k]);
     }
-    /*
-        const items: Parcelle[] = [];
-    if (res.rows.length > 0) {
-      for (let i = 0; i < dataUserParcelle.rows.length; i++) {
-        console.log(dataUserParcelle.rows.item(i).id_parcelle);
-        this.listId.push(dataUserParcelle.rows.item(i).id_parcelle);
-      }
-      for (let i = 0; i < res.rows.length; i++) {
-        items.push({
-          id_parcelle: res.rows.item(i).id_parcelle,
-          nom_parcelle: res.rows.item(i).nom_parcelle,
-          date_session: res.rows.item(i).date_session,
-          apex: [1, 2, 3],
-          dynamique: 1,
-          ifv_classe: 1,
-          proprietaire: res.rows.item(i).id_proprietaire
-         });
-      }
-    }
-    this.songsList.next(items);
-    */
   });
 }
 
@@ -677,6 +656,84 @@ fetchSongs(): Observable<Parcelle[]> {
       } else {
         return null;
       }
+    });
+  }
+
+  getInfoParcelle(idParcelle: any) {
+    let infoParcelle: any = null;
+    const idSession = [];
+    const dateSession = [];
+    const ica = [];
+    const ifv = [];
+    const purcentApex0 = [];
+    const purcentApex1 = [];
+    const purcentApex2 = [];
+
+    return this.database.executeSql(
+      'SELECT * FROM session '
+    + 'WHERE session.id_parcelle = ? '
+    + 'AND session.etat != 2 '
+    + 'ORDER BY session.date_session DESC LIMIT 5'
+    , [idParcelle]).then(data => {
+      if (data.rows) {
+        for (let i = 0; i < data.rows.length; i++) {
+          console.log(data.rows.item(i).id_session);
+          const apex0 = data.rows.item(i).apex0;
+          const apex1 = data.rows.item(i).apex1;
+          const apex2 = data.rows.item(i).apex2;
+          let moyenne: number;
+          let tauxApex0;
+          let tauxApex1;
+          let tauxApex2;
+          let ifvClasse;
+
+          // PARCELLE ROGNEE
+          if (apex0 === 999) {
+            moyenne = null;
+            tauxApex0 = null;
+            tauxApex1 = null;
+            tauxApex2 = null;
+            ifvClasse = null;
+          } else {
+            moyenne = ((apex0) + (apex1 / 2)) / (apex0 + apex1 + apex2);
+            tauxApex0 = (apex0 / (apex2 + apex0 + apex1) * 100).toFixed(1);
+            tauxApex1 = (apex1 / (apex2 + apex0 + apex1) * 100).toFixed(1);
+            tauxApex2 = (apex2 / (apex2 + apex0 + apex1) * 100).toFixed(1);
+            ifvClasse = '3';
+
+            // GESTION DES CLASSES
+            if (moyenne >= 0.75) {
+              ifvClasse = '0';
+            } else {
+              if (tauxApex0 >= 5) {
+                ifvClasse = '1';
+              } else {
+                if (tauxApex2 <= 90) {
+                  ifvClasse = '2';
+                }
+              }
+            }
+          }
+          // PUSH
+          idSession.push(data.rows.item(i).id_session);
+          dateSession.push(data.rows.item(i).date_session);
+          ica.push(moyenne);
+          ifv.push(ifvClasse);
+          purcentApex0.push(tauxApex0);
+          purcentApex1.push(tauxApex1);
+          purcentApex2.push(tauxApex2);
+        }
+      }
+      infoParcelle = {
+        idSession: idSession.reverse(),
+        dateSession: dateSession.reverse(),
+        ica: ica.reverse(),
+        ifv: ifv.reverse(),
+        purcentApex0: purcentApex0.reverse(),
+        purcentApex1: purcentApex1.reverse(),
+        purcentApex2: purcentApex2.reverse()
+      };
+      return infoParcelle;
     });
   }
 
