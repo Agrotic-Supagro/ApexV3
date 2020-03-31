@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content >
   <canvas id="barChart" class="vaten"></canvas>
   
   <h3 class="centerclass">Nouvelle observation</h3>
@@ -45,14 +45,14 @@
     </ion-row>
   </ion-radio-group>
   </ion-grid>
-  <ion-list>
-    <ion-item-sliding #item *ngFor="let parcelle of parcelles">
+  <ion-list class="bgdColor list-style">
+    <ion-item-sliding #slidingItem *ngFor="let parcelle of parcelles">
       <ion-item>
         <ion-card class="globalcard" (click)="parcelleInfo(parcelle)">
           <ion-card-content>
             <p class="titlecard">{{parcelle.nom_parcelle}}</p>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>
-            <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart"></div>
+            <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart" ></div>
             <ng-template #ecimee>
               <ion-grid>
                 <ion-row>
@@ -65,11 +65,28 @@
                 </ion-row>
               </ion-grid>
             </ng-template>
-            <p class="subtitlecard" >Dynamique de la croissance</p>
-            <img *ngIf="parcelle.dynamique == 2" src="assets/imgs/f0.jpg" class="fleche" />
-            <img *ngIf="parcelle.dynamique == 1" src="assets/imgs/f1.jpg" class="fleche" />
-            <img *ngIf="parcelle.dynamique == 0" src="assets/imgs/f2.jpg" class="fleche" />
-            <img *ngIf="parcelle.dynamique == -1" src="assets/imgs/f3.jpg" class="fleche" />
+            <ion-grid>
+              <ion-row>
+                <ion-col size="4" class="linecol">
+                  <p class="subtitlecard" >iC-Apex</p>
+                </ion-col>
+                <ion-col size="8">
+                  <p class="subtitlecard" >Dynamique de la croissance</p>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="4" class="linecol">
+                  <p class="icapex-style">{{parcelle.ic_apex}}</p>
+                </ion-col>
+                <ion-col size="8">
+                  <img *ngIf="parcelle.dynamique == 2" src="assets/imgs/f0.jpg" class="fleche" />
+                  <img *ngIf="parcelle.dynamique == 1" src="assets/imgs/f1.jpg" class="fleche" />
+                  <img *ngIf="parcelle.dynamique == 0" src="assets/imgs/f2.jpg" class="fleche" />
+                  <img *ngIf="parcelle.dynamique == -1" src="assets/imgs/f3.jpg" class="fleche" />
+                </ion-col>
+              </ion-row>
+            </ion-grid>
+            <span *ngIf="user.model_ifv == 0" >
             <p class="titleCH">Interprétation de la contrainte hydrique</p>
             <ion-grid class="classIVF">
               <ion-row>
@@ -87,9 +104,18 @@
                 </ion-col>
               </ion-row>
             </ion-grid>
+          </span>
           </ion-card-content>
         </ion-card>
       </ion-item>
+      <ion-item-options side="start">
+        <ion-item-option color="tertiary" (click)="shareParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="people-sharp"></ion-icon></ion-item-option>
+        <ion-item-option color="light" (click)="sendParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="paper-plane-sharp"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteParcelle(parcelle.id_parcelle)" class="item-side" ><ion-icon name="trash-sharp"></ion-icon></ion-item-option>
+      </ion-item-options>
     </ion-item-sliding>
   </ion-list>
 </ion-content>

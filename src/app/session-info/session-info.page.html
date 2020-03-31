@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar class="toolbar-header title_center">
+    <ion-title>Modifier l'observation</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row *ngIf="ecimee" >
+      <ion-col>
+        <ion-item>
+          <ion-label>Ecimée</ion-label>
+          <ion-toggle [(ngModel)]="ecimee" color="danger" ></ion-toggle>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+        <ion-col size="3" >
+            <ion-label color="primary" stacked class="datecss">Date</ion-label>
+        </ion-col>
+        <ion-col>
+            <ion-datetime [(ngModel)]="myDate" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" placeholder="{{myDate}}" doneText="ok" cancelText="annuler" ></ion-datetime>
+        </ion-col>
+    </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-label color="primary" stacked>APEX : pleine croissance</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="3" >
+      <img src="assets/imgs/stadeP.jpg" class="imgsize" />
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-input type="number" min="0" disabled="{{ecimee}}" placeholder="nombre ..." [(ngModel)]="numberof0value"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-label color="primary" stacked>APEX : croissance ralentie</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="3" >
+      <img src="assets/imgs/stadeR.jpg" class="imgsize" />
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-input type="number" min="0" disabled="{{ecimee}}" placeholder="nombre ..." [(ngModel)]="numberof1value"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-label color="primary" stacked>APEX : croissance arrétée</ion-label>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col size="3" >
+      <img src="assets/imgs/stadeC.jpg" class="imgsize" />
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-input type="number" min="0" disabled="{{ecimee}}" placeholder="nombre ..." [(ngModel)]="numberof2value"></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+</ion-grid>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="rognee">
+      <ion-button expand="block" color="danger" (click)="parcelleEcimee()" class="iconSize">
+        <ion-icon src="../../../assets/icon/cisaille.svg"></ion-icon>
+      </ion-button>
+    </div>
+    <div class="compute">
+        <ion-button expand="block" (click)="saveSession()" >
+          Modifier l'observation
+        </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

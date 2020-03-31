@@ -9,34 +9,57 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
     --color:#ffffff;
 }
+.title_center{
+  text-align: center;
+}
+.alignRight{
+  text-align: right;
+}
 
-.center{
+.iconSize {
+  font-size: 20px;
+}
+
+.shadowInput{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 8px 0 rgba(230, 131, 94, 0.438);
+
+}
+  .title {
     text-align: center;
-}
-.italic{
-    font-style: italic;
-}
+  }
 
-.linecol{
-    border-right: solid 1px #86919b;
-}
-
-.titlecard{
-    border-radius: 5%;
-    background-color: rgb(69, 169, 187);
-    color: white;
-    font-variant: small-caps;
-    font-weight: bold;
+  .parcelleName {
     text-align: center;
-    font-size: 1.3em;
-    padding: 0.1em;
-    margin-bottom: 0.1em;
-}
+    //font-weight: bold;
+    color: rgb(39, 63, 87);
+  }
 
-ion-card-title{
-    color: white;
-}
+  .parcelle {
+    width: 100%;
+  }
 
-ion-content{
-    --background: rgb(155, 173, 182);
-}
+  .al-right {
+    text-align: right;
+  }
+
+  .imgsize {
+    width: 50px;
+    height: 50px;
+  }
+
+  .datecss{
+    width: 80px;
+  }
+
+  .rognee{
+    display: inline-block;
+    width: 20%;
+  }
+  .compute{
+    width: 78%;
+    display: inline-block;
+  }
+
+  .graycolor{
+    color: rgb(88, 88, 88);
+  }

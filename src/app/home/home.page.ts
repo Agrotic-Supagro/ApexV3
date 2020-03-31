@@ -2,7 +2,7 @@ import { Parcelle } from './../services/parcelle-service';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
-import { Platform, MenuController, ModalController } from '@ionic/angular';
+import { Platform, MenuController, ModalController, AlertController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router } from '@angular/router';
 import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
@@ -30,9 +30,11 @@ export class HomePage {
 
   constructor(
     private plt: Platform,
+    public toastController: ToastController,
     private storage: Storage,
     public modalController: ModalController,
     public menuCtrl: MenuController,
+    private alertCtrl: AlertController,
     private router: Router,
     private auth: AuthenticationService,
     private database: DatabaseService,
@@ -45,6 +47,7 @@ export class HomePage {
         this.database.getCurrentUser(email).then(data => {
           this.user = data;
           console.log('>> Homepage - Info User : ' + this.user.id_utilisateur + ' | ' + this.user.nom);
+          console.log('>> Homepage - IFV : ' + this.user.model_ifv);
         })
         .then(_ => {
           const datasql = [this.user.id_utilisateur, 0];
@@ -61,6 +64,97 @@ export class HomePage {
   ionViewWillEnter() {
     this.menuCtrl.enable(true);
   }
+
+  public async sendParcelle(parcelle, slidingItem) {
+    const alert = await this.alertCtrl.create({
+      header: 'Recevoir les données de la parcelle ' + parcelle.nom_parcelle + ' par email ?',
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Envoyer',
+          handler: (alertData) => {
+            this.presentToast('Données envoyées avec succès sur votre email !');
+            slidingItem.close();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  public async shareParcelle(parcelle, slidingItem) {
+    const alert = await this.alertCtrl.create({
+      header: 'Partager la parcelle ' + parcelle.nom_parcelle + ' par email :',
+      inputs: [
+        {
+          name: 'email',
+          type: 'text',
+          placeholder: 'email'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Partager',
+          handler: (alertData) => {
+            console.log(alertData.email);
+            this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+            slidingItem.close();
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  public async deleteParcelle(idParcelle) {
+    const alert = await this.alertCtrl.create({
+      header: 'Voulez-vous supprimer cette parcelle ?',
+      message: 'Cette action est irréversible',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Supprimer',
+          handler: () => {
+            console.log('Confirm Okay');
+            this.database.updateParcelleBeforeDelete(idParcelle).then(data => {
+              if (data) {
+                this.parcelles = null;
+                this.offset = 0;
+                const datasql = [this.user.id_utilisateur, this.offset];
+                this.database.getAllParcelle(datasql).then( dataParcelle => {
+                  this.parcelles = this.database.parcelles;
+                  console.log(this.database.parcelles);
+                  this.limiteMax = false;
+                }).then(res => {
+                  this.computeChart();
+                  this.changeFilter();
+                });
+                this.presentToast('Parcelle supprimée avec succès!');
+              }
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
 
   public async parcelleInfo(parcelle) {
     const modal = await this.modalController.create({
@@ -222,14 +316,18 @@ export class HomePage {
             }]
        },
        options: {
-         animation: {
-           duration: 0
-         },
-         title: {
+        // suppression info au click
+        tooltips: {enabled: false},
+        hover: {mode: null},
+        // ------------------------
+        animation: {
+          duration: 0
+        },
+        title: {
           display: false,
         },
         responsive: true,
-        // SI ON VEUT METTRE EN IMAGE PREFERER
+        // SI ON VEUT METTRE EN IMAGE, PREFERER :
         // responsive: true,
         // height: 80,
         // width: 150,
@@ -277,6 +375,14 @@ export class HomePage {
       console.log('filtre par noms');
     }
       console.log(this.parcelles);
+  }
+
+  async presentToast(msg) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
   }
 
 }

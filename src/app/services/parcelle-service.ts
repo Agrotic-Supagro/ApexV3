@@ -5,5 +5,6 @@ export interface Parcelle {
     apex: number[];
     dynamique: number;
     ifv_classe: number;
+    ic_apex: number;
     proprietaire: string;
 }

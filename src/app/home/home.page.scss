@@ -1,10 +1,52 @@
 ion-content {
     --ion-background-color: white;
+    // --ion-background-color: rgb(155, 173, 182);
+    // --background: rgb(155, 173, 182);
 }
 
-ion-content ion-card {
-    //background: yellow!important;
+ion-card {
+    // background: yellow!important;
     width: 100%;
+    background: white;
+}
+
+.linecol{
+    border-right: solid 1px #86919b;
+}
+.icapex-style{
+    color: rgb(0, 101, 130);
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3em;
+}
+
+.item-side {
+    font-size: 1.3em;
+    height: 60%;
+    margin-top: 20%;
+    border-radius: 10px;
+}
+
+.item-size {
+    width: 100%;
+}
+.card-content-md {
+    padding: 4px;
+}
+
+.list-style{
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.bgdColor {
+    --ion-background-color: rgb(155, 173, 182);
+}
+
+.globalcard {
+    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
 }
 
 .vaten {
@@ -204,10 +246,7 @@ ion-content ion-card {
     margin-bottom: 0.4em;
 }
 
-.globalcard {
-    text-align: center;
-    //margin: auto;
-}
+
 
 .deletebutton {
     font-size: 22px;
@@ -267,25 +306,4 @@ ion-footer {
 }
 .smallbutton{
     height: 25px;
-}
-.alertInput {
-    button.alert-button:nth-child(1) {
-        color: rgb(255, 123, 0);
-    }
-
-    button.alert-button:nth-child(2) {
-        font-weight: bold;
-    }
-
-    button.alert-button:nth-child(3) {
-        font-weight: bold;
-    }
-}
-
-.alertInput button.alert-button-group {
-    width: 33.33%;
-}
-
-.alertInput .alert-button-group-vertical {
-    flex-direction: row;
 }

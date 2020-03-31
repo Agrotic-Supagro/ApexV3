@@ -6,6 +6,7 @@ import { Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable, of, from } from 'rxjs';
 import { Device } from '@ionic-native/device/ngx';
 import { Parcelle } from './parcelle-service';
+import { DateService } from './dates.service';
 
 const DATABASE_APEX_NAME = 'dataApexV312.db';
 
@@ -13,6 +14,7 @@ const DATABASE_APEX_NAME = 'dataApexV312.db';
   providedIn: 'root'
 })
 export class DatabaseService {
+
   isOpen = false;
   database: SQLiteObject;
   parcelles: any = [];
@@ -27,6 +29,7 @@ export class DatabaseService {
   constructor(
     private plt: Platform,
     private device: Device,
+    private dateformat: DateService,
     private sqlite: SQLite
   ) {
 
@@ -313,10 +316,10 @@ fetchSongs(): Observable<Parcelle[]> {
 
     return this.database.executeSql('UPDATE session SET '
     + 'date_maj= ?, '
+    + 'date_session= ?, '
     + 'apex0= ?, '
     + 'apex1= ?, '
     + 'apex2= ?, '
-    + 'id_parcelle= ?, '
     + 'etat= ? '
     + 'WHERE id_session= ?', dataTosql)
     .then(data => {
@@ -328,14 +331,14 @@ fetchSongs(): Observable<Parcelle[]> {
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(observationData).map(function(_) { return observationData[_]; });
-
+    console.log(dataTosql);
     return this.database.executeSql('UPDATE parcelle SET '
     + 'nom_parcelle= ?, '
     + 'date_maj= ?, '
-    + 'etat= ?, '
-    + 'WHERE id_parcelle= ?', dataTosql)
+    + 'etat= ? '
+    + 'WHERE id_parcelle = ?', dataTosql)
     .then(data => {
-      // this.loadDevelopers();
+      return true;
     });
   }
 
@@ -353,6 +356,15 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+  updateIFV(dataUpdate) {
+    return this.database.executeSql('UPDATE utilisateur SET '
+    + 'model_ifv= ? '
+    + 'WHERE id_utilisateur = ?', dataUpdate)
+    .then(data => {
+      return true;
+    });
+  }
+
   updateUser(observationData) {
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
@@ -366,7 +378,6 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'structure= ?, '
     + 'date_maj= ?, '
     + 'token= ?, '
-    + 'model_ifv= ?, '
     + 'etat= ?, '
     + 'WHERE id_utilisateur= ?', dataTosql)
     .then(data => {
@@ -374,6 +385,28 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+  updateSessionBeforeDelete(idSession: any) {
+    return this.database.executeSql('UPDATE session SET '
+    + 'etat= 2 '
+    + 'WHERE id_session = ?', [idSession])
+    .then(data => {
+      return true;
+    });
+  }
+
+  updateParcelleBeforeDelete(idParcelle: any) {
+    return this.database.executeSql('UPDATE parcelle SET '
+    + 'etat= 1 '
+    + 'WHERE id_parcelle = ?', [idParcelle])
+    .then(data => {
+      this.database.executeSql('UPDATE utilisateur_parcelle SET '
+      + 'etat= 1 '
+      + 'WHERE id_parcelle = ?', [idParcelle]).then(_ => {
+        return true;
+      });
+      return true;
+    });
+  }
   // DELETE METHODS
   deleteUserParcelle(dataSql) {
     // Methode pour recuperer les valeurs dans un json simple
@@ -425,7 +458,10 @@ fetchSongs(): Observable<Parcelle[]> {
       this.user = {
         id_utilisateur: data.rows.item(0).id_utilisateur,
         nom: data.rows.item(0).nom,
+        prenom: data.rows.item(0).prenom,
+        structure: data.rows.item(0).structure,
         email: data.rows.item(0).email,
+        mdp: data.rows.item(0).mot_de_passe,
         model_ifv: data.rows.item(0).model_ifv,
         token: data.rows.item(0).token
       };
@@ -517,6 +553,7 @@ fetchSongs(): Observable<Parcelle[]> {
           apex: apexValues,
           dynamique: dynamique,
           ifv_classe: ifvClasse,
+          ic_apex: moyenne,
           proprietaire: dataParcelle.rows.item(0).id_proprietaire
         });
       }
@@ -627,6 +664,7 @@ fetchSongs(): Observable<Parcelle[]> {
                 apex: apexValues,
                 dynamique: dynamique,
                 ifv_classe: ifvClasse,
+                ic_apex: moyenne,
                 proprietaire: dataParcelle.rows.item(0).id_proprietaire,
               });
             }
@@ -659,9 +697,26 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+  getInfoSession(idSession: any) {
+    return this.database.executeSql(
+      'SELECT * FROM session '
+    + 'WHERE session.id_session = ?'
+    , [idSession]).then(data => {
+      if (data.rows) {
+        return {
+          idSession: data.rows.item(0).id_session,
+          date_session: data.rows.item(0).date_session,
+          apex0: data.rows.item(0).apex0,
+          apex1: data.rows.item(0).apex1,
+          apex2: data.rows.item(0).apex2
+        };
+      }
+    });
+  }
+
   getInfoParcelle(idParcelle: any) {
     let infoParcelle: any = null;
-    const idSession = [];
+    const dataSession = [];
     const dateSession = [];
     const ica = [];
     const ifv = [];
@@ -686,9 +741,10 @@ fetchSongs(): Observable<Parcelle[]> {
           let tauxApex1;
           let tauxApex2;
           let ifvClasse;
-
+          let rognee = false;
           // PARCELLE ROGNEE
           if (apex0 === 999) {
+            rognee = true;
             moyenne = null;
             tauxApex0 = null;
             tauxApex1 = null;
@@ -715,8 +771,8 @@ fetchSongs(): Observable<Parcelle[]> {
             }
           }
           // PUSH
-          idSession.push(data.rows.item(i).id_session);
-          dateSession.push(data.rows.item(i).date_session);
+          dataSession.push({idSession: data.rows.item(i).id_session, dateSession: data.rows.item(i).date_session, rognee: rognee});
+          dateSession.push(this.dateformat.setDateFr(data.rows.item(i).date_session));
           ica.push(moyenne);
           ifv.push(ifvClasse);
           purcentApex0.push(tauxApex0);
@@ -725,7 +781,7 @@ fetchSongs(): Observable<Parcelle[]> {
         }
       }
       infoParcelle = {
-        idSession: idSession.reverse(),
+        dataSession: dataSession,
         dateSession: dateSession.reverse(),
         ica: ica.reverse(),
         ifv: ifv.reverse(),

@@ -47,6 +47,10 @@ const routes: Routes = [{
   {
     path: 'parcelle-input',
     loadChildren: () => import('./parcelle-input/parcelle-input.module').then( m => m.ParcelleInputPageModule)
+  },
+  {
+    path: 'session-info',
+    loadChildren: () => import('./session-info/session-info.module').then( m => m.SessionInfoPageModule)
   }
 ];
 

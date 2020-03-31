@@ -3,6 +3,7 @@ import { Platform, ToastController, ModalController, AlertController, NavParams 
 import { DatabaseService } from '../services/database.service';
 import { DateService } from '../services/dates.service';
 import { Chart } from 'chart.js';
+import { SessionInfoPage } from '../session-info/session-info.page';
 
 @Component({
   selector: 'app-parcelle-info',
@@ -19,9 +20,12 @@ export class ParcelleInfoPage implements OnInit {
   parcelle: any;
   infoSession: any;
 
-  isDelete: true;
-  isList: true;
-  isRename: true;
+  isDelete = false;
+  isList = false;
+  isRename = false;
+
+  newNameParcelle = null;
+  public myDate: any = new Date().toISOString();
 
   constructor(
     private plt: Platform,
@@ -33,19 +37,7 @@ export class ParcelleInfoPage implements OnInit {
     private navParams: NavParams
   ) {
     this.plt.ready().then(() => {
-      this.idUser = this.navParams.data.idUser;
-      this.parcelle = this.navParams.data.parcelle;
-      this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
-        if (data === null) {
-          console.log(data);
-        } else {
-          console.log(data);
-          this.infoSession = data;
-          console.log(this.infoSession);
-          this.makeChartCroissance(data);
-          this.makeChartContrainte(data);
-        }
-      });
+      this.initInfoParcelle();
     });
   }
 
@@ -53,13 +45,124 @@ export class ParcelleInfoPage implements OnInit {
 
   }
 
-  public deleteParcelle() {
+  public initInfoParcelle() {
+    this.idUser = this.navParams.data.idUser;
+    this.parcelle = this.navParams.data.parcelle;
+    this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
+      if (data === null) {
+        console.log(data);
+      } else {
+        console.log(data);
+        this.infoSession = data;
+        console.log(this.infoSession);
+        this.makeChartCroissance(data);
+        this.makeChartContrainte(data);
+      }
+    });
+  }
+
+  public renameParcelle() {
+    if (this.newNameParcelle === '' || this.newNameParcelle === 0 || /^\s*$/.test(this.newNameParcelle) || this.newNameParcelle === null) {
+      // mettre une alerte
+    } else {
+      const dataUpdateParcelle = {
+        nom_parcelle: this.newNameParcelle,
+        date_maj: this.dateformat.getDatetime(this.myDate),
+        etat: 0,
+        id_parcelle: this.parcelle.id_parcelle
+      };
+      this.database.updateParcelle(dataUpdateParcelle).then(data => {
+        if (data) {
+          this.parcelle.nom_parcelle = this.newNameParcelle;
+          this.newNameParcelle = null;
+          this.isRename = false;
+          this.presentToast('Parcelle renommée avec succès!');
+        }
+      });
+    }
+  }
+
+  public async editSession(idSession) {
+    const modal = await this.modalController.create({
+      component: SessionInfoPage,
+      componentProps: {
+        idUser: this.idUser,
+        idSession: idSession
+      }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      this.initInfoParcelle();
+    });
+    return await modal.present();
+  }
+
+  public async deleteSession(idSession) {
+    const alert = await this.alertCtrl.create({
+      header: 'Voulez-vous supprimer cette session ?',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Supprimer',
+          handler: () => {
+            console.log('Confirm Okay');
+            this.database.updateSessionBeforeDelete(idSession).then(data => {
+              if (data) {
+                this.initInfoParcelle();
+                this.presentToast('Observation supprimée avec succès!');
+              }
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
+  }
+
+  public async deleteParcelle() {
+    const alert = await this.alertCtrl.create({
+      header: 'Voulez-vous supprimer cette parcelle ?',
+      message: 'Cette action est irréversible',
+      buttons: [
+        {
+          text: 'Non',
+          role: 'cancel',
+          handler: (blah) => {
+            console.log('Confirm Cancel');
+          }
+        }, {
+          text: 'Supprimer',
+          handler: () => {
+            console.log('Confirm Okay');
+            this.database.updateParcelleBeforeDelete(this.parcelle.id_parcelle).then(async data => {
+              if (data) {
+                await this.modalController.dismiss();
+                this.presentToast('Parcelle supprimée avec succès!');
+              }
+            });
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   public async close() {
     await this.modalController.dismiss();
   }
 
+  async presentToast(msg) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000
+    });
+    toast.present();
+  }
   public makeChartCroissance(dataSession) {
     this.lineChart = new Chart(this.lineCanvasCroissance.nativeElement, {
       type: 'line',

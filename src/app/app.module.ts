@@ -22,6 +22,7 @@ import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.module';
 import { ParcelleInfoPageModule } from './parcelle-info/parcelle-info.module';
+import { SessionInfoPageModule } from './session-info/session-info.module';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,7 +35,8 @@ import { ParcelleInfoPageModule } from './parcelle-info/parcelle-info.module';
     IonicStorageModule.forRoot(),
     ParcelleInputPageModule,
     ParcelleApexPageModule,
-    ParcelleInfoPageModule
+    ParcelleInfoPageModule,
+    SessionInfoPageModule
   ],
   providers: [
     StatusBar,

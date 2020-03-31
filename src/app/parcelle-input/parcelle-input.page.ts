@@ -97,7 +97,7 @@ export class ParcelleInputPage implements OnInit {
 
       // TABLE SESSION
       // tslint:disable-next-line:max-line-length
-      const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: 999, apex1: 0, apex2: 0, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+      const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: 999, apex1: 999, apex2: 999, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
       this.database.addSession(dataToSession);
 
       await this.modalController.dismiss();
