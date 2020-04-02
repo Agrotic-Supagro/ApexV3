@@ -98,13 +98,30 @@
     </ion-card-content>
     <ion-card-content>
       <p class="titlecard">Votre mot de passe</p>
-      <ion-item class="leftSize">
-        <ion-label color="primary">
-          <ion-icon name="home"></ion-icon>
-        </ion-label>
-        <ion-input placeholder="structure" [(ngModel)]="structure"></ion-input>
-      </ion-item>
-      <ion-button size="small" color="light"  > Changer mot de passe </ion-button>
+      <ion-grid>
+        <ion-row *ngIf="!isPwd" (click)="isPwd = !isPwd" >
+          <ion-col size="auto">
+            <ion-icon name="eye"></ion-icon>
+          </ion-col>
+          <ion-col>
+            Voir votre mot de passe actuel
+          </ion-col>
+        </ion-row>
+        <ion-row *ngIf="isPwd" (click)="isPwd = !isPwd" >
+          <ion-col size="auto">
+            <ion-icon name="eye-off"></ion-icon>
+          </ion-col>
+          <ion-col>
+            {{user.nom}}
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col pullLg class="center">
+            <ion-button size="small" color="light"  > Changer mot de passe </ion-button>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+      
     </ion-card-content>
   </ion-card>
 

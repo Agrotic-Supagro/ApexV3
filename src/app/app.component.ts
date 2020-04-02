@@ -54,7 +54,7 @@ export class AppComponent {
       {
         title : 'Tutoriel ApeX Vigne',
         url   : '/tutorial',
-        icon  : 'help-circle'
+        icon  : 'library'
       },
       {
         title : 'Compte et données',

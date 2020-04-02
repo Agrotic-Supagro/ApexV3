@@ -46,6 +46,7 @@ export class HomePage {
       .then(email => {
         this.database.getCurrentUser(email).then(data => {
           this.user = data;
+          console.log(this.user);
           console.log('>> Homepage - Info User : ' + this.user.id_utilisateur + ' | ' + this.user.nom);
           console.log('>> Homepage - IFV : ' + this.user.model_ifv);
         })

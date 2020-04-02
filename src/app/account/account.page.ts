@@ -6,6 +6,7 @@ import { DatabaseService } from '../services/database.service';
 import { Storage } from '@ionic/storage';
 import { ServerService } from '../services/server.service';
 import {Validators, FormBuilder } from '@angular/forms';
+import { DateService } from '../services/dates.service';
 
 @Component({
   selector: 'app-account',
@@ -53,6 +54,7 @@ export class AccountPage implements OnInit {
     public modalController: ModalController,
     private alertCtrl: AlertController,
     private router: Router,
+    private dateformat: DateService,
     private serveur: ServerService,
     private auth: AuthenticationService,
     private database: DatabaseService,
@@ -93,8 +95,22 @@ export class AccountPage implements OnInit {
   }
 
   updateUser() {
-    console.log(this.registrationForm.value);
-    this.isEdit = false;
+    const today = this.dateformat.getDatetime(new Date().toISOString());
+    const dataUpdate = {
+      prenom: this.registrationForm.value.prenom,
+      nom: this.registrationForm.value.nom,
+      email: this.registrationForm.value.email,
+      structure: this.registrationForm.value.structure,
+      date_maj: today,
+      etat: 0,
+      id_utilisateur: this.user.id_utilisateur
+    };
+    this.database.updateUser(dataUpdate).then(data => {
+      if (data) {
+        this.presentToast('Informations mises à jours !');
+        this.isEdit = false;
+      }
+    });
   }
 
   receiveData() {

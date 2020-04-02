@@ -369,19 +369,18 @@ fetchSongs(): Observable<Parcelle[]> {
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(observationData).map(function(_) { return observationData[_]; });
-
+    console.log('>> Fonction UpdateUser :');
+    console.log(dataTosql);
     return this.database.executeSql('UPDATE utilisateur SET '
     + 'prenom= ?, '
     + 'nom= ?, '
     + 'email= ?, '
-    + 'mot_de_passe= ?, '
     + 'structure= ?, '
     + 'date_maj= ?, '
-    + 'token= ?, '
-    + 'etat= ?, '
+    + 'etat= ? '
     + 'WHERE id_utilisateur= ?', dataTosql)
     .then(data => {
-      // this.loadDevelopers();
+      return true;
     });
   }
 
@@ -393,7 +392,6 @@ fetchSongs(): Observable<Parcelle[]> {
       return true;
     });
   }
-
   updateParcelleBeforeDelete(idParcelle: any) {
     return this.database.executeSql('UPDATE parcelle SET '
     + 'etat= 1 '
@@ -656,7 +654,6 @@ fetchSongs(): Observable<Parcelle[]> {
                   }
                 }
               }
-
               this.parcelles.push({
                 id_parcelle: dataParcelle.rows.item(0).id_parcelle,
                 nom_parcelle: dataParcelle.rows.item(0).nom_parcelle,
@@ -664,7 +661,7 @@ fetchSongs(): Observable<Parcelle[]> {
                 apex: apexValues,
                 dynamique: dynamique,
                 ifv_classe: ifvClasse,
-                ic_apex: moyenne,
+                ic_apex: moyenne.toFixed(2),
                 proprietaire: dataParcelle.rows.item(0).id_proprietaire,
               });
             }
