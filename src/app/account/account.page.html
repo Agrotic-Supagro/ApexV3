@@ -112,12 +112,12 @@
             <ion-icon name="eye-off"></ion-icon>
           </ion-col>
           <ion-col>
-            {{user.nom}}
+            {{user.mdp}}
           </ion-col>
         </ion-row>
         <ion-row>
           <ion-col pullLg class="center">
-            <ion-button size="small" color="light"  > Changer mot de passe </ion-button>
+            <ion-button size="small" color="light" (click)="changePwd()" > Changer mot de passe </ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -160,7 +160,15 @@
 
     <ion-card-content>
       <p class="titlecard">Observation des apex</p>
-      To do
+      <p class="leftSize">Définissez le nombre minimum d'apex à observer pour chaque parcelle.</p>
+
+      <ion-item class="leftSize">
+        <ion-label color="primary">
+          Nombre d'apex à observer
+        </ion-label>
+        <ion-input type="number" placeholder="nombre ..." [(ngModel)]="threshold"></ion-input>
+      </ion-item>
+      <div class="center"><ion-button size="small" color="secondary"  (click)="updateThreshold()">Valider</ion-button></div>
     </ion-card-content>
   </ion-card>
 

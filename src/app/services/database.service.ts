@@ -394,13 +394,19 @@ fetchSongs(): Observable<Parcelle[]> {
   }
   updateParcelleBeforeDelete(idParcelle: any) {
     return this.database.executeSql('UPDATE parcelle SET '
-    + 'etat= 1 '
+    + 'etat= 2 '
     + 'WHERE id_parcelle = ?', [idParcelle])
     .then(data => {
       this.database.executeSql('UPDATE utilisateur_parcelle SET '
-      + 'etat= 1 '
+      + 'etat= 2 '
       + 'WHERE id_parcelle = ?', [idParcelle]).then(_ => {
         return true;
+      }).then(_ => {
+        this.database.executeSql('UPDATE session SET '
+        + 'etat= 2 '
+        + 'WHERE id_parcelle = ?', [idParcelle]).then(res => {
+          return true;
+        });
       });
       return true;
     });
@@ -580,7 +586,11 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
-  getAllParcelle(dataSql) {
+  getAllParcelle(dataSql, filter) {
+    let orderby = 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?';
+    if (filter === 'nom') {
+      orderby = 'ORDER BY parcelle.nom_parcelle ASC LIMIT 5 OFFSET ?';
+    }
     this.parcelles = [];
     return this.database.executeSql(
       'SELECT * FROM utilisateur_parcelle '
@@ -592,7 +602,7 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
     + 'GROUP BY session.id_parcelle '
-    + 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?'
+    + orderby
     , dataSql).then(dataUserParcelle => {
       if (dataUserParcelle.rows.length > 0) {
         for (let i = 0; i < dataUserParcelle.rows.length; i++) {
@@ -808,11 +818,14 @@ fetchSongs(): Observable<Parcelle[]> {
   updatePassword(updateData) {
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(updateData).map(function(_) { return updateData[_]; });
-    const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ?';
+    console.log(dataTosql);
+    const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ? AND id_utilisateur = ?';
     return this.database.executeSql(requete, dataTosql)
     .then(data => {
+      console.log('Success update password');
       // this.loadDevelopers();
-    });
+    })
+    .catch(e => console.log('Fail drop table  | ' + e));
   }
 
   // DROP TABLE

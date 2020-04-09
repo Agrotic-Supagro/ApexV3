@@ -5,8 +5,7 @@ import { Platform, NavParams, AlertController, ModalController } from '@ionic/an
 import { GUIDGenerator } from '../services/guidgenerator.service';
 import { DateService } from '../services/dates.service';
 import { LocationTrackerService } from '../services/location-tracker.service';
-
-const THRESHOLD_APEX = 50;
+import { UserConfigurationService } from '../services/user-configuration.service';
 
 @Component({
   selector: 'app-parcelle-apex',
@@ -25,7 +24,7 @@ export class ParcelleApexPage implements OnInit {
   public idUser: any;
   public idProprietaire: any;
 
-  public thresholdApex = THRESHOLD_APEX;
+  public thresholdApex = 50;
   public numberApex = 0;
   public numberApex0 = 0;
   public numberApex1 = 0;
@@ -43,9 +42,13 @@ export class ParcelleApexPage implements OnInit {
     private guid: GUIDGenerator,
     private dateformat: DateService,
     private locationTracker: LocationTrackerService,
+    private conf: UserConfigurationService,
   ) {
     this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
+      this.conf.getApexThreshold(this.idUser).then(res => {
+        this.thresholdApex = res;
+      });
       this.idSession = this.guid.getGuidSess();
     });
   }

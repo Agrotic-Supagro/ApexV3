@@ -82,6 +82,15 @@ export class AuthenticationService {
     );
   }
 
+  changePassword(data): Observable< any > {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/change_password.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
+  }
+
   logout() {
     this.storage.clear();
     this.router.navigate(['login']);

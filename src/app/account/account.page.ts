@@ -7,6 +7,7 @@ import { Storage } from '@ionic/storage';
 import { ServerService } from '../services/server.service';
 import {Validators, FormBuilder } from '@angular/forms';
 import { DateService } from '../services/dates.service';
+import { UserConfigurationService } from '../services/user-configuration.service';
 
 @Component({
   selector: 'app-account',
@@ -18,6 +19,7 @@ export class AccountPage implements OnInit {
   isEdit = false;
   isPwd = false;
   isIfv = true;
+  threshold: any;
 
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -58,7 +60,8 @@ export class AccountPage implements OnInit {
     private serveur: ServerService,
     private auth: AuthenticationService,
     private database: DatabaseService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private conf: UserConfigurationService,
   ) {
 
    }
@@ -69,17 +72,24 @@ export class AccountPage implements OnInit {
       return val;
     })
     .then(email => {
-      this.database.getCurrentUser(email).then(data => {
-        this.user = data;
-        this.registrationForm.value.nom = this.user.nom;
-        console.log(this.registrationForm);
-        console.log('>> Compte - Info User : ' + this.user.id_utilisateur + ' | ' + this.user.nom);
-        if (this.user.model_ifv === 0) {
-          this.isIfv = true;
-        } else {
-          this.isIfv = false;
-        }
+      this.getUser(email);
+    });
+  }
+
+  getUser(email) {
+    this.database.getCurrentUser(email).then(data => {
+      this.user = data;
+      this.registrationForm.value.nom = this.user.nom;
+      console.log(this.registrationForm);
+      console.log('>> Compte - Info User : ' + this.user.id_utilisateur + ' | ' + this.user.nom);
+      this.conf.getApexThreshold(this.user.id_utilisateur).then(res => {
+        this.threshold = res;
       });
+      if (this.user.model_ifv === 0) {
+        this.isIfv = true;
+      } else {
+        this.isIfv = false;
+      }
     });
   }
 
@@ -113,8 +123,59 @@ export class AccountPage implements OnInit {
     });
   }
 
+  updateThreshold() {
+    this.conf.updateApexThreshold(this.user.id_utilisateur, this.threshold);
+    this.presentToast('Nombre d\'apex éditées');
+  }
+
   receiveData() {
 
+  }
+
+  async changePwd() {
+    const alert = await this.alertCtrl.create({
+      header: 'Taper votre nouveau mot de passe',
+      inputs: [
+        {
+          name: 'pwd',
+          type: 'password'
+        }
+      ],
+      buttons: [
+        {
+          text: 'Annuler',
+          role: 'cancel',
+          handler: data => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Envoyer',
+          handler: data => {
+            console.log(data);
+            if (data.pwd !== '' && data.pwd !== null) {
+              const pwd = data.pwd;
+              const dataPwd = {mot_de_passe: pwd, email: this.user.email, idUser: this.user.id_utilisateur};
+              this.auth.changePassword(dataPwd).subscribe(async res => {
+                console.log(res);
+                console.log(res.status);
+                if (res.status) {
+                  this.database.updatePassword(dataPwd);
+                  this.user.mdp = pwd;
+                  this.isPwd = false;
+                  this.presentToast('Mot de passe changé avec succès !');
+                } else {
+                  this.presentToast('Une erreur c\'est produite, merci de réessayer');
+                }
+              });
+            } else {
+              this.presentToast('Mot de passe incorrect, merci d\'en choisir un autre');
+            }
+          }
+        }
+      ]
+    });
+    await alert.present();
   }
 
   updateIFV() {

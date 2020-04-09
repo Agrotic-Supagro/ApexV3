@@ -9,6 +9,7 @@ import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
 import { Chart } from 'chart.js';
 import { ParcelleApexPage } from '../parcelle-apex/parcelle-apex.page';
 import { ParcelleInfoPage } from '../parcelle-info/parcelle-info.page';
+import { UserConfigurationService } from '../services/user-configuration.service';
 
 @Component({
   selector: 'app-home',
@@ -38,6 +39,7 @@ export class HomePage {
     private router: Router,
     private auth: AuthenticationService,
     private database: DatabaseService,
+    private conf: UserConfigurationService,
     ) {
       this.storage.get('TOKEN_KEY')
       .then(val => {
@@ -52,8 +54,10 @@ export class HomePage {
         })
         .then(_ => {
           const datasql = [this.user.id_utilisateur, 0];
-          this.database.getAllParcelle(datasql).then( data => {
+          this.database.getAllParcelle(datasql, this.filter).then( data => {
+            // this.parcelles = this.changeFilter(this.database.parcelles);
             this.parcelles = this.database.parcelles;
+            console.log(this.parcelles);
           });
         })
         .then(res => {
@@ -138,13 +142,13 @@ export class HomePage {
                 this.parcelles = null;
                 this.offset = 0;
                 const datasql = [this.user.id_utilisateur, this.offset];
-                this.database.getAllParcelle(datasql).then( dataParcelle => {
+                this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
                   this.parcelles = this.database.parcelles;
                   console.log(this.database.parcelles);
                   this.limiteMax = false;
                 }).then(res => {
                   this.computeChart();
-                  this.changeFilter();
+                  // this.changeFilter();
                 });
                 this.presentToast('Parcelle supprimée avec succès!');
               }
@@ -168,13 +172,13 @@ export class HomePage {
     modal.onDidDismiss().then((dataReturned) => {
       this.offset = 0;
       const datasql = [this.user.id_utilisateur, this.offset];
-      this.database.getAllParcelle(datasql).then( dataParcelle => {
+      this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
         this.parcelles = this.database.parcelles;
         console.log('Dissmiss Parcelle Info');
         this.limiteMax = false;
       }).then(res => {
         this.computeChart();
-        this.changeFilter();
+        // this.changeFilter();
       });
       // this.dataReturned = dataReturned.data;
       // alert('Modal Sent Data :'+ dataReturned);
@@ -192,14 +196,14 @@ export class HomePage {
     modal.onDidDismiss().then((dataReturned) => {
       this.offset = 0;
       const datasql = [this.user.id_utilisateur, this.offset];
-      this.database.getAllParcelle(datasql).then( dataParcelle => {
+      this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
         this.parcelles = this.database.parcelles;
         console.log('Dissmiss Parcelle Apex');
         console.log(this.database.parcelles);
         this.limiteMax = false;
       }).then(res => {
         this.computeChart();
-        this.changeFilter();
+        // this.changeFilter();
       });
       // this.dataReturned = dataReturned.data;
       // alert('Modal Sent Data :'+ dataReturned);
@@ -217,13 +221,13 @@ export class HomePage {
     modal.onDidDismiss().then((dataReturned) => {
       this.offset = 0;
       const datasql = [this.user.id_utilisateur, this.offset];
-      this.database.getAllParcelle(datasql).then( dataParcelle => {
+      this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
         this.parcelles = this.database.parcelles;
         console.log(this.database.parcelles);
         this.limiteMax = false;
       }).then(res => {
         this.computeChart();
-        this.changeFilter();
+        // this.changeFilter();
       });
     });
     return await modal.present();
@@ -235,13 +239,13 @@ export class HomePage {
     }
     const datasql = [this.user.id_utilisateur, this.offset];
 
-    this.database.getAllParcelle(datasql).then( dataParcelle => {
+    this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
       this.parcelles = this.database.parcelles;
       // console.log(this.database.parcelles);
       console.log(dataParcelle);
     }).then(res => {
       this.computeChart();
-      this.changeFilter();
+      // this.changeFilter();
     });
     this.limiteMax = false;
   }
@@ -249,7 +253,7 @@ export class HomePage {
   loadmore() {
     this.offset += 5;
     const datasql = [this.user.id_utilisateur, this.offset];
-    this.database.getAllParcelle(datasql).then( dataParcelle => {
+    this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
       this.parcelles = this.database.parcelles;
       console.log(this.database.parcelles);
       if (this.parcelles.length === 0) {
@@ -259,7 +263,7 @@ export class HomePage {
       }
     }).then(res => {
       this.computeChart();
-      this.changeFilter();
+      // this.changeFilter();
     });
   }
 
@@ -347,12 +351,12 @@ export class HomePage {
     // toSave.destroy();
   }
 
-  changeFilter() {
-      console.log(this.parcelles);
+  changeFilter(data) {
+      console.log(data);
       // this.filter = ev.target.value;
       if (this.filter === 'date') {
         // tslint:disable-next-line:only-arrow-functions
-        this.parcelles.sort(function(a, b) {
+        data.sort(function(a, b) {
           if (a.date_session > b.date_session) {
               return -1;
           }
@@ -364,7 +368,7 @@ export class HomePage {
         console.log('filtre par dates');
     } else {
       // tslint:disable-next-line:only-arrow-functions
-      this.parcelles.sort(function(a, b) {
+      data.sort(function(a, b) {
         if (a.nom_parcelle > b.nom_parcelle) {
             return 1;
         }
@@ -375,7 +379,7 @@ export class HomePage {
       });
       console.log('filtre par noms');
     }
-      console.log(this.parcelles);
+      this.parcelles = data;
   }
 
   async presentToast(msg) {
