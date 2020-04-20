@@ -48,14 +48,26 @@ export class AuthenticationService {
     return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/login.php`, credentials).pipe(
       tap(async (res: any) => {
         if (res.status) {
-          await this.storage.set(TOKEN_KEY, res.jwt);
-          this.authenticationState.next(true);
-          const data = {
-            jwt: res.jwt,
-            email: credentials.email,
-            mot_de_passe: credentials.mot_de_passe
-          };
-          this.database.updateJWT(data);
+          this.storage.set(TOKEN_KEY, res.jwt).then(_ => {
+            console.log(res.data);
+            const dataUser = {
+              id_utilisateur: res.data.id_utilisateur,
+              prenom: res.data.prenom,
+              nom: res.data.nom,
+              email: res.data.email,
+              mot_de_passe: credentials.mot_de_passe,
+              structure: res.data.structure
+            };
+            this.database.addUser(dataUser);
+            this.authenticationState.next(true);
+            const data = {
+              jwt: res.jwt,
+              email: credentials.email,
+              mot_de_passe: credentials.mot_de_passe
+            };
+            this.database.updateJWT(data);
+          });
+
         }
       })
     );

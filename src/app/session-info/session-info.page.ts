@@ -101,12 +101,14 @@ export class SessionInfoPage implements OnInit {
       console.log('Session unsave !');
       await this.modalController.dismiss();
     } else {
-      console.log('Session to save');
+      console.log('Update Session >');
        // TABLE SESSION
       // tslint:disable-next-line:max-line-length
       const dataToSession = {date_maj: today, date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, etat: 0, id_session: this.idSession};
-      this.database.updateSession(dataToSession);
-      await this.modalController.dismiss();
+      this.database.updateSession(dataToSession).then(async _ => {
+        await this.modalController.dismiss();
+      }
+      );
     }
 
   }

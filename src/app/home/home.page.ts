@@ -4,12 +4,13 @@ import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 import { Platform, MenuController, ModalController, AlertController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
 import { Chart } from 'chart.js';
 import { ParcelleApexPage } from '../parcelle-apex/parcelle-apex.page';
 import { ParcelleInfoPage } from '../parcelle-info/parcelle-info.page';
 import { UserConfigurationService } from '../services/user-configuration.service';
+import { ServerService } from '../services/server.service';
 
 @Component({
   selector: 'app-home',
@@ -28,6 +29,7 @@ export class HomePage {
   url: any;
   filter = 'date';
   canvasIdIncrement = 0;
+  jwt: any;
 
   constructor(
     private plt: Platform,
@@ -37,16 +39,25 @@ export class HomePage {
     public menuCtrl: MenuController,
     private alertCtrl: AlertController,
     private router: Router,
+    private serveur: ServerService,
+    private route: ActivatedRoute,
     private auth: AuthenticationService,
     private database: DatabaseService,
     private conf: UserConfigurationService,
     ) {
-      this.storage.get('TOKEN_KEY')
-      .then(val => {
-        return val;
-      })
-      .then(email => {
-        this.database.getCurrentUser(email).then(data => {
+
+
+    }
+
+  ionViewWillEnter() {
+    this.menuCtrl.enable(true);
+    this.storage.get('TOKEN_KEY')
+    .then(val => {
+      return val;
+    })
+    .then(token => {
+      if (token != null) {
+        this.database.getCurrentUser(token).then(data => {
           this.user = data;
           console.log(this.user);
           console.log('>> Homepage - Info User : ' + this.user.id_utilisateur + ' | ' + this.user.nom);
@@ -63,11 +74,8 @@ export class HomePage {
         .then(res => {
           this.computeChart();
         });
-      });
-    }
-
-  ionViewWillEnter() {
-    this.menuCtrl.enable(true);
+      }
+    });
   }
 
   public async sendParcelle(parcelle, slidingItem) {
@@ -83,6 +91,14 @@ export class HomePage {
         }, {
           text: 'Envoyer',
           handler: (alertData) => {
+            const data = { email: this.user.email, method: 'parcelle', idParcelle: parcelle.id_parcelle, userName: this.user.nom};
+            this.serveur.sendData(data).subscribe(async res => {
+                if (res.status) {
+                  this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
+                } else {
+                  this.presentToast('Erreur. Veuillez vérifier que votre email est correct et réessayez.');
+                }
+            });
             this.presentToast('Données envoyées avec succès sur votre email !');
             slidingItem.close();
           }
@@ -187,6 +203,7 @@ export class HomePage {
   }
 
   public async openParcelleApex() {
+    console.log(this.user);
     const modal = await this.modalController.create({
       component: ParcelleApexPage,
       componentProps: {
@@ -233,6 +250,15 @@ export class HomePage {
     return await modal.present();
   }
 
+  reloadData() {
+    const datasql = [this.user.id_utilisateur, this.offset];
+    this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
+      this.parcelles = this.database.parcelles;
+    }).then(res => {
+      this.computeChart();
+    });
+  }
+
   loadless() {
     if (this.offset !== 0) {
       this.offset -= 5;
@@ -253,16 +279,10 @@ export class HomePage {
   loadmore() {
     this.offset += 5;
     const datasql = [this.user.id_utilisateur, this.offset];
-    this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
+    this.database.getAllParcelle(datasql, this.filter).then( (dataParcelle: any) => {
       this.parcelles = this.database.parcelles;
-      console.log(this.database.parcelles);
-      if (this.parcelles.length === 0) {
-        this.limiteMax = true;
-      } else {
-        this.limiteMax = false;
-      }
     }).then(res => {
-      this.computeChart();
+        this.computeChart();
       // this.changeFilter();
     });
   }
@@ -273,7 +293,7 @@ export class HomePage {
     const datasql = [this.user.id_utilisateur, this.offset];
     this.database.dbState().subscribe((res) => {
       if (res) {
-        this.database.getSongs(datasql).then(_ => {
+        this.database.getSongs(datasql, this.filter).then(_ => {
           this.database.fetchSongs().subscribe(item => {
             if (item.length > 0) {
               item.forEach(element => {

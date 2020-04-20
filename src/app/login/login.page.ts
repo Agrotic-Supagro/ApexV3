@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 import { AlertController, ToastController, MenuController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
 
@@ -11,9 +11,13 @@ import { DatabaseService } from '../services/database.service';
 })
 export class LoginPage implements OnInit {
 
-  credentials = {
+  /*credentials = {
     email: 'toto@gmail.com',
     mot_de_passe: 'toto'
+  };*/
+  credentials = {
+    email: '',
+    mot_de_passe: ''
   };
 
   constructor(private auth: AuthenticationService,
@@ -37,6 +41,11 @@ export class LoginPage implements OnInit {
     this.auth.login(this.credentials).subscribe(async res => {
       console.log('in login return: ', res);
       if (res.status) {
+        const navigationExtras: NavigationExtras = {
+          state: {
+            jwt: res.jwt
+          }
+        };
         this.router.navigateByUrl('/home');
       } else {
         const alert = await this.alertCtrl.create({

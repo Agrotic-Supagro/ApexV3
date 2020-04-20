@@ -25,7 +25,7 @@ export class ServerService {
   }
 
   // envoyé les données à l'utilisateur
-  sendAllData(data) {
+  sendData(data) {
     return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/send_data.php`, data)
     .pipe(
       tap(async (res: any) => {

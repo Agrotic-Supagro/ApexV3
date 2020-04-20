@@ -19,4 +19,23 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
     --color:#ffffff;
   }
-   
+
+.button-margin{
+    margin-top: 2em;
+}
+
+ion-content{
+    --background: rgb(155, 173, 182);
+}
+
+.titlecard{
+    border-radius: 5%;
+    background-color: rgb(69, 169, 187);
+    color: white;
+    font-variant: small-caps;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3em;
+    padding: 0.1em;
+    margin-bottom: 0.1em;
+}

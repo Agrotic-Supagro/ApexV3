@@ -16,3 +16,11 @@
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1 );
     --color:#ffffff;
   }
+
+  ion-content{
+    --background: rgb(155, 173, 182);
+}
+
+.paddin-button{
+  margin-bottom: 1.5em;
+}

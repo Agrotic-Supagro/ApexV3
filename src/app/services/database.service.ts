@@ -49,7 +49,12 @@ export class DatabaseService {
   }
 
  // Get list
- getSongs(dataSql) {
+ getSongs(dataSql, filter) {
+  console.log('Get parcelle by', filter);
+  let orderby = 'ORDER BY session.date_session DESC LIMIT 5 OFFSET ?';
+  if (filter === 'nom') {
+    orderby = 'ORDER BY parcelle.nom_parcelle ASC LIMIT 5 OFFSET ?';
+  }
   this.songsList = new BehaviorSubject([]);
   // this.parcelles = [];
   return this.database.executeSql(
@@ -62,7 +67,7 @@ export class DatabaseService {
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
     + 'GROUP BY session.id_parcelle '
-    + 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?'
+    + orderby
     , dataSql).then(res => {
     const idParcelle = [];
     if (res.rows.length > 0) {
@@ -212,11 +217,12 @@ fetchSongs(): Observable<Parcelle[]> {
 
   // ADD METHODS
   addUser(userData) {
+    console.log('AddUser data : ', userData);
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(userData).map(function(_) { return userData[_]; });
 
-    return this.database.executeSql('INSERT INTO utilisateur (id_utilisateur, prenom, nom, email, mot_de_passe, structure) '
+    return this.database.executeSql('INSERT OR IGNORE INTO utilisateur (id_utilisateur, prenom, nom, email, mot_de_passe, structure) '
     + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
     .then(data => {
       // this.loadDevelopers();
@@ -313,7 +319,7 @@ fetchSongs(): Observable<Parcelle[]> {
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(observationData).map(function(_) { return observationData[_]; });
-
+    console.log('>> Update Session');
     return this.database.executeSql('UPDATE session SET '
     + 'date_maj= ?, '
     + 'date_session= ?, '
@@ -324,7 +330,8 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'WHERE id_session= ?', dataTosql)
     .then(data => {
       // this.loadDevelopers();
-    });
+      console.log('Succes ! Session updated !');
+    }).catch(e => console.log(e));
   }
 
   updateParcelle(observationData) {
@@ -587,7 +594,8 @@ fetchSongs(): Observable<Parcelle[]> {
   }
 
   getAllParcelle(dataSql, filter) {
-    let orderby = 'ORDER BY session.date_session ASC LIMIT 5 OFFSET ?';
+    console.log('Get parcelle by', filter);
+    let orderby = 'ORDER BY session.date_session DESC LIMIT 5 OFFSET ?';
     if (filter === 'nom') {
       orderby = 'ORDER BY parcelle.nom_parcelle ASC LIMIT 5 OFFSET ?';
     }
@@ -677,6 +685,7 @@ fetchSongs(): Observable<Parcelle[]> {
             }
           });
         }
+        return this.parcelles;
       }
     });
   }
@@ -832,25 +841,31 @@ fetchSongs(): Observable<Parcelle[]> {
   droptable() {
     this.database.executeSql('DELETE FROM \'session\'', [])
     .then(() => {
-      console.log('Success requet drop table ');
+      console.log('Success requet drop table session');
     })
     .catch(e => console.log('Fail drop table  | ' + e));
 
     this.database.executeSql('DELETE FROM \'observation\'', [])
     .then(() => {
-      console.log('Success requet drop table ');
+      console.log('Success requet drop table observation');
     })
     .catch(e => console.log('Fail drop table  | ' + e));
 
     this.database.executeSql('DELETE FROM \'parcelle\'', [])
     .then(() => {
-      console.log('Success requet drop table ');
+      console.log('Success requet drop table parcelle');
     })
     .catch(e => console.log('Fail drop table  | ' + e));
 
     this.database.executeSql('DELETE FROM \'utilisateur_parcelle\'', [])
     .then(() => {
-      console.log('Success requet drop table ');
+      console.log('Success requet drop table utilisateur_parcelle');
+    })
+    .catch(e => console.log(e));
+
+    this.database.executeSql('DELETE FROM \'utilisateur\'', [])
+    .then(() => {
+      console.log('Success requet drop table utilisateur');
     })
     .catch(e => console.log(e));
   }
@@ -905,6 +920,9 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+    // syncho des données
+    syncData() {
 
+    }
 
 }

@@ -12,7 +12,7 @@
    
         <ion-card>
           <ion-card-header>
-            <ion-card-title class="ion-text-center">Votre compte</ion-card-title>
+            <ion-card-title class="ion-text-center">Connexion</ion-card-title>
           </ion-card-header>
    
           <ion-card-content>
@@ -24,11 +24,11 @@
    
             <ion-item lines="none">
               <ion-label position="stacked">Mot de passe</ion-label>
-              <ion-input type="password" placeholder="Password" name="password" [(ngModel)]="credentials.mot_de_passe">
+              <ion-input type="password" placeholder="Mot de passe" name="password" [(ngModel)]="credentials.mot_de_passe">
               </ion-input>
             </ion-item>
    
-            <ion-button (click)="login()" expand="block">Se connecter</ion-button>
+            <ion-button (click)="login()" expand="block" class="button-margin">Se connecter</ion-button>
             <ion-button expand="block" color="secondary" routerLink="/register" routerDirection="forward">S'inscrire</ion-button>
    
             <ion-item lines="none">
@@ -37,9 +37,8 @@
           </ion-card-content>
         </ion-card>
    
-        <ion-button (click)="drop()" expand="block">Drop Parcelle</ion-button>
-        <ion-button (click)="insert()" expand="block">Insert</ion-button>
-        <ion-button (click)="create()" expand="block">create</ion-button>
+        <ion-button (click)="drop()" color="warning" expand="block">Drop Parcelle</ion-button>
+
 
       </ion-col>
     </ion-row>

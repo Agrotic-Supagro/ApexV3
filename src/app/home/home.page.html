@@ -23,7 +23,7 @@
   </ion-grid>
   <h3 class="centerclass">Liste des parcelles</h3>
   <ion-grid>
-    <ion-radio-group [(ngModel)]="filter">
+    <ion-radio-group [(ngModel)]="filter" (ionChange)="reloadData()">
     <ion-row>
       <ion-col size="4">
         <ion-item>
@@ -76,7 +76,8 @@
               </ion-row>
               <ion-row>
                 <ion-col size="4" class="linecol">
-                  <p class="icapex-style">{{parcelle.ic_apex}}</p>
+                  <p *ngIf="parcelle.ifv_classe != 4" class="icapex-style">{{parcelle.ic_apex}}</p>
+                  <p *ngIf="parcelle.ifv_classe == 4" class="icapex-style">-</p>
                 </ion-col>
                 <ion-col size="8">
                   <img *ngIf="parcelle.dynamique == 2" src="assets/imgs/f0.jpg" class="fleche" />

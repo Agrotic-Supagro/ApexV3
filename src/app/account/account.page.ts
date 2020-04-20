@@ -94,8 +94,8 @@ export class AccountPage implements OnInit {
   }
 
   async sendData() {
-    const data = { email: this.user.email, method: 'all'};
-    this.serveur.sendAllData(data).subscribe(async res => {
+    const data = { email: this.user.email, method: 'all', userName: this.user.nom};
+    this.serveur.sendData(data).subscribe(async res => {
         if (res.status) {
           this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
         } else {

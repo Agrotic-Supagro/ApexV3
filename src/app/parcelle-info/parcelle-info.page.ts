@@ -46,6 +46,7 @@ export class ParcelleInfoPage implements OnInit {
   }
 
   public initInfoParcelle() {
+    console.log('init info parcelle');
     this.idUser = this.navParams.data.idUser;
     this.parcelle = this.navParams.data.parcelle;
     this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
@@ -91,8 +92,10 @@ export class ParcelleInfoPage implements OnInit {
       }
     });
     modal.onDidDismiss().then((dataReturned) => {
+      console.log('close modal edit parcelle');
       this.initInfoParcelle();
-    });
+    })
+    .catch(e => console.log(e));
     return await modal.present();
   }
 
