@@ -48,44 +48,7 @@ export class DatabaseService {
 
   }
 
- // Get list
- getSongs(dataSql, filter) {
-  console.log('Get parcelle by', filter);
-  let orderby = 'ORDER BY session.date_session DESC LIMIT 5 OFFSET ?';
-  if (filter === 'nom') {
-    orderby = 'ORDER BY parcelle.nom_parcelle ASC LIMIT 5 OFFSET ?';
-  }
-  this.songsList = new BehaviorSubject([]);
-  // this.parcelles = [];
-  return this.database.executeSql(
-    'SELECT * FROM utilisateur_parcelle '
-    + 'JOIN parcelle '
-    + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
-    + 'JOIN session '
-    + 'ON parcelle.id_parcelle = session.id_parcelle '
-    + 'WHERE id_utilisateur = ? '
-    + 'AND utilisateur_parcelle.statut !=0 '
-    + 'AND utilisateur_parcelle.etat != 2 '
-    + 'GROUP BY session.id_parcelle '
-    + orderby
-    , dataSql).then(res => {
-    const idParcelle = [];
-    if (res.rows.length > 0) {
-      for (let i = 0; i < res.rows.length; i++) {
-        console.log(res.rows.item(i).id_parcelle);
-        idParcelle.push(res.rows.item(i).id_parcelle);
-      }
-    }
-    return idParcelle;
-  })
-  .then(res => {
-    console.log(res);
-    // tslint:disable-next-line:prefer-for-of
-    for (let k = 0; k < res.length; k++) {
-      this.getSession(res[k]);
-    }
-  });
-}
+
 
 dbState() {
   return this.isDbReady.asObservable();
@@ -593,15 +556,53 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+   // Get list
+ getSongs(dataSql, filter) {
+  console.log('Get parcelle by', filter);
+  let orderby = 'ORDER BY newDate DESC LIMIT 5 OFFSET ?';
+  if (filter === 'nom') {
+    orderby = 'ORDER BY parcelle.nom_parcelle COLLATE NOCASE ASC LIMIT 5 OFFSET ?';
+  }
+  this.songsList = new BehaviorSubject([]);
+  // this.parcelles = [];
+  return this.database.executeSql(
+    'SELECT *, MAX(session.date_session) As newDate FROM utilisateur_parcelle '
+    + 'JOIN parcelle '
+    + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
+    + 'JOIN session '
+    + 'ON parcelle.id_parcelle = session.id_parcelle '
+    + 'WHERE id_utilisateur = ? '
+    + 'AND utilisateur_parcelle.statut !=0 '
+    + 'AND utilisateur_parcelle.etat != 2 '
+    + 'GROUP BY session.id_parcelle '
+    + orderby
+    , dataSql).then(res => {
+    const idParcelle = [];
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        console.log(res.rows.item(i).id_parcelle);
+        idParcelle.push(res.rows.item(i).id_parcelle);
+      }
+    }
+    return idParcelle;
+  })
+  .then(res => {
+    console.log(res);
+    // tslint:disable-next-line:prefer-for-of
+    for (let k = 0; k < res.length; k++) {
+      this.getSession(res[k]);
+    }
+  });
+}
   getAllParcelle(dataSql, filter) {
     console.log('Get parcelle by', filter);
-    let orderby = 'ORDER BY session.date_session DESC LIMIT 5 OFFSET ?';
+    let orderby = 'ORDER BY newDate DESC LIMIT 5 OFFSET ?';
     if (filter === 'nom') {
-      orderby = 'ORDER BY parcelle.nom_parcelle ASC LIMIT 5 OFFSET ?';
+      orderby = 'ORDER BY parcelle.nom_parcelle COLLATE NOCASE ASC LIMIT 5 OFFSET ?';
     }
     this.parcelles = [];
     return this.database.executeSql(
-      'SELECT * FROM utilisateur_parcelle '
+      'SELECT *, MAX(session.date_session) As newDate FROM utilisateur_parcelle '
     + 'JOIN parcelle '
     + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
     + 'JOIN session '
@@ -694,6 +695,8 @@ fetchSongs(): Observable<Parcelle[]> {
     return this.database.executeSql('SELECT * FROM parcelle LEFT JOIN utilisateur_parcelle '
     + 'ON parcelle.id_parcelle = utilisateur_parcelle.id_parcelle '
     + 'WHERE utilisateur_parcelle.id_utilisateur = ? '
+    + 'AND utilisateur_parcelle.statut != 0 '
+    + 'AND utilisateur_parcelle.etat != 2 '
     + 'ORDER BY  parcelle.nom_parcelle ASC', [this.user.id_utilisateur]).then(data => {
       console.log ('>> Nb Parcelle (current user) :' + data.rows.length);
       const parcelleList = [];

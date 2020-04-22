@@ -4,7 +4,7 @@ import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
 import { Platform, MenuController, ModalController, AlertController, ToastController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
 import { Chart } from 'chart.js';
 import { ParcelleApexPage } from '../parcelle-apex/parcelle-apex.page';
@@ -200,6 +200,16 @@ export class HomePage {
       // alert('Modal Sent Data :'+ dataReturned);
     });
     return await modal.present();
+  }
+
+  public async parcelleInfoPage(parcelle) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        idUser: this.user.id_utilisateur,
+        parcelle: parcelle
+      }
+    };
+    this.router.navigate(['parcelle-info'], navigationExtras);
   }
 
   public async openParcelleApex() {

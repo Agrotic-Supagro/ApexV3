@@ -48,7 +48,7 @@
   <ion-list class="bgdColor list-style">
     <ion-item-sliding #slidingItem *ngFor="let parcelle of parcelles">
       <ion-item>
-        <ion-card class="globalcard" (click)="parcelleInfo(parcelle)">
+        <ion-card class="globalcard" (click)="parcelleInfoPage(parcelle)">
           <ion-card-content>
             <p class="titlecard">{{parcelle.nom_parcelle}}</p>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>

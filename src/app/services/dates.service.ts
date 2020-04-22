@@ -9,7 +9,11 @@ export class DateService {
   }
 
   public getDatetime(date) {
-    return date.slice(0, 19).replace('T', ' ');
+    date = date.split('T')[0];
+    const hour = new Date().getHours();
+    const minute = new Date().getMinutes();
+    const sec = new Date().getSeconds();
+    return date + ' ' + hour + ':' + minute + ':' + sec;
   }
 
   public setDateFr(date) {

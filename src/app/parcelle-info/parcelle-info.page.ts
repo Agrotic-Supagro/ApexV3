@@ -1,9 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Platform, ToastController, ModalController, AlertController, NavParams } from '@ionic/angular';
+import { Platform, ToastController, ModalController, AlertController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
 import { DateService } from '../services/dates.service';
 import { Chart } from 'chart.js';
 import { SessionInfoPage } from '../session-info/session-info.page';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-parcelle-info',
@@ -31,14 +32,35 @@ export class ParcelleInfoPage implements OnInit {
     private plt: Platform,
     public toastController: ToastController,
     public modalController: ModalController,
+    private route: ActivatedRoute,
+    private router: Router,
     private alertCtrl: AlertController,
     private database: DatabaseService,
     private dateformat: DateService,
-    private navParams: NavParams
+    // private navParams: NavParams
   ) {
-    this.plt.ready().then(() => {
-      this.initInfoParcelle();
+
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        this.idUser = this.router.getCurrentNavigation().extras.state.idUser;
+        this.parcelle = this.router.getCurrentNavigation().extras.state.parcelle;
+        this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
+          if (data === null) {
+            console.log(data);
+          } else {
+            console.log(data);
+            this.infoSession = data;
+            console.log(this.infoSession);
+            this.makeChartCroissance(data);
+            this.makeChartContrainte(data);
+          }
+        });
+      }
     });
+
+    /*this.plt.ready().then(() => {
+      this.initInfoParcelle();
+    });*/
   }
 
   ngOnInit() {
@@ -46,9 +68,20 @@ export class ParcelleInfoPage implements OnInit {
   }
 
   public initInfoParcelle() {
-    console.log('init info parcelle');
+    /*console.log('init info parcelle');
     this.idUser = this.navParams.data.idUser;
     this.parcelle = this.navParams.data.parcelle;
+    this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
+      if (data === null) {
+        console.log(data);
+      } else {
+        console.log(data);
+        this.infoSession = data;
+        console.log(this.infoSession);
+        this.makeChartCroissance(data);
+        this.makeChartContrainte(data);
+      }
+    });*/
     this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
       if (data === null) {
         console.log(data);
@@ -89,7 +122,8 @@ export class ParcelleInfoPage implements OnInit {
       componentProps: {
         idUser: this.idUser,
         idSession: idSession
-      }
+      },
+      backdropDismiss: true
     });
     modal.onDidDismiss().then((dataReturned) => {
       console.log('close modal edit parcelle');
@@ -158,6 +192,9 @@ export class ParcelleInfoPage implements OnInit {
   public async close() {
     await this.modalController.dismiss();
   }
+  public closePage() {
+    this.router.navigateByUrl('/home');
+  }
 
   async presentToast(msg) {
     const toast = await this.toastController.create({
@@ -172,7 +209,7 @@ export class ParcelleInfoPage implements OnInit {
       data: {
         labels: dataSession.dateSession,
         datasets: [{
-            label: 'Indice croiss.',
+            label: 'iC-Apex',
             yAxisID: 'A',
             fill: false,
             lineTension: 0.1,

@@ -92,7 +92,9 @@ export class SessionInfoPage implements OnInit {
     if (this.numberof1value == null) {this.numberof1value = 0; }
     if (this.numberof2value == null) {this.numberof2value = 0; }
 
-    const dateSession = this.dateformat.getDatetime(this.myDate);
+    console.log('Date ', new Date(this.myDate).toISOString());
+    const dateSession = this.dateformat.getDatetime(new Date(this.myDate).toISOString());
+    console.log('Convert date', dateSession);
     const today = this.dateformat.getDatetime(new Date().toISOString());
 
     // tslint:disable-next-line:max-line-length

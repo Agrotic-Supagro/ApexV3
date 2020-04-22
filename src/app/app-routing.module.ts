@@ -51,6 +51,10 @@ const routes: Routes = [{
   {
     path: 'session-info',
     loadChildren: () => import('./session-info/session-info.module').then( m => m.SessionInfoPageModule)
+  },
+  {
+    path: 'info',
+    loadChildren: () => import('./info/info.module').then( m => m.InfoPageModule)
   }
 ];
 

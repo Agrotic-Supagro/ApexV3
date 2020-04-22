@@ -77,7 +77,8 @@ export class RegisterPage {
       if (res.status) {
         this.router.navigateByUrl('/login');
       } else {
-        this.presentToast('Erreur. L\'email existe déjà.');
+        // tslint:disable-next-line:max-line-length
+        this.presentToast('Cet e-mail est déjà inscrit. Si vous ne vous souvenez pas de votre mot de passe utilisez la procédure mot de passe oublié, merci.');
         this.registrationForm.controls.email.setValue('');
       }
     });
