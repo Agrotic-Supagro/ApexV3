@@ -73,6 +73,7 @@ export class HomePage {
         })
         .then(res => {
           this.computeChart();
+          this.database.syncData();
         });
       }
     });

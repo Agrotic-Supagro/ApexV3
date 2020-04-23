@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable, of, from } from 'rxjs';
 import { Device } from '@ionic-native/device/ngx';
 import { Parcelle } from './parcelle-service';
 import { DateService } from './dates.service';
+import { ServerService } from './server.service';
 
 const DATABASE_APEX_NAME = 'dataApexV312.db';
 
@@ -29,6 +30,7 @@ export class DatabaseService {
   constructor(
     private plt: Platform,
     private device: Device,
+    private serveur: ServerService,
     private dateformat: DateService,
     private sqlite: SQLite
   ) {
@@ -97,7 +99,8 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'device_version TEXT,'
     + 'device_manufacturer TEXT,'
     + 'device_serial TEXT,'
-    + 'id_utilisateur TEXT'
+    + 'id_utilisateur TEXT,'
+    + 'etat INTEGER DEFAULT 0'
     + ')';
     const requeteUtilisateurParcelleTable = 'CREATE TABLE IF NOT EXISTS utilisateur_parcelle ('
     + 'id_utilisateur TEXT NOT NULL,'
@@ -574,6 +577,7 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'WHERE id_utilisateur = ? '
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
+    + 'AND session.etat != 2 '
     + 'GROUP BY session.id_parcelle '
     + orderby
     , dataSql).then(res => {
@@ -610,6 +614,7 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'WHERE id_utilisateur = ? '
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
+    + 'AND session.etat != 2 '
     + 'GROUP BY session.id_parcelle '
     + orderby
     , dataSql).then(dataUserParcelle => {
@@ -871,8 +876,13 @@ fetchSongs(): Observable<Parcelle[]> {
       console.log('Success requet drop table utilisateur');
     })
     .catch(e => console.log(e));
-  }
 
+    this.database.executeSql('DELETE FROM \'device_info\'', [])
+    .then(() => {
+      console.log('Success requet drop table device_info');
+    })
+    .catch(e => console.log(e));
+  }
 
   loadParcelles() {
     // TO DO
@@ -925,7 +935,22 @@ fetchSongs(): Observable<Parcelle[]> {
 
     // syncho des données
     syncData() {
-
+      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'utilisateur', 'device_info'];
+      for (const table of tables) {
+        const query = 'SELECT * FROM \'' + table + '\' WHERE etat = 0 OR etat = 2';
+        this.database.executeSql(query, []).then(data => {
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              const jsonData = {
+                table: table,
+                data: data.rows.item(i)
+              };
+              console.log(jsonData);
+              this.serveur.syncData(jsonData);
+            }
+          }
+        });
+      }
     }
 
 }

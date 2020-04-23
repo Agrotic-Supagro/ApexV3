@@ -51,7 +51,12 @@ export class ServerService {
   }
 
   // syncho des données avec le serveur
-  syncData() {
-
+  syncData(data) {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/sync_data.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
   }
 }

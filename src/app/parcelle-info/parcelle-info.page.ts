@@ -178,7 +178,7 @@ export class ParcelleInfoPage implements OnInit {
             console.log('Confirm Okay');
             this.database.updateParcelleBeforeDelete(this.parcelle.id_parcelle).then(async data => {
               if (data) {
-                await this.modalController.dismiss();
+                this.router.navigateByUrl('/home');
                 this.presentToast('Parcelle supprimée avec succès!');
               }
             });
@@ -189,9 +189,6 @@ export class ParcelleInfoPage implements OnInit {
     await alert.present();
   }
 
-  public async close() {
-    await this.modalController.dismiss();
-  }
   public closePage() {
     this.router.navigateByUrl('/home');
   }
