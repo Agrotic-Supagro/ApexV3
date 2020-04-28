@@ -141,8 +141,9 @@ export class AccountPage implements OnInit {
     this.presentToast('Nombre d\'apex éditées');
   }
 
-  async receiveData() {
-    // this.database.recieveData(this.user.id_utilisateur);
+  receiveData() {
+    console.log('>> Recieve Data');
+    this.database.recieveData(this.user);
     // this.serveur.recieveData(this.user.id_utilisateur).subscribe();
   }
 

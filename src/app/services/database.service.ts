@@ -191,20 +191,23 @@ fetchSongs(): Observable<Parcelle[]> {
     return this.database.executeSql('INSERT OR IGNORE INTO utilisateur (id_utilisateur, prenom, nom, email, mot_de_passe, structure) '
     + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
     .then(data => {
+      console.log('Success add User');
       // this.loadDevelopers();
-    });
+    })
+    .catch(e => console.log('Fail Add User | ' , e));
   }
 
   addUserParcelle(dataSql) {
     // Methode pour recuperer les valeurs dans un json simple
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(dataSql).map(function(_) { return dataSql[_]; });
-
+    console.log('>> Add User_Parcelle', dataTosql);
     return this.database.executeSql('INSERT OR IGNORE INTO utilisateur_parcelle (id_utilisateur, id_parcelle, statut, etat) '
     + 'VALUES (?, ?, ?, ?)', dataTosql)
     .then(data => {
       // this.loadDevelopers();
-    });
+    })
+    .catch(e => console.log('Fail Add User_Parcelle | ' , e));
   }
 
   addParcelle(parcelleData) {
@@ -216,7 +219,8 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'VALUES (?, ?, ?, ?)', dataTosql)
     .then(data => {
       // this.loadDevelopers();
-    });
+    })
+    .catch(e => console.log('Fail Add Parcelle | ' , e));
   }
 
   addSession(sessionData) {
@@ -229,7 +233,8 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?)', dataTosql)
     .then(data => {
       // this.loadDevelopers();
-    });
+    })
+    .catch(e => console.log('Fail Add Session | ' , e));
   }
 
   addObservation(listOfObservation) {
@@ -918,7 +923,7 @@ fetchSongs(): Observable<Parcelle[]> {
                   if (res.etat === '2') {
                     if (table === 'session') { this.deleteSession([res.idSession]); }
                     if (table === 'parcelle') { this.deleteParcelle([res.idParcelle]); }
-                    if (table === 'deleteObservation') { this.deleteObservation([res.idObservation]); }
+                    if (table === 'observation') { this.deleteObservation([res.idObservation]); }
                     if (table === 'utilisateur_parcelle') { this.deleteUserParcelle([res.idUser, res.idParcelle]); }
                   } else {
                     if (table === 'session') { this.updateEtatSession([1, res.idSession]); }
@@ -1029,4 +1034,81 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+  recieveData(user) {
+    // const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation'];
+    const tables = ['utilisateur_parcelle', 'parcelle', 'session'];
+    // const tables = ['session'];
+    for (const table of tables) {
+      const jsonData = {
+        table: table,
+        idUser: user.id_utilisateur
+      };
+      console.log('Data to download', jsonData);
+      this.serveur.recieveData(jsonData).subscribe(res => {
+        console.log('Return serveur : ', res);
+        if (res.status) {
+          if (table === 'session') {
+            for (const dataToAdd of res.data) {
+              console.log(dataToAdd);
+              this.addSyncSession(dataToAdd);
+            }
+          }
+          if (table === 'parcelle') {
+            for (const dataToAdd of res.data) {
+              console.log(dataToAdd);
+              this.addSyncParcelle(dataToAdd);
+            }
+          }
+          if (table === 'utilisateur_parcelle') {
+            for (const dataToAdd of res.data) {
+              console.log(dataToAdd);
+              this.addSyncUserParcelle(dataToAdd);
+            }
+          }
+        }
+      });
+    }
+  }
+
+    // SYNC ADD METHODS
+    addSyncUserParcelle(dataSql) {
+      dataSql.etat = 1;
+      // Methode pour recuperer les valeurs dans un json simple
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(dataSql).map(function(_) { return dataSql[_]; });
+      return this.database.executeSql('INSERT OR IGNORE INTO utilisateur_parcelle (id_utilisateur, id_parcelle, statut, etat) '
+      + 'VALUES (?, ?, ?, ?)', dataTosql)
+      .then(data => {
+        console.log('>> Success Add sync User_Parcelle');
+      })
+      .catch(e => console.log('Fail Add User_Parcelle | ' , e));
+    }
+
+    addSyncParcelle(parcelleData) {
+      parcelleData.etat = 1;
+      // Methode pour recuperer les valeurs dans un json simple
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(parcelleData).map(function(_) { return parcelleData[_]; });
+      // tslint:disable-next-line:max-line-length
+      return this.database.executeSql('INSERT OR IGNORE INTO parcelle (id_parcelle, nom_parcelle, date_creation, date_maj, id_proprietaire, etat) '
+      + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
+      .then(data => {
+        console.log('>> Success Add sync Parcelle');
+      })
+      .catch(e => console.log('Fail Add Parcelle | ' , e));
+    }
+
+    addSyncSession(sessionData) {
+      sessionData.etat = 1;
+      // Methode pour recuperer les valeurs dans un json simple
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(sessionData).map(function(_) { return sessionData[_]; });
+      // tslint:disable-next-line:max-line-length
+      return this.database.executeSql('INSERT OR IGNORE INTO session (id_session, date_session, date_session, date_maj, apex0, apex1, apex2, id_observateur, id_parcelle, etat) '
+      + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', dataTosql)
+      .then(data => {
+        console.log('>> Success Add sync Session');
+      })
+      .catch(e => console.log('Fail Add Session | ' , e));
+    }
 }

@@ -100,14 +100,17 @@ export class HomePage {
           text: 'Envoyer',
           handler: (alertData) => {
             const data = { email: this.user.email, method: 'parcelle', idParcelle: parcelle.id_parcelle, userName: this.user.nom};
-            this.serveur.sendData(data).subscribe(async res => {
+            if (this.networkService.getCurrentNetworkStatus() === 0) {
+              this.serveur.sendData(data).subscribe(async res => {
                 if (res.status) {
                   this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
                 } else {
                   this.presentToast('Erreur. Veuillez vérifier que votre email est correct et réessayez.');
                 }
             });
-            this.presentToast('Données envoyées avec succès sur votre email !');
+            } else {
+            this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+            }
             slidingItem.close();
           }
         }

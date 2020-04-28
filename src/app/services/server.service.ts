@@ -36,7 +36,7 @@ export class ServerService {
 
   // télécharger toutes les données du l'utilsateur
   recieveData(data) {
-    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/share_parcelle.php`, data)
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/retrieve_data.php`, data)
     .pipe(
       tap(async (res: any) => {
         return res;
