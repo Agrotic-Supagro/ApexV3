@@ -11,6 +11,7 @@ import { ParcelleApexPage } from '../parcelle-apex/parcelle-apex.page';
 import { ParcelleInfoPage } from '../parcelle-info/parcelle-info.page';
 import { UserConfigurationService } from '../services/user-configuration.service';
 import { ServerService } from '../services/server.service';
+import { NetworkService } from '../services/network.service';
 
 @Component({
   selector: 'app-home',
@@ -40,13 +41,17 @@ export class HomePage {
     private alertCtrl: AlertController,
     private router: Router,
     private serveur: ServerService,
+    private networkService: NetworkService,
     private route: ActivatedRoute,
     private auth: AuthenticationService,
     private database: DatabaseService,
     private conf: UserConfigurationService,
     ) {
-
-
+      setInterval(() => {
+        if (this.networkService.getCurrentNetworkStatus() === 0) {
+          this.database.syncData();
+        }
+     }, 20000);
     }
 
   ionViewWillEnter() {
@@ -73,7 +78,9 @@ export class HomePage {
         })
         .then(res => {
           this.computeChart();
-          this.database.syncData();
+          if (this.networkService.getCurrentNetworkStatus() === 0) {
+            this.database.syncData();
+          }
         });
       }
     });
@@ -129,8 +136,23 @@ export class HomePage {
         }, {
           text: 'Partager',
           handler: (alertData) => {
-            console.log(alertData.email);
-            this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+            const dataShare = {
+              idOwner: this.user.id_utilisateur,
+              idParcelle: parcelle.id_parcelle,
+              email: alertData.email
+            };
+            if (this.networkService.getCurrentNetworkStatus() === 0) {
+              this.serveur.shareParcelle(dataShare).subscribe(res => {
+                if (res.status) {
+                  this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+                } else {
+                  this.presentToast('Email de partage non reconnu. Etes-vous sur que cet email est associé à un compte existant ?');
+                }
+              });
+            } else {
+              this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+            }
+
             slidingItem.close();
           }
         }

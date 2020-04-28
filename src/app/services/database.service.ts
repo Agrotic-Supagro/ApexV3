@@ -384,42 +384,7 @@ fetchSongs(): Observable<Parcelle[]> {
       return true;
     });
   }
-  // DELETE METHODS
-  deleteUserParcelle(dataSql) {
-    // Methode pour recuperer les valeurs dans un json simple
-    // tslint:disable-next-line:only-arrow-functions
-    const dataTosql = Object.keys(dataSql).map(function(_) { return dataSql[_]; });
 
-    return this.database.executeSql('DELETE FROM utilisateur_parcelle '
-    + 'WHERE id_utilisateur= ? AND id_parcelle= ?', dataTosql)
-    .then(data => {
-      // this.loadDevelopers();
-    });
-  }
-
-  deleteParcelle(id) {
-    return this.database.executeSql('DELETE FROM parcelle '
-    + 'WHERE id_parcelle= ?', [id])
-    .then(data => {
-      // this.loadDevelopers();
-    });
-  }
-
-  deleteObservation(id) {
-    return this.database.executeSql('DELETE FROM observation '
-    + 'WHERE id_observation= ?', [id])
-    .then(data => {
-      // this.loadDevelopers();
-    });
-  }
-
-  deleteSession(id) {
-    return this.database.executeSql('DELETE FROM session '
-    + 'WHERE id_session= ?', [id])
-    .then(data => {
-      // this.loadDevelopers();
-    });
-  }
 
   // GET METHODS
   getDevicesInfos() {
@@ -578,13 +543,14 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
     + 'AND session.etat != 2 '
+    + 'AND parcelle.etat != 2 '
     + 'GROUP BY session.id_parcelle '
     + orderby
     , dataSql).then(res => {
     const idParcelle = [];
     if (res.rows.length > 0) {
       for (let i = 0; i < res.rows.length; i++) {
-        console.log(res.rows.item(i).id_parcelle);
+        console.log(res.rows.item(i));
         idParcelle.push(res.rows.item(i).id_parcelle);
       }
     }
@@ -615,6 +581,7 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'AND utilisateur_parcelle.statut !=0 '
     + 'AND utilisateur_parcelle.etat != 2 '
     + 'AND session.etat != 2 '
+    + 'AND parcelle.etat != 2 '
     + 'GROUP BY session.id_parcelle '
     + orderby
     , dataSql).then(dataUserParcelle => {
@@ -935,7 +902,7 @@ fetchSongs(): Observable<Parcelle[]> {
 
     // syncho des données
     syncData() {
-      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'utilisateur', 'device_info'];
+      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'device_info'];
       for (const table of tables) {
         const query = 'SELECT * FROM \'' + table + '\' WHERE etat = 0 OR etat = 2';
         this.database.executeSql(query, []).then(data => {
@@ -945,12 +912,121 @@ fetchSongs(): Observable<Parcelle[]> {
                 table: table,
                 data: data.rows.item(i)
               };
-              console.log(jsonData);
-              this.serveur.syncData(jsonData);
+              this.serveur.syncData(jsonData).subscribe(res => {
+                console.log('Return serveur : ', res);
+                if (res.status) {
+                  if (res.etat === '2') {
+                    if (table === 'session') { this.deleteSession([res.idSession]); }
+                    if (table === 'parcelle') { this.deleteParcelle([res.idParcelle]); }
+                    if (table === 'deleteObservation') { this.deleteObservation([res.idObservation]); }
+                    if (table === 'utilisateur_parcelle') { this.deleteUserParcelle([res.idUser, res.idParcelle]); }
+                  } else {
+                    if (table === 'session') { this.updateEtatSession([1, res.idSession]); }
+                    if (table === 'parcelle') { this.updateEtatParcelle([1, res.idParcelle]); }
+                    if (table === 'observation') { this.updateEtatObservation([1, res.idObservation]); }
+                    if (table === 'device_info') { this.updateEtatDeviceInfo([1, res.idConf]); }
+                    if (table === 'utilisateur_parcelle') { this.updateEtatUtilisateurParcelle([1, res.idParcelle, res.idUser]); }
+                  }
+                }
+              });
             }
           }
         });
       }
     }
+
+    updateEtatSession(dataToUpdate) {
+      const requete = 'UPDATE session SET etat = ? WHERE id_session = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat session');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table session | ' + e));
+    }
+
+    updateEtatParcelle(dataToUpdate) {
+      const requete = 'UPDATE parcelle SET etat = ? WHERE id_parcelle = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat parcelle');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table session | ' + e));
+    }
+
+    updateEtatObservation(dataToUpdate) {
+      const requete = 'UPDATE observation SET etat = ? WHERE id_observation = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat observation');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table observation | ' + e));
+    }
+
+    updateEtatDeviceInfo(dataToUpdate) {
+      const requete = 'UPDATE device_info SET etat = ? WHERE id_config = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat device_info');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table device_info | ' + e));
+    }
+
+    updateEtatUtilisateurParcelle(dataToUpdate) {
+      const requete = 'UPDATE utilisateur_parcelle SET etat = ? WHERE id_parcelle = ? AND id_utilisateur = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat utilisateur_parcelle');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table utilisateur_parcelle | ' + e));
+    }
+
+    updateEtatUtilisateur(dataToUpdate) {
+      const requete = 'UPDATE utilisateur SET etat = ? WHERE id_utilisateur = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat utilisateur');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table utilisateur | ' + e));
+    }
+
+
+  // DELETE METHODS
+  deleteUserParcelle(dataSql) {
+    return this.database.executeSql('DELETE FROM utilisateur_parcelle '
+    + 'WHERE id_utilisateur= ? AND id_parcelle= ?', dataSql)
+    .then(data => {
+      console.log('Delete utilisateur_parcelle : ', dataSql);
+    });
+  }
+
+  deleteParcelle(dataSql) {
+    return this.database.executeSql('DELETE FROM parcelle '
+    + 'WHERE id_parcelle= ?', dataSql)
+    .then(data => {
+      console.log('Delete parcelle : ', dataSql);
+    });
+  }
+
+  deleteObservation(dataSql) {
+    return this.database.executeSql('DELETE FROM observation '
+    + 'WHERE id_observation= ?', dataSql)
+    .then(data => {
+      console.log('Delete Observation : ', dataSql);
+    });
+  }
+
+  deleteSession(dataSql) {
+    return this.database.executeSql('DELETE FROM session '
+    + 'WHERE id_session= ?', dataSql)
+    .then(data => {
+      console.log('Delete session : ', dataSql);
+    });
+  }
 
 }

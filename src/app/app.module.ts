@@ -19,6 +19,7 @@ import { BackgroundGeolocation } from '@ionic-native/background-geolocation/ngx'
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { Network } from '@ionic-native/network/ngx';
 
 import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.module';
 // import { ParcelleInfoPageModule } from './parcelle-info/parcelle-info.module';
@@ -35,7 +36,6 @@ import { SessionInfoPageModule } from './session-info/session-info.module';
     IonicStorageModule.forRoot(),
     ParcelleInputPageModule,
     ParcelleApexPageModule,
-   // ParcelleInfoPageModule,
     SessionInfoPageModule
   ],
   providers: [
@@ -48,6 +48,7 @@ import { SessionInfoPageModule } from './session-info/session-info.module';
     EmailComposer,
     Device,
     ScreenOrientation,
+    Network,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -35,11 +35,23 @@ export class ServerService {
   }
 
   // télécharger toutes les données du l'utilsateur
-  recieveData(idUser) {
+  recieveData(data) {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/share_parcelle.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
   }
 
   // partager une parcelle
-  shareParcelle() {
+  shareParcelle(data) {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/share_parcelle.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
   }
 
   // télécharger les parcelles qu'on nous a partagé
@@ -59,4 +71,14 @@ export class ServerService {
       })
     );
   }
+
+  syncUser(data) {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/sync_data.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
+  }
+
 }

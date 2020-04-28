@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Platform, ToastController, ModalController, AlertController } from '@ionic/angular';
+import { Platform, ToastController, ModalController, AlertController, LoadingController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
@@ -20,6 +20,7 @@ export class AccountPage implements OnInit {
   isPwd = false;
   isIfv = true;
   threshold: any;
+  isLoading: boolean;
 
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -56,6 +57,7 @@ export class AccountPage implements OnInit {
     public modalController: ModalController,
     private alertCtrl: AlertController,
     private router: Router,
+    public loadingController: LoadingController,
     private dateformat: DateService,
     private serveur: ServerService,
     private auth: AuthenticationService,
@@ -94,7 +96,8 @@ export class AccountPage implements OnInit {
   }
 
   async sendData() {
-    const data = { email: this.user.email, method: 'all', userName: this.user.nom};
+    const data = { email: this.user.email, method: 'all', userName: this.user.nom, idUser: this.user.id_utilisateur};
+    console.log(data);
     this.serveur.sendData(data).subscribe(async res => {
         if (res.status) {
           this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
@@ -118,6 +121,16 @@ export class AccountPage implements OnInit {
     this.database.updateUser(dataUpdate).then(data => {
       if (data) {
         this.presentToast('Informations mises à jours !');
+        const dataServer = {
+          table: 'utilisateur',
+          data: dataUpdate
+        };
+        console.log(dataServer);
+        this.serveur.syncUser(dataServer).subscribe(res => {
+          if (res.status) {
+            this.database.updateEtatUtilisateur([1, res.idUser]);
+          }
+        });
         this.isEdit = false;
       }
     });
@@ -128,8 +141,29 @@ export class AccountPage implements OnInit {
     this.presentToast('Nombre d\'apex éditées');
   }
 
-  receiveData() {
+  async receiveData() {
+    // this.database.recieveData(this.user.id_utilisateur);
+    // this.serveur.recieveData(this.user.id_utilisateur).subscribe();
+  }
 
+  async showLoading() {
+    this.isLoading = true;
+    return await this.loadingController.create({
+      message: 'Veuillez patienter pendant le téléchargement de vos données...',
+      spinner: 'circles'
+    }).then(a => {
+      a.present().then(() => {
+        console.log('loading presented');
+        if (!this.isLoading) {
+          a.dismiss().then(() => console.log('abort laoding'));
+        }
+      });
+    });
+}
+
+  async dismissLoader() {
+    this.isLoading = false;
+    return await this.loadingController.dismiss().then(() => console.log('loading dismissed'));
   }
 
   async changePwd() {
