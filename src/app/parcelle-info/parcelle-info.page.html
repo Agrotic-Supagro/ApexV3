@@ -47,6 +47,21 @@
   </ion-card>
 
   <ion-card>
+    <ion-card-header (click)="isShare = !isShare">
+      <ion-icon name="caret-up-outline" *ngIf="isShare"></ion-icon>
+      <ion-icon name="caret-down-outline" *ngIf="!isShare"></ion-icon>
+      <span class="titleCard">Partager la parcelle</span>
+    </ion-card-header>
+    <ion-card-content *ngIf="isShare">
+      <ion-item>
+        <ion-label position="floating">Email du contributeur</ion-label>
+        <ion-input type="email" placeholder="..." [(ngModel)]="emailForShare" ></ion-input>
+      </ion-item>
+      <ion-button expand="block" size="small" color="warning" (click)="shareParcelle()">Partager</ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
     <ion-card-header (click)="isRename = !isRename">
       <ion-icon name="caret-up-outline" *ngIf="isRename"></ion-icon>
       <ion-icon name="caret-down-outline" *ngIf="!isRename"></ion-icon>

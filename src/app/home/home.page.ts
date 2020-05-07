@@ -79,6 +79,7 @@ export class HomePage {
         .then(res => {
           this.computeChart();
           if (this.networkService.getCurrentNetworkStatus() === 0) {
+            this.database.recieveParcelleShared(this.user);
             this.database.syncData();
           }
         });
@@ -233,7 +234,8 @@ export class HomePage {
   public async parcelleInfoPage(parcelle) {
     const navigationExtras: NavigationExtras = {
       state: {
-        idUser: this.user.id_utilisateur,
+        user: this.user,
+        // idUser: this.user.id_utilisateur,
         parcelle: parcelle
       }
     };

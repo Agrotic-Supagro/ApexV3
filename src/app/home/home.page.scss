@@ -40,7 +40,8 @@ ion-card {
 }
 
 .bgdColor {
-    --ion-background-color: rgb(155, 173, 182);
+    --ion-background-color: #B1B8BD;
+    //--ion-background-color: rgb(155, 173, 182);
 }
 
 .globalcard {
@@ -213,7 +214,7 @@ ion-card {
 }
 
 .titlecard {
-    background-color: #86919b;
+    // background-color: #86919b;
     color: white;
     font-variant: small-caps;
     font-weight: bold;
@@ -301,9 +302,32 @@ ion-footer {
 }
 
 .colorgreen {
-    --background: #C5DC68;
+    // --background: #C5DC68;
+    --background: rgba(76, 185, 196, 1);
     height: 25px;
 }
 .smallbutton{
     height: 25px;
+}
+
+.gridParcelle {
+    background-color: #86919b;
+    margin: 0;
+    padding: 0;
+}
+
+.share {
+    color: white;
+    font-variant: small-caps;
+    font-weight: bold;
+    // color: #006C83;
+    font-size: 1.3em;
+    padding: 0.1em;
+    margin-top: 0.2em;
+}
+
+.parcelleShare {
+    margin: 0;
+    padding: 0;
+    background-color: #657684;
 }

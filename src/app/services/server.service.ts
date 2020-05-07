@@ -55,7 +55,13 @@ export class ServerService {
   }
 
   // télécharger les parcelles qu'on nous a partagé
-  getSharedParcelle() {
+  getParcelleShared(data) {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/sync_parcelle_shared.php`, data)
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
   }
 
   // message que l'on enverrait

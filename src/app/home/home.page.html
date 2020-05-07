@@ -50,7 +50,17 @@
       <ion-item>
         <ion-card class="globalcard" (click)="parcelleInfoPage(parcelle)">
           <ion-card-content>
-            <p class="titlecard">{{parcelle.nom_parcelle}}</p>
+            <ion-grid *ngIf="!parcelle.partage" class="gridParcelle">
+              <ion-row class="gridParcelle">
+                <ion-col class="gridParcelle"><p class="titlecard">{{parcelle.nom_parcelle}} </p></ion-col>
+              </ion-row>
+            </ion-grid>
+            <ion-grid *ngIf="parcelle.partage"  class="parcelleShare">
+              <ion-row class="parcelleShare">
+                <ion-col class="parcelleShare"><p class="titlecard">{{parcelle.nom_parcelle}} </p></ion-col>
+                <ion-col size="auto" class="parcelleShare"><ion-icon class="share" name="share-social-sharp"></ion-icon></ion-col>
+              </ion-row>
+            </ion-grid>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>
             <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart" ></div>
             <ng-template #ecimee>
@@ -110,8 +120,8 @@
         </ion-card>
       </ion-item>
       <ion-item-options side="start">
-        <ion-item-option color="tertiary" (click)="shareParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="people-sharp"></ion-icon></ion-item-option>
-        <ion-item-option color="light" (click)="sendParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="paper-plane-sharp"></ion-icon>
+        <!--<ion-item-option color="tertiary" (click)="shareParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="people-sharp"></ion-icon></ion-item-option>-->
+        <ion-item-option color="tertiary" (click)="sendParcelle(parcelle, slidingItem)" class="item-side" ><ion-icon name="paper-plane-sharp"></ion-icon>
         </ion-item-option>
       </ion-item-options>
       <ion-item-options side="end">

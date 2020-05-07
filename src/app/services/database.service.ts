@@ -613,6 +613,11 @@ fetchSongs(): Observable<Parcelle[]> {
               const tauxApex1: number = apex1 / (apex2 + apex0 + apex1) * 100;
               const tauxApex2: number = apex2 / (apex2 + apex0 + apex1) * 100;
               const apexValues = [Math.round(tauxApex0), Math.round(tauxApex1), Math.round(tauxApex2)];
+              const id_proprietaire = dataParcelle.rows.item(0).id_proprietaire;
+              let partage = false;
+              if (id_proprietaire !== this.user.id_utilisateur) {
+                partage = true;
+              }
                 // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
                 // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
               let ifvClasse = 3;
@@ -659,6 +664,7 @@ fetchSongs(): Observable<Parcelle[]> {
                 ifv_classe: ifvClasse,
                 ic_apex: moyenne.toFixed(2),
                 proprietaire: dataParcelle.rows.item(0).id_proprietaire,
+                partage: partage
               });
             }
           });
@@ -1032,6 +1038,47 @@ fetchSongs(): Observable<Parcelle[]> {
     .then(data => {
       console.log('Delete session : ', dataSql);
     });
+  }
+
+  recieveParcelleShared(user) {
+    const jsonData = {
+      idUser: user.id_utilisateur
+    };
+    this.serveur.getParcelleShared(jsonData).subscribe(res => {
+      console.log('Return serveur recieveParcelleShared : ', res);
+      if (res.status) {
+        for (const dataToAdd of res.data) {
+          this.addLinkParcelleShared(dataToAdd);
+          this.addParcelleShared(dataToAdd);
+        }
+      }
+    });
+  }
+
+  addParcelleShared(res) {
+    // tslint:disable-next-line:max-line-length
+    const dataTosql = [res.id_parcelle, res.nom_parcelle, res.date_creation, res.date_maj, res.id_proprietaire, 1];
+    console.log(dataTosql);
+    // tslint:disable-next-line:max-line-length
+    return this.database.executeSql('INSERT OR IGNORE INTO parcelle (id_parcelle, nom_parcelle, date_creation, date_maj, id_proprietaire, etat) '
+    + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
+    .then(data => {
+      console.log('>> Success Add sync Parcelle');
+    })
+    .catch(e => console.log('Fail Add Parcelle | ' , e));
+  }
+
+  addLinkParcelleShared(res) {
+    // tslint:disable-next-line:max-line-length
+    const dataTosql = [this.user.id_utilisateur, res.id_parcelle, 1, 1];
+    console.log(dataTosql);
+    // tslint:disable-next-line:max-line-length
+    return this.database.executeSql('INSERT OR IGNORE INTO utilisateur_parcelle (id_utilisateur, id_parcelle, statut, etat) '
+    + 'VALUES (?, ?, ?, ?)', dataTosql)
+    .then(data => {
+      console.log('>> Success Add sync User_Parcelle');
+    })
+    .catch(e => console.log('Fail Add User_Parcelle | ' , e));
   }
 
   recieveData(user) {

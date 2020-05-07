@@ -149,6 +149,19 @@ export class AccountPage implements OnInit {
     this.presentToast('Vos données ont été téléchargées avec succès');
   }
 
+  async info() {
+    const alert = await this.alertCtrl.create({
+      header: 'Informations',
+      message: ' La fonction d\'<b>envoie</b> des données, vous permet de revevoir par email un fichier (tableur) contenant '
+      + 'l\'ensemble de vos données acquises avec l\'application ApexVigne.'
+      + '<br /><br />La fonction de <b>synchronisation</b> des données, vous permet de récupérer sur l\'application '
+      + 'ApexVigne vos données sauvegarder sur le serveur.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   async showLoading() {
     this.isLoading = true;
     return await this.loadingController.create({

@@ -5,6 +5,8 @@ import { DateService } from '../services/dates.service';
 import { Chart } from 'chart.js';
 import { SessionInfoPage } from '../session-info/session-info.page';
 import { Router, ActivatedRoute } from '@angular/router';
+import { ServerService } from '../services/server.service';
+import { NetworkService } from '../services/network.service';
 
 @Component({
   selector: 'app-parcelle-info',
@@ -20,10 +22,13 @@ export class ParcelleInfoPage implements OnInit {
   idUser: any;
   parcelle: any;
   infoSession: any;
+  user: any;
+  emailForShare: any = null;
 
   isDelete = false;
   isList = false;
   isRename = false;
+  isShare = false;
 
   newNameParcelle = null;
   public myDate: any = new Date().toISOString();
@@ -34,6 +39,8 @@ export class ParcelleInfoPage implements OnInit {
     public modalController: ModalController,
     private route: ActivatedRoute,
     private router: Router,
+    private serveur: ServerService,
+    private networkService: NetworkService,
     private alertCtrl: AlertController,
     private database: DatabaseService,
     private dateformat: DateService,
@@ -42,7 +49,10 @@ export class ParcelleInfoPage implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        this.idUser = this.router.getCurrentNavigation().extras.state.idUser;
+        this.user = this.router.getCurrentNavigation().extras.state.user;
+        this.user = this.router.getCurrentNavigation().extras.state.user;
+        console.log('## Parcelle info. User :', this.user);
+        this.idUser = this.router.getCurrentNavigation().extras.state.user.id_utilisateur;
         this.parcelle = this.router.getCurrentNavigation().extras.state.parcelle;
         this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
           if (data === null) {
@@ -95,6 +105,32 @@ export class ParcelleInfoPage implements OnInit {
     });
   }
 
+  public async shareParcelle() {
+    if (this.emailForShare !== null && this.emailForShare !== '') {
+      const dataShare = {
+        idOwner: this.user.id_utilisateur,
+        nomUser: this.user.nom,
+        idParcelle: this.parcelle.id_parcelle,
+        nomParcelle: this.parcelle.nom_parcelle,
+        email: this.emailForShare,
+        parcelle: this.parcelle
+      };
+      if (this.networkService.getCurrentNetworkStatus() === 0) {
+        this.serveur.shareParcelle(dataShare).subscribe(res => {
+          if (res.status) {
+            this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+          } else {
+            this.presentToast('Email de partage non reconnu. Etes-vous sur que cet email est associé à un compte existant ?');
+          }
+        });
+      } else {
+        this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+      }
+    } else {
+      this.presentToast('Email de partage est incorrect ou vide. Merci d\'essayer à nouveau');
+    }
+    this.isShare = false;
+  }
   public renameParcelle() {
     if (this.newNameParcelle === '' || this.newNameParcelle === 0 || /^\s*$/.test(this.newNameParcelle) || this.newNameParcelle === null) {
       // mettre une alerte

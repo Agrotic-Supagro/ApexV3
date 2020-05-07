@@ -7,4 +7,5 @@ export interface Parcelle {
     ifv_classe: number;
     ic_apex: number;
     proprietaire: string;
+    partage?: boolean;
 }
