@@ -142,9 +142,11 @@ export class AccountPage implements OnInit {
   }
 
   receiveData() {
+    this.showLoading();
     console.log('>> Recieve Data');
     this.database.recieveData(this.user);
-    // this.serveur.recieveData(this.user.id_utilisateur).subscribe();
+    this.dismissLoader();
+    this.presentToast('Vos données ont été téléchargées avec succès');
   }
 
   async showLoading() {

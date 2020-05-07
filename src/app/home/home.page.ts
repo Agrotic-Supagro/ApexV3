@@ -141,7 +141,9 @@ export class HomePage {
           handler: (alertData) => {
             const dataShare = {
               idOwner: this.user.id_utilisateur,
+              nomUser: this.user.nom,
               idParcelle: parcelle.id_parcelle,
+              nomParcelle: parcelle.nom_parcelle,
               email: alertData.email
             };
             if (this.networkService.getCurrentNetworkStatus() === 0) {
