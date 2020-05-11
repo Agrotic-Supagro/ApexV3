@@ -112,10 +112,11 @@ export class ParcelleInfoPage implements OnInit {
         nomUser: this.user.nom,
         idParcelle: this.parcelle.id_parcelle,
         nomParcelle: this.parcelle.nom_parcelle,
-        email: this.emailForShare,
-        parcelle: this.parcelle
+        email: this.emailForShare
+        // parcelle: this.parcelle
       };
       if (this.networkService.getCurrentNetworkStatus() === 0) {
+        console.log(dataShare);
         this.serveur.shareParcelle(dataShare).subscribe(res => {
           if (res.status) {
             this.presentToast('Parcelle partagée avec succès. En attente de validation!');
