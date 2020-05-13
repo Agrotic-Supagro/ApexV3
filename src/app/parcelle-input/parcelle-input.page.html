@@ -58,7 +58,7 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof0value"></ion-input>
+        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof0value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
@@ -73,13 +73,13 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof1value"></ion-input>
+        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof1value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-label color="primary" stacked>APEX : croissance arrétée</ion-label>
+      <ion-label color="primary" stacked>APEX : arrêt de croissance</ion-label>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -88,7 +88,7 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof2value"></ion-input>
+        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof2value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
@@ -104,7 +104,7 @@
     </div>
     <div class="compute">
         <ion-button expand="block" (click)="saveSession()" >
-          Calculer les indices
+          Calculer ({{totApex}} Apex)
         </ion-button>
     </div>
   </ion-toolbar>

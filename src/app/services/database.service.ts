@@ -618,25 +618,7 @@ fetchSongs(): Observable<Parcelle[]> {
               if (id_proprietaire !== this.user.id_utilisateur) {
                 partage = true;
               }
-                // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
-                // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
-              let ifvClasse = 3;
-              if (apex0 === 999) {
-                ifvClasse = 4;
-              } else {
-                // GESTION DES CLASSES
-                if (moyenne >= 0.75) {
-                  ifvClasse = 0;
-                } else {
-                  if (tauxApex0 >= 5) {
-                    ifvClasse = 1;
-                  } else {
-                    if (tauxApex2 <= 90) {
-                      ifvClasse = 2;
-                    }
-                  }
-                }
-              }
+
               // GESTION DYNAMIQUE CROISSANCE
               // dynamique : 0 = stable, 1 = croissance, -1 = decroissance, neutre =2
               let dynamique = 2;
@@ -655,6 +637,26 @@ fetchSongs(): Observable<Parcelle[]> {
                   }
                 }
               }
+              // GESTION DES CLASSES DE CONTRAINTE HYDRIQUE ET ECIMAGE
+              // Classe IFV : 0 = absente, 1 = moderee, 2 = importante, 3 = forte, 4 = ecimee
+              let ifvClasse = 3;
+              if (apex0 === 999) {
+                  ifvClasse = 4;
+                  dynamique = 2;
+                } else {
+                  // GESTION DES CLASSES
+                  if (moyenne >= 0.75) {
+                    ifvClasse = 0;
+                  } else {
+                    if (tauxApex0 >= 5) {
+                      ifvClasse = 1;
+                    } else {
+                      if (tauxApex2 <= 90) {
+                        ifvClasse = 2;
+                      }
+                    }
+                  }
+                }
               this.parcelles.push({
                 id_parcelle: dataParcelle.rows.item(0).id_parcelle,
                 nom_parcelle: dataParcelle.rows.item(0).nom_parcelle,

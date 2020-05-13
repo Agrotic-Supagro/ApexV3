@@ -54,10 +54,12 @@
     </ion-card-header>
     <ion-card-content *ngIf="isShare">
       <ion-item>
-        <ion-label position="floating">Email du contributeur</ion-label>
-        <ion-input type="email" placeholder="..." [(ngModel)]="emailForShare" ></ion-input>
+        <ion-label position="floating">Email du destinataire</ion-label>
+        <ion-input type="email" placeholder="email..." [(ngModel)]="emailForShare" ></ion-input>
       </ion-item>
       <ion-button expand="block" size="small" color="warning" (click)="shareParcelle()">Partager</ion-button>
+      <br />
+      <p class="center">Plus d'information <ion-icon name="help-circle" (click)="help()"></ion-icon></p>
     </ion-card-content>
   </ion-card>
 

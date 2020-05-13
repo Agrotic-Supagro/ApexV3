@@ -89,7 +89,7 @@ export class HomePage {
 
   public async sendParcelle(parcelle, slidingItem) {
     const alert = await this.alertCtrl.create({
-      header: 'Recevoir les données de la parcelle ' + parcelle.nom_parcelle + ' par email ?',
+      header: 'Recevoir les données de la parcelle ' + parcelle.nom_parcelle + ' sur votre email ?',
       buttons: [
         {
           text: 'Annuler',
@@ -348,67 +348,70 @@ export class HomePage {
   }
 
   makeChart(data) {
-    const idCanvas = 'cn_' + this.canvasIdIncrement;
-    const para = document.createElement('canvas');
-    para.id = idCanvas;
-    const element = document.getElementById(data.nom_parcelle);
-    element.appendChild(para);
-    const canvas = document.getElementById(idCanvas) as HTMLCanvasElement;
+    if (data.ifv_classe !== 4) {
+      const idCanvas = 'cn_' + this.canvasIdIncrement;
+      const para = document.createElement('canvas');
+      para.id = idCanvas;
+      const element = document.getElementById(data.nom_parcelle);
+      element.appendChild(para);
+      const canvas = document.getElementById(idCanvas) as HTMLCanvasElement;
 
-    // SI ON VEUT REMPLACER LE CHART PAR SON IMAGE
-    // const canvas = document.getElementById('barChart') as HTMLCanvasElement;
-    // canvas.style.display = 'none';
+      // SI ON VEUT REMPLACER LE CHART PAR SON IMAGE
+      // const canvas = document.getElementById('barChart') as HTMLCanvasElement;
+      // canvas.style.display = 'none';
 
-    const ctx = canvas.getContext('2d');
-
-    const toSave = new Chart(ctx, {
-        type: 'pie',
-        data: {
-            labels: [data.apex[0] + '% Pleine croissance', data.apex[1] + '% Croissance ralentie', data.apex[2] + '% Croissance arrétée'],
-            datasets: [{
-              backgroundColor: [
-                '#2C6109',
-                '#6E9624',
-                '#C5DC68'
-              ],
-              borderColor: [
-                'rgba(255, 255, 255, 1)',
-                'rgba(255, 255, 255, 1)',
-                'rgba(255, 255, 255, 1)'
-              ],
-              data: data.apex,
-              borderWidth: 1
-            }]
-       },
-       options: {
-        // suppression info au click
-        tooltips: {enabled: false},
-        hover: {mode: null},
-        // ------------------------
-        animation: {
-          duration: 0
-        },
-        title: {
-          display: false,
-        },
-        responsive: true,
-        // SI ON VEUT METTRE EN IMAGE, PREFERER :
-        // responsive: true,
-        // height: 80,
-        // width: 150,
-        maintainAspectRatio: false,
-        legend: {
-          position: 'left',
-          onClick: (e) => e.stopPropagation()
-        }
+      const ctx = canvas.getContext('2d');
+      const toSave = new Chart(ctx, {
+          type: 'pie',
+          data: {
+              // tslint:disable-next-line:max-line-length
+              labels: [data.apex[0] + '% Pleine croissance', data.apex[1] + '% Croissance ralentie', data.apex[2] + '% Arrêt de croissance'],
+              datasets: [{
+                backgroundColor: [
+                  '#2C6109',
+                  '#6E9624',
+                  '#C5DC68'
+                ],
+                borderColor: [
+                  'rgba(255, 255, 255, 1)',
+                  'rgba(255, 255, 255, 1)',
+                  'rgba(255, 255, 255, 1)'
+                ],
+                data: data.apex,
+                borderWidth: 1
+              }]
+         },
+         options: {
+          // suppression info au click
+          tooltips: {enabled: false},
+          hover: {mode: null},
+          // ------------------------
+          animation: {
+            duration: 0
+          },
+          title: {
+            display: false,
+          },
+          responsive: true,
+          // SI ON VEUT METTRE EN IMAGE, PREFERER :
+          // responsive: true,
+          // height: 80,
+          // width: 150,
+          maintainAspectRatio: false,
+          legend: {
+            position: 'left',
+            onClick: (e) => e.stopPropagation()
+          }
+      }
+      });
+      canvas.classList.add('dynamiqueChart');
+      this.canvasIdIncrement ++;
+      // IMAGE A PARTIR DU CHARTJS
+      // const x = document.getElementById(data.nom_parcelle);
+      // x.setAttribute('src', toSave.toBase64Image());
+      // toSave.destroy();
     }
-    });
-    canvas.classList.add('dynamiqueChart');
-    this.canvasIdIncrement ++;
-    // IMAGE A PARTIR DU CHARTJS
-    // const x = document.getElementById(data.nom_parcelle);
-    // x.setAttribute('src', toSave.toBase64Image());
-    // toSave.destroy();
+
   }
 
   changeFilter(data) {

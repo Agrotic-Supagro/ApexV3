@@ -52,7 +52,7 @@ export class AppComponent {
         icon  : 'leaf'
       },
       {
-        title : 'Tutoriel ApeX Vigne',
+        title : 'Tutoriel ApeX-Vigne',
         url   : '/tutorial',
         icon  : 'library'
       },

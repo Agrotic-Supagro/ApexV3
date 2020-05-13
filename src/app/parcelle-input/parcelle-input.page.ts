@@ -4,6 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ToastController, AlertController, Platform, ModalController, NavParams } from '@ionic/angular';
 import { LocationTrackerService } from '../services/location-tracker.service';
 import { DatabaseService } from '../services/database.service';
+import { UserConfigurationService } from '../services/user-configuration.service';
 
 @Component({
   selector: 'app-parcelle-input',
@@ -25,6 +26,8 @@ export class ParcelleInputPage implements OnInit {
   public numberof0value: number;
   public numberof1value: number;
   public numberof2value: number;
+  public totApex = 0;
+  public thresholdApex = 50;
 
   constructor(
     private plt: Platform,
@@ -35,10 +38,14 @@ export class ParcelleInputPage implements OnInit {
     private guid: GUIDGenerator,
     private dateformat: DateService,
     private locationTracker: LocationTrackerService,
-    private navParams: NavParams
+    private navParams: NavParams,
+    private conf: UserConfigurationService,
   ) {
     this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
+      this.conf.getApexThreshold(this.idUser).then(res => {
+        this.thresholdApex = res;
+      });
     });
    }
 
@@ -56,6 +63,27 @@ export class ParcelleInputPage implements OnInit {
     if (this.selectParcelle.length > 0) { this.isList = true; }
   }
 
+  public updateTotApex() {
+    let apex0 = 0;
+    let apex1 = 0;
+    let apex2 = 0;
+    if (this.numberof0value == null) {
+      apex0 = 0;
+    } else {
+      apex0 = this.numberof0value;
+    }
+    if (this.numberof1value == null) {
+      apex1 = 0;
+    } else {
+      apex1 = this.numberof1value;
+    }
+    if (this.numberof2value == null) {
+      apex2 = 0;
+    } else {
+      apex2 = this.numberof2value;
+    }
+    this.totApex = apex0 + apex1 + apex2;
+  }
   public async parcelleEcimee() {
     const alertEcimee = await this.alertCtrl.create({
       message: 'Marquer la parcelle comme écimée ?',
@@ -116,28 +144,76 @@ export class ParcelleInputPage implements OnInit {
     if (this.numberof1value == null) {this.numberof1value = 0; }
     if (this.numberof2value == null) {this.numberof2value = 0; }
 
+
+
+
     if (this.idParcelle !== null) {
-      const dateSession = this.dateformat.getDatetime(this.myDate);
-      console.log('>> Save Session - Proprietaire Id : ' + this.idProprietaire);
-      console.log('>> Save Session - Parcelle Id : ' + this.idParcelle);
-      // tslint:disable-next-line:max-line-length
-      console.log('>> Save Session - Info : ' + dateSession + ' | ' + this.numberof0value + ' ' + this.numberof1value + ' ' + this.numberof2value);
-      console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
-      if (this.numberof0value === 0 && this.numberof1value === 0 && this.numberof2value === 0) {
-        console.log('Session unsave !');
-        await this.modalController.dismiss();
+      if (this.totApex < 50) {
+        const alertNumber = await this.alertCtrl.create({
+          header: 'Attention!',
+          // tslint:disable-next-line:max-line-length
+          message: 'Vous n\'avez pas atteint le seuil des ' + this.thresholdApex + ' apex, êtes-vous sûrs de vouloir calculer les indices ?',
+          buttons: [
+            {
+              text: 'Annuler',
+              role: 'cancel',
+              cssClass: 'secondary',
+              handler: (blah) => {
+                console.log('Confirm Cancel: blah');
+              }
+            }, {
+              text: 'Calculer',
+              handler: async () => {
+                const dateSession = this.dateformat.getDatetime(this.myDate);
+                console.log('>> Save Session - Proprietaire Id : ' + this.idProprietaire);
+                console.log('>> Save Session - Parcelle Id : ' + this.idParcelle);
+                // tslint:disable-next-line:max-line-length
+                console.log('>> Save Session - Info : ' + dateSession + ' | ' + this.numberof0value + ' ' + this.numberof1value + ' ' + this.numberof2value);
+                console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
+                if (this.numberof0value === 0 && this.numberof1value === 0 && this.numberof2value === 0) {
+                  console.log('Session unsave !');
+                  await this.modalController.dismiss();
+                } else {
+                  console.log('Session to save');
+                  const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
+                  this.database.addUserParcelle(dataToUserParcelle);
+                  // tslint:disable-next-line:max-line-length
+                  const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
+                  this.database.addParcelle(dataToParcelle);
+                  // tslint:disable-next-line:max-line-length
+                  const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+                  this.database.addSession(dataToSession);
+                  await this.modalController.dismiss();
+                }
+              }
+            }
+          ]
+        });
+        await alertNumber.present();
       } else {
-        console.log('Session to save');
-        const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
-        this.database.addUserParcelle(dataToUserParcelle);
+        const dateSession = this.dateformat.getDatetime(this.myDate);
+        console.log('>> Save Session - Proprietaire Id : ' + this.idProprietaire);
+        console.log('>> Save Session - Parcelle Id : ' + this.idParcelle);
         // tslint:disable-next-line:max-line-length
-        const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
-        this.database.addParcelle(dataToParcelle);
-        // tslint:disable-next-line:max-line-length
-        const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
-        this.database.addSession(dataToSession);
-        await this.modalController.dismiss();
+        console.log('>> Save Session - Info : ' + dateSession + ' | ' + this.numberof0value + ' ' + this.numberof1value + ' ' + this.numberof2value);
+        console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
+        if (this.numberof0value === 0 && this.numberof1value === 0 && this.numberof2value === 0) {
+          console.log('Session unsave !');
+          await this.modalController.dismiss();
+        } else {
+          console.log('Session to save');
+          const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
+          this.database.addUserParcelle(dataToUserParcelle);
+          // tslint:disable-next-line:max-line-length
+          const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
+          this.database.addParcelle(dataToParcelle);
+          // tslint:disable-next-line:max-line-length
+          const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+          this.database.addSession(dataToSession);
+          await this.modalController.dismiss();
+        }
       }
+
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Erreur',

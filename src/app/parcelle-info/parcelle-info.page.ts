@@ -230,6 +230,19 @@ export class ParcelleInfoPage implements OnInit {
     this.router.navigateByUrl('/home');
   }
 
+  async help() {
+    const alert = await this.alertCtrl.create({
+      header: 'Informations',
+      message: 'Vous pouvez <b>partager une parcelle</b> avec un <b>destinataire</b> en ajoutant son email. '
+      + 'Le destinaire doit déjà être inscrit sur l\'application ApeX-Vigne pour que le partage est lieu.'
+      + '<br /><br />Seuls l\'identifiant et le nom de la parcelle seront partagés, autrement dit vos données '
+      + 'déjà collectées ne seront pas transmises au destinataire.',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
   async presentToast(msg) {
     const toast = await this.toastController.create({
       message: msg,
@@ -311,7 +324,7 @@ export class ParcelleInfoPage implements OnInit {
             data: dataSession.purcentApex1
           },
           {
-            label: '% croiss. arrétée',
+            label: '% arrêt croiss.',
             yAxisID: 'B',
             fill: true,
             hidden: true,

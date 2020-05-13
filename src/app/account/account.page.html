@@ -142,7 +142,7 @@
             Envoyer toutes vos données par email (CSV)
           </ion-col>
           <ion-col size="6">
-            Synchroniser vos données du serveur (ApexVigne)
+            Synchroniser vos données du serveur (ApeX-Vigne)
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -151,9 +151,10 @@
 
   <ion-card>
     <ion-card-content>
-      <p class="titlecard">Configuration d'ApexWeb</p>
+      <p class="titlecard">Configuration</p>
+      <p>Interprétation de la contrainte hydrique </p>
       <ion-item>
-        <ion-label>Modèle de l'IVF (<span *ngIf="isIfv" >activé</span><span *ngIf="!isIfv" >désactivé</span>)</ion-label>
+        <ion-label>Module de l'IFV (<span *ngIf="isIfv" >activé</span><span *ngIf="!isIfv" >désactivé</span>)</ion-label>
         <ion-toggle [(ngModel)]="isIfv" (ionChange)="updateIFV()" ></ion-toggle>
       </ion-item>
     </ion-card-content>
