@@ -53,6 +53,7 @@
             <ion-grid *ngIf="!parcelle.partage" class="gridParcelle">
               <ion-row class="gridParcelle">
                 <ion-col class="gridParcelle"><p class="titlecard">{{parcelle.nom_parcelle}} </p></ion-col>
+                <!--<ion-col size="auto"><ion-icon class="icon" name="eye"></ion-icon></ion-col>-->
               </ion-row>
             </ion-grid>
             <ion-grid *ngIf="parcelle.partage"  class="parcelleShare">
@@ -116,6 +117,7 @@
               </ion-row>
             </ion-grid>
           </span>
+          <p class="center detail italic"><ion-icon  name="bar-chart-outline"></ion-icon> Détails de la parcelle...</p>
           </ion-card-content>
         </ion-card>
       </ion-item>

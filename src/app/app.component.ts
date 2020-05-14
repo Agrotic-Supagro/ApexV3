@@ -48,7 +48,7 @@ export class AppComponent {
       },
       {
         title : 'La méthode des apex',
-        url   : '/about',
+        url   : '/method',
         icon  : 'leaf'
       },
       {
@@ -62,8 +62,13 @@ export class AppComponent {
         icon  : 'person'
       },
       {
-        title : 'A propos',
+        title : 'Contact',
         url   : '/contact',
+        icon  : 'mail'
+      },
+      {
+        title : 'A propos',
+        url   : '/about',
         icon  : 'information-circle'
       }
     ];
