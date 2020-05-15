@@ -234,8 +234,8 @@ export class ParcelleInfoPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: 'Informations',
       message: 'Vous pouvez <b>partager une parcelle</b> avec un <b>destinataire</b> en ajoutant son email. '
-      + 'Le destinaire doit déjà être inscrit sur l\'application ApeX-Vigne pour que le partage est lieu.'
-      + '<br /><br />Seuls l\'identifiant et le nom de la parcelle seront partagés, autrement dit vos données '
+      + 'Le destinaire doit déjà être inscrit sur l\'application ApeX-Vigne pour que le partage ait lieu.'
+      + '<br /><br />Seuls l\'identifiant et le nom de la parcelle seront partagés. Vos données '
       + 'déjà collectées ne seront pas transmises au destinataire.',
       buttons: ['OK']
     });
