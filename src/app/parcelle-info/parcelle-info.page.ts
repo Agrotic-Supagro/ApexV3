@@ -49,7 +49,7 @@ export class ParcelleInfoPage implements OnInit {
 
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        this.user = this.router.getCurrentNavigation().extras.state.user;
+        // this.user = this.router.getCurrentNavigation().extras.state.user;
         this.user = this.router.getCurrentNavigation().extras.state.user;
         console.log('## Parcelle info. User :', this.user);
         this.idUser = this.router.getCurrentNavigation().extras.state.user.id_utilisateur;

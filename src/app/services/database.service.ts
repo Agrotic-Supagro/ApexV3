@@ -816,7 +816,8 @@ fetchSongs(): Observable<Parcelle[]> {
     // tslint:disable-next-line:only-arrow-functions
     const dataTosql = Object.keys(updateData).map(function(_) { return updateData[_]; });
     console.log(dataTosql);
-    const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ? AND id_utilisateur = ?';
+    // const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ? AND id_utilisateur = ?';
+    const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ?';
     return this.database.executeSql(requete, dataTosql)
     .then(data => {
       console.log('Success update password');
