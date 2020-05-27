@@ -76,6 +76,7 @@ export class RegisterPage {
       console.log('in register return: ', res);
       if (res.status) {
         this.router.navigateByUrl('/login');
+        this.presentToast('Inscription réussie ! Vous pouvez vous connecter.');
       } else {
         // tslint:disable-next-line:max-line-length
         this.presentToast('Cet e-mail est déjà inscrit. Si vous ne vous souvenez pas de votre mot de passe utilisez la procédure mot de passe oublié, merci.');

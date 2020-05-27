@@ -28,6 +28,7 @@ export class LocationTrackerService {
       debug: false,
       enableHighAccuracy : true,
       stopOnTerminate: false, // enable this to clear background location settings when the app terminates
+      // stopOnTerminate: true, // enable this to clear background location settings when the app terminates
       interval: 1000,
       startOnBoot: true
     };
@@ -48,6 +49,9 @@ export class LocationTrackerService {
     });
 
     this.backgroundGeolocation.start();
+
+    // If you wish to turn OFF background-tracking, call the #stop method.
+    this.backgroundGeolocation.stop();
 
     const options = {
       frequency: 2000,
