@@ -64,6 +64,7 @@ export class LoginPage implements OnInit {
         };
         console.log(Array.isArray(this.userOld), this.userOld, this.nbUser2020, this.nbParcelle2020);
         if (Array.isArray(this.userOld) && this.nbUser2020 < 2 && this.nbParcelle2020 === 0) {
+          console.log('---------------- Load old data 2019');
           if (this.userOld[0].email.toLowerCase() === this.credentials.email.toLowerCase()) {
             console.log('---------------- Go to populate DB');
             this.database.populateDB(res.data.id_utilisateur).then(_ => {
