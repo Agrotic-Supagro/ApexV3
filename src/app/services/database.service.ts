@@ -178,7 +178,7 @@ fetchSongs(): Observable<Parcelle[]> {
                   if (dataparcelle.rows.length > 0) {
                     for (let j = 0; j < dataparcelle.rows.length; j++) {
                       console.log('---------------- (3) Populate DB - Get data session', dataparcelle.rows.item(j));
-                      const dateSession = this.dateformat.getDatetime(new Date(dataparcelle.rows.item(j).date * 1000).toISOString());
+                      const dateSession = this.dateformat.getDatetimeOld(new Date(dataparcelle.rows.item(j).date * 1000).toISOString());
                       console.log('---------------- (4) Populate DB - test date', dateSession);
                       // TABLE PARCELLE
                       const dataToSession = {
