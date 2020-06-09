@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class ServerService {
 
-  AUTH_SERVER_ADDRESS = 'http://www.agrotic.org/apexv3-sync';
+  AUTH_SERVER_ADDRESS = 'https://www.agrotic.org/apexv3-sync';
 
   constructor(
     private  httpClient: HttpClient

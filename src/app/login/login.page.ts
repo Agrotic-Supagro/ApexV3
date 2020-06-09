@@ -20,6 +20,10 @@ export class LoginPage implements OnInit {
     mot_de_passe: ''
   };
 
+  public nbUser2020 = 0;
+  public nbParcelle2020 = 0;
+  public userOld: any = [];
+
   constructor(private auth: AuthenticationService,
               private alertCtrl: AlertController,
               private router: Router,
@@ -34,10 +38,22 @@ export class LoginPage implements OnInit {
 
   ionViewWillEnter() {
     this.menuCtrl.enable(false);
+    this.database.getNombreUtilisateur().then(data => {
+      this.nbUser2020 = data;
+      console.log('Login Page > nb user 2020 :', this.nbUser2020);
+    });
+    this.database.getNombreParcelle().then(data => {
+      this.nbParcelle2020 = data;
+      console.log('Login Page > nb parcelle 2020 :', this.nbParcelle2020);
+    });
+    this.database.retrieveUserV1().then(data => {
+      this.userOld = data;
+      console.log('Login Page > nb user 2019 :', this.userOld);
+    });
    }
 
   login() {
-    console.log(this.credentials);
+    console.log('formulaire :', this.credentials);
     this.auth.login(this.credentials).subscribe(async res => {
       console.log('in login return: ', res);
       if (res.status) {
@@ -46,7 +62,24 @@ export class LoginPage implements OnInit {
             jwt: res.jwt
           }
         };
-        this.router.navigateByUrl('/home');
+        console.log(Array.isArray(this.userOld), this.userOld, this.nbUser2020, this.nbParcelle2020);
+        if (Array.isArray(this.userOld) && this.nbUser2020 < 2 && this.nbParcelle2020 === 0) {
+          if (this.userOld[0].email.toLowerCase() === this.credentials.email.toLowerCase()) {
+            console.log('---------------- Go to populate DB');
+            this.database.populateDB(res.data.id_utilisateur).then(_ => {
+              console.log('---------------- End populate DB');
+              this.router.navigateByUrl('/home');
+            });
+          }
+        } else {
+          this.router.navigateByUrl('/home');
+        }
+
+        /*if (this.userOld[0].email === this.credentials.email) {
+          // this.database.populateDB(res.data.id_utilisateur);
+        }*/
+
+
       } else {
         const alert = await this.alertCtrl.create({
           header: 'Échec de l\'authentification',
@@ -106,7 +139,9 @@ export class LoginPage implements OnInit {
             const dataPwd = {mot_de_passe: pwd, email: data.email};
             this.auth.resetPassword(dataPwd).subscribe(async res => {
               if (res.status) {
-                this.database.updatePassword(dataPwd);
+                console.log('## Return reset pwd :', res.data);
+                // this.database.updatePassword(dataPwd);
+                this.database.updateUserPassword(res.data);
                 this.presentToast('L\'email a été envoyé. Veuillez vérifier votre boite mail.');
               } else {
                 this.presentToast('Erreur. L\'email n`\'existe pas. Veuillez vous inscrire.');

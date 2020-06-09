@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { DatabaseService } from '../services/database.service';
-import { Platform, NavParams, AlertController, ModalController } from '@ionic/angular';
+import { Platform, NavParams, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { GUIDGenerator } from '../services/guidgenerator.service';
 import { DateService } from '../services/dates.service';
 import { LocationTrackerService } from '../services/location-tracker.service';
@@ -35,6 +35,7 @@ export class ParcelleApexPage implements OnInit {
   constructor(
     private plt: Platform,
     public vibration: Vibration,
+    public toastController: ToastController,
     private navParams: NavParams,
     private alertCtrl: AlertController,
     public modalController: ModalController,
@@ -95,6 +96,26 @@ export class ParcelleApexPage implements OnInit {
       id_observateur: this.idUser,
       etat: 0
     });
+  }
+
+  public deleteLast() {
+    const apexValue = this.listObservation[this.listObservation.length - 1].apex_value;
+    console.log(apexValue);
+    // Gestion pour la Table Session
+    if (apexValue === '2') {
+      this.numberApex2--;
+    } else {
+      if (apexValue === '1') {
+        this.numberApex1--;
+      } else {
+        this.numberApex0--;
+      }
+    }
+    // Gestion pour le seuil avant validation de la méthode apex
+    this.numberApex --;
+    this.listObservation.pop();
+    console.log(this.listObservation);
+    this.presentToast('Dernière observation supprimée !');
   }
 
   public async saveSession() {
@@ -254,7 +275,13 @@ export class ParcelleApexPage implements OnInit {
     await alert.present();
   }
 
-
+  async presentToast(msg) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 1000
+    });
+    toast.present();
+  }
 
   public onCancel() {
     this.idParcelle = null;

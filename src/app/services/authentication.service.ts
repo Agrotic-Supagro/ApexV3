@@ -16,7 +16,7 @@ const TOKEN_KEY = 'TOKEN_KEY';
 export class AuthenticationService {
 
   // AUTH_SERVER_ADDRESS = 'http://localhost:80/api';
-  AUTH_SERVER_ADDRESS = 'http://www.agrotic.org/apexv3-sync';
+  AUTH_SERVER_ADDRESS = 'https://www.agrotic.org/apexv3-sync';
   authenticationState = new BehaviorSubject(false);
   registerState = new BehaviorSubject(false);
   db: SQLiteObject;
@@ -54,7 +54,7 @@ export class AuthenticationService {
               id_utilisateur: res.data.id_utilisateur,
               prenom: res.data.prenom,
               nom: res.data.nom,
-              email: res.data.email,
+              email: res.data.email.toLowerCase(),
               mot_de_passe: credentials.mot_de_passe,
               structure: res.data.structure
             };
@@ -62,7 +62,7 @@ export class AuthenticationService {
             this.authenticationState.next(true);
             const data = {
               jwt: res.jwt,
-              email: credentials.email,
+              email: credentials.email.toLowerCase(),
               mot_de_passe: credentials.mot_de_passe
             };
             this.database.updateJWT(data);

@@ -58,9 +58,8 @@ export class ParcelleInfoPage implements OnInit {
           if (data === null) {
             console.log(data);
           } else {
-            console.log(data);
+            console.log('InfoParcelle : ', data);
             this.infoSession = data;
-            console.log(this.infoSession);
             this.makeChartCroissance(data);
             this.makeChartContrainte(data);
           }

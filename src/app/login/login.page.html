@@ -43,4 +43,10 @@
       </ion-col>
     </ion-row>
    
+    <ion-card *ngIf="nbUser2020 == 0 && userOld != null" >
+      <ion-card-content>
+        <ion-icon color="warning" name="information-circle"></ion-icon> Si vous utilisez ApeX-Vigne mais que vous n'avez de mot de passe cliquer sur : <br />
+        <span class="forgetpw" (click)="forgetpwd()"><b>Générer un mot de passe</b></span>
+      </ion-card-content>
+    </ion-card>
   </ion-content>

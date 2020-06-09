@@ -8,8 +8,9 @@ import { Device } from '@ionic-native/device/ngx';
 import { Parcelle } from './parcelle-service';
 import { DateService } from './dates.service';
 import { ServerService } from './server.service';
+import { GUIDGenerator } from './guidgenerator.service';
 
-const DATABASE_APEX_NAME = 'dataApexV312.db';
+const DATABASE_APEX_NAME = 'dataApexV3.db';
 
 @Injectable({
   providedIn: 'root'
@@ -18,6 +19,7 @@ export class DatabaseService {
 
   isOpen = false;
   database: SQLiteObject;
+  db: SQLiteObject;
   parcelles: any = [];
   user: User;
   parcelleList: ParcelleName[];
@@ -31,6 +33,7 @@ export class DatabaseService {
     private plt: Platform,
     private device: Device,
     private serveur: ServerService,
+    private guid: GUIDGenerator,
     private dateformat: DateService,
     private sqlite: SQLite
   ) {
@@ -62,11 +65,12 @@ fetchSongs(): Observable<Parcelle[]> {
 
   public open() {
     this.createDatabaseApexV3();
+    this.dbApexV1();
   }
 
   private createDatabaseApexV3(): void {
     this.sqlite.create({
-        name: DATABASE_APEX_NAME,
+        name: 'dataApexV3.db',
         location: 'default'
       })
       .then((db: SQLiteObject) => {
@@ -75,6 +79,137 @@ fetchSongs(): Observable<Parcelle[]> {
         this.createTables();
       })
       .catch(e => console.log(e));
+  }
+
+  private dbApexV1(): void {
+    console.log('================> Try open old database');
+    this.sqlite.create({
+        name: 'dataApex.db',
+        location: 'default'
+      })
+      .then((db: SQLiteObject) => {
+        console.log('Open / create DB_Old !');
+        this.db = db;
+        this.retrieveUserV1();
+      })
+      .catch(e => console.log(e));
+  }
+
+  public retrieveUserV1() {
+    return this.db.executeSql('select * from `User`', [])
+      .then((data) => {
+        if (data == null) {
+          return;
+        }
+        if (data.rows) {
+          const dataUserOld = [];
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              dataUserOld.push({
+                id: data.rows.item(i).idUser,
+                name: data.rows.item(i).name,
+                email: data.rows.item(i).email,
+                structure: data.rows.item(i).structure
+              });
+            }
+            console.log('OLD User : ', dataUserOld);
+          } else {
+            if (dataUserOld == null) {
+              console.log('OLD User : no data');
+            }
+          }
+          return dataUserOld;
+        }
+      })
+      .catch(e => console.log('fail sql retrieve User ' + e));
+  }
+  public retrieveSessionV1() {
+    return this.db.executeSql('SELECT * FROM `Session`', [])
+      .then((data) => {
+        if (data == null) {
+          return;
+        }
+        if (data.rows) {
+          const dataSessionOld = [];
+          console.log('ici');
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              console.log('>>>>>>>>>>>>>>>>>>>>>', data.rows.item(i));
+            }
+            console.log('OLD User : ', dataSessionOld);
+          } else {
+            if (dataSessionOld == null) {
+              console.log('OLD User : no data');
+            }
+          }
+          return dataSessionOld;
+        }
+
+      })
+      .catch(e => console.log('fail sql retrieve User ' + e));
+  }
+
+  populateDB(idUser) {
+    console.log('---------------- (1) Populate DB', idUser);
+    return this.db.executeSql('SELECT DISTINCT nomParcelle FROM Session', [])
+      .then((data) => {
+        if (data == null) {
+          return;
+        }
+        if (data.rows) {
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              console.log('---------------- (2) Populate DB - Nom parcelle', data.rows.item(i).nomParcelle);
+              // CREATE PARCELLE and USER_PARCELLE
+              const guidParcelle = this.guid.getGuid();
+              const dataToUserParcelle = {id_utilisateur: idUser, id_parcelle: guidParcelle, statut:  1, etat: 0};
+              this.addUserParcelle(dataToUserParcelle);
+              // tslint:disable-next-line:max-line-length
+              const dataToParcelle = {id_parcelle: guidParcelle, nom_parcelle: data.rows.item(i).nomParcelle, id_proprietaire: idUser, etat: 0};
+              this.addParcelle(dataToParcelle);
+
+              this.db.executeSql('select * from Session WHERE nomParcelle = ? AND serve !=2', [data.rows.item(i).nomParcelle])
+              .then((dataparcelle) => {
+                if (dataparcelle == null) {
+                  return;
+                }
+                if (dataparcelle.rows) {
+                  const dataUserOld = [];
+                  if (dataparcelle.rows.length > 0) {
+                    for (let j = 0; j < dataparcelle.rows.length; j++) {
+                      console.log('---------------- (3) Populate DB - Get data session', dataparcelle.rows.item(j));
+                      const dateSession = this.dateformat.getDatetime(new Date(dataparcelle.rows.item(j).date * 1000).toISOString());
+                      console.log('---------------- (4) Populate DB - test date', dateSession);
+                      // TABLE PARCELLE
+                      const dataToSession = {
+                        id_session: dataparcelle.rows.item(j).idSession,
+                        date_session: dateSession,
+                        apex0: dataparcelle.rows.item(j).apexP,
+                        apex1: dataparcelle.rows.item(j).apexR,
+                        apex2: dataparcelle.rows.item(j).apexC,
+                        id_observateur: idUser,
+                        id_parcelle: guidParcelle,
+                        etat: 0
+                      };
+                      this.addSession(dataToSession);
+                    }
+                  } else {
+                    if (dataUserOld == null) {
+                      console.log('OLD User : no data');
+                    }
+                  }
+                  return dataUserOld;
+                }
+              })
+              .catch(e => console.log('fail sql retrieve User ' + e));
+            }
+          } else {
+            console.log('OLD Session : no data');
+          }
+        }
+
+      })
+      .catch(e => console.log('fail sql retrieve User ' + e));
   }
 
   private createTables(): void {
@@ -392,6 +527,18 @@ fetchSongs(): Observable<Parcelle[]> {
 
 
   // GET METHODS
+  getNombreUtilisateur() {
+    return this.database.executeSql('SELECT * FROM utilisateur', [ ]).then(data => {
+      console.log ('>> Nb utilisateur dans la DBV3 :' + data.rows.length);
+      return data.rows.length;
+    });
+  }
+  getNombreParcelle() {
+    return this.database.executeSql('SELECT * FROM parcelle', [ ]).then(data => {
+      console.log ('>> Nb parcelle dans la DBV3 :' + data.rows.length);
+      return data.rows.length;
+    });
+  }
   getDevicesInfos() {
     return this.database.executeSql('SELECT * FROM device_info', [ ]).then(data => {
       console.log ('>> Nb enregistrement device info (tout opérateur) :' + data.rows.length);
@@ -824,6 +971,22 @@ fetchSongs(): Observable<Parcelle[]> {
       // this.loadDevelopers();
     })
     .catch(e => console.log('Fail drop table  | ' + e));
+  }
+
+  updateUserPassword(updateData) {
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(updateData).map(function(_) { return updateData[_]; });
+    console.log(dataTosql);
+    // const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ? AND id_utilisateur = ?';
+    const requete = 'INSERT OR REPLACE INTO utilisateur '
+    + '(id_utilisateur, prenom, nom, email, mot_de_passe, structure, model_ifv, etat) '
+    + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    return this.database.executeSql(requete, dataTosql)
+    .then(data => {
+      console.log('Success update User & Password');
+      // this.loadDevelopers();
+    })
+    .catch(e => console.log('Fail update User & Password | ' + e));
   }
 
   // DROP TABLE
