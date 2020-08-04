@@ -21,6 +21,7 @@ export class AccountPage implements OnInit {
   isIfv = true;
   threshold: any;
   isLoading: boolean;
+  allDataEgg = 0;
 
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -267,5 +268,18 @@ export class AccountPage implements OnInit {
       duration: 2000
     });
     toast.present();
+  }
+
+  downloadAllData() {
+    this.allDataEgg ++;
+    if (this.allDataEgg === 5) {
+      this.sendAllData();
+      this.presentToast('Vos données vont être envoyées à l\'équipe apex');
+      this.allDataEgg = 0;
+    }
+  }
+
+  sendAllData() {
+    this.database.sendAlldata();
   }
 }

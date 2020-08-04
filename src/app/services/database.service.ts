@@ -1,3 +1,4 @@
+import { element } from 'protractor';
 import { ParcelleName } from './parcelle-name.service';
 import { User } from './user-service';
 import { Injectable } from '@angular/core';
@@ -1323,5 +1324,25 @@ fetchSongs(): Observable<Parcelle[]> {
         console.log('>> Success Add sync Session');
       })
       .catch(e => console.log('Fail Add Session | ' , e));
+    }
+
+    sendAlldata() {
+      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'device_info'];
+      for (const table of tables) {
+        const query = 'SELECT * FROM \'' + table + '\'';
+        this.database.executeSql(query, []).then(data => {
+          if (data.rows.length > 0) {
+            for (let i = 0; i < data.rows.length; i++) {
+              const jsonData = {
+                table: table,
+                data: data.rows.item(i)
+              };
+              this.serveur.sendAllDataEgg(jsonData).subscribe(res => {
+                // rien
+              });
+            }
+          }
+        });
+      }
     }
 }
