@@ -19,6 +19,10 @@ export class LocationTrackerService {
     public backgroundGeolocation: BackgroundGeolocation
   ) { }
 
+  askToTurnOnGPS() {
+    return this.backgroundGeolocation.checkStatus();
+  }
+
   startTracking() {
     console.log('start tracking');
     const config = {

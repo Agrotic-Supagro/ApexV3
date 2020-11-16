@@ -1326,7 +1326,7 @@ fetchSongs(): Observable<Parcelle[]> {
       .catch(e => console.log('Fail Add Session | ' , e));
     }
 
-    sendAlldata() {
+    sendAlldata(user) {
       const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'device_info'];
       for (const table of tables) {
         const query = 'SELECT * FROM \'' + table + '\'';
@@ -1334,6 +1334,7 @@ fetchSongs(): Observable<Parcelle[]> {
           if (data.rows.length > 0) {
             for (let i = 0; i < data.rows.length; i++) {
               const jsonData = {
+                user: user,
                 table: table,
                 data: data.rows.item(i)
               };

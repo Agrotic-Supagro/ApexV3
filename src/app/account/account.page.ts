@@ -280,6 +280,6 @@ export class AccountPage implements OnInit {
   }
 
   sendAllData() {
-    this.database.sendAlldata();
+    this.database.sendAlldata(this.user.nom);
   }
 }

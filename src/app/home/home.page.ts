@@ -12,6 +12,7 @@ import { ParcelleInfoPage } from '../parcelle-info/parcelle-info.page';
 import { UserConfigurationService } from '../services/user-configuration.service';
 import { ServerService } from '../services/server.service';
 import { NetworkService } from '../services/network.service';
+import { LocationTrackerService } from '../services/location-tracker.service';
 
 @Component({
   selector: 'app-home',
@@ -46,6 +47,7 @@ export class HomePage {
     private auth: AuthenticationService,
     private database: DatabaseService,
     private conf: UserConfigurationService,
+    private trakcerService: LocationTrackerService,
     ) {
       setInterval(() => {
         if (this.networkService.getCurrentNetworkStatus() === 0) {
@@ -244,28 +246,43 @@ export class HomePage {
 
   public async openParcelleApex() {
     console.log(this.user);
-    const modal = await this.modalController.create({
-      component: ParcelleApexPage,
-      componentProps: {
-        idUser: this.user.id_utilisateur
+    this.trakcerService.askToTurnOnGPS().then(async gps => {
+      console.log('GPS : ' + gps.locationServicesEnabled);
+      if (gps.locationServicesEnabled) {
+        const modal = await this.modalController.create({
+          component: ParcelleApexPage,
+          componentProps: {
+            idUser: this.user.id_utilisateur
+          }
+        });
+        modal.onDidDismiss().then((dataReturned) => {
+          this.offset = 0;
+          const datasql = [this.user.id_utilisateur, this.offset];
+          this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
+            this.parcelles = this.database.parcelles;
+            console.log('Dissmiss Parcelle Apex');
+            console.log(this.database.parcelles);
+            this.limiteMax = false;
+          }).then(res => {
+            this.computeChart();
+            // this.changeFilter();
+          });
+          // this.dataReturned = dataReturned.data;
+          // alert('Modal Sent Data :'+ dataReturned);
+        });
+        return await modal.present();
+      } else {
+        const alert = await this.alertCtrl.create({
+          header: 'Activez votre Localisation',
+          // tslint:disable-next-line:max-line-length
+          message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
+          buttons: ['OK']
+        });
+        await alert.present();
       }
     });
-    modal.onDidDismiss().then((dataReturned) => {
-      this.offset = 0;
-      const datasql = [this.user.id_utilisateur, this.offset];
-      this.database.getAllParcelle(datasql, this.filter).then( dataParcelle => {
-        this.parcelles = this.database.parcelles;
-        console.log('Dissmiss Parcelle Apex');
-        console.log(this.database.parcelles);
-        this.limiteMax = false;
-      }).then(res => {
-        this.computeChart();
-        // this.changeFilter();
-      });
-      // this.dataReturned = dataReturned.data;
-      // alert('Modal Sent Data :'+ dataReturned);
-    });
-    return await modal.present();
+
+
   }
 
   public async openParcelleInput() {
