@@ -41,44 +41,67 @@
     width: 78%;
     display: inline-block;
   }
-  .box{
+
+  ion-grid.main {
+    height: 100%;
+    
+    ion-row {
+      padding-top: 1em;
+      padding-bottom: 1em;
+      height: 33.3%;
+    }
+  }
+  
+  /*.box{
     //background-color: rgba(194, 194, 194, 0.5);
     box-shadow: 1px 1px 2px rgb(82, 82, 82);
     margin-left: 2px;
     margin-right: 2px;
-  }
+  }*/
 
   .boxtop{
-    //background-color: rgb(44, 97, 9);
-    background: -webkit-linear-gradient(top, rgba(44, 97, 9, 1) 0%,rgba(44, 97, 9, 0.6) 100%);
-    background: linear-gradient(to bottom, rgba(44, 97, 9, 1) 0%,rgba(44, 97, 9, 0.6) 100%);
-    margin-top: 10px;
-    margin-bottom: 20px;
+    ion-col{
+      background-color: rgb(44, 97, 9);
+    }
+    //background: -webkit-linear-gradient(top, rgba(44, 97, 9, 1) 0%,rgba(44, 97, 9, 0.6) 100%);
+    //background: linear-gradient(to bottom, rgba(44, 97, 9, 1) 0%,rgba(44, 97, 9, 0.6) 100%);
+    //margin-top: 10px;
+    //margin-bottom: 20px;
   }
   .boxtop:active {
-    background: -webkit-linear-gradient(top, rgba(44, 97, 9, 0.8) 0%,rgba(44, 97, 9, 0.5) 100%);
-    background: linear-gradient(to bottom, rgba(44, 97, 9, 0.8) 0%,rgba(44, 97, 9, 0.5) 100%);
+    ion-col{
+      background: -webkit-linear-gradient(top, rgba(44, 97, 9, 0.8) 0%,rgba(44, 97, 9, 0.5) 100%);
+      background: linear-gradient(to bottom, rgba(44, 97, 9, 0.8) 0%,rgba(44, 97, 9, 0.5) 100%);
+    }
   }
 
   .boxmiddle{
-    //background-color: rgb(197, 220, 104);
-    background: -webkit-linear-gradient(top, rgba(197, 220, 104, 1) 0%,rgba(197, 220, 104, 0.6) 100%);
-    background: linear-gradient(to bottom, rgba(197, 220, 104, 1) 0%,rgba(197, 220, 104, 0.6) 100%);
+    ion-col{
+      background-color: rgb(197, 220, 104);
+    }
+    //background: -webkit-linear-gradient(top, rgba(197, 220, 104, 1) 0%,rgba(197, 220, 104, 0.6) 100%);
+    //background: linear-gradient(to bottom, rgba(197, 220, 104, 1) 0%,rgba(197, 220, 104, 0.6) 100%);
   }
   .boxmiddle:active{
-    background: -webkit-linear-gradient(top, rgba(197, 220, 104, 0.8) 0%,rgba(197, 220, 104, 0.5) 100%);
-    background: linear-gradient(to bottom, rgba(197, 220, 104, 0.8) 0%,rgba(197, 220, 104, 0.5) 100%);
+    ion-col{
+      background: -webkit-linear-gradient(top, rgba(197, 220, 104, 0.8) 0%,rgba(197, 220, 104, 0.5) 100%);
+      background: linear-gradient(to bottom, rgba(197, 220, 104, 0.8) 0%,rgba(197, 220, 104, 0.5) 100%);
+    }
   }
 
   .boxbottom{
-    //background-color: rgb(110, 150, 36);
-    background: -webkit-linear-gradient(top, rgba(110, 150, 36, 1) 0%,rgba(110, 150, 36, 0.6) 100%);
-    background: linear-gradient(to bottom, rgba(110, 150, 36, 1) 0%,rgba(110, 150, 36, 0.6) 100%);
-    margin-bottom: 20px;
+    ion-col{
+      background-color: rgb(110, 150, 36);
+    }
+    //background: -webkit-linear-gradient(top, rgba(110, 150, 36, 1) 0%,rgba(110, 150, 36, 0.6) 100%);
+    //background: linear-gradient(to bottom, rgba(110, 150, 36, 1) 0%,rgba(110, 150, 36, 0.6) 100%);
+    //margin-bottom: 20px;
   }
   .boxbottom:active{
-    background: -webkit-linear-gradient(top, rgba(110, 150, 36, 0.8) 0%,rgba(110, 150, 36, 0.5) 100%);
-    background: linear-gradient(to bottom, rgba(110, 150, 36, 0.8) 0%,rgba(110, 150, 36, 0.5) 100%);
+    ion-col{
+      background: -webkit-linear-gradient(top, rgba(110, 150, 36, 0.8) 0%,rgba(110, 150, 36, 0.5) 100%);
+      background: linear-gradient(to bottom, rgba(110, 150, 36, 0.8) 0%,rgba(110, 150, 36, 0.5) 100%);
+    }
   }
 
   .title {
@@ -124,8 +147,8 @@
     text-align: right;
   }
 
-  .card-background-page {
-  
+/*  .card-background-page {
+
     ion-card {
       height: 27%;
       width: 70%;
@@ -164,4 +187,5 @@
     .parcelle{
       width: 100%;
     }
-  }
+  }*/
+

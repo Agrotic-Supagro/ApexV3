@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar class="toolbar-header title_center">
+    <ion-title>Stades phénologiques</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let data of dataList" (click)="selectedStd(data)" [ngClass]="data.urlImage===isSelected.urlImage ? 'select' : 'noselect'">
+      <ion-grid id="{{data.urlImage}}"  >
+        <ion-row>
+          <ion-col class="img"><img src="assets/stdpheno/{{data.urlImage}}"/></ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-col class="titleStade">{{data.titre}} <ion-icon name="alert-circle-outline" (click)="info(data)"></ion-icon></ion-col>
+            </ion-row>
+            <ion-row>
+              <ion-col class="sstitle">{{data.soustitre}}</ion-col>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+</ion-content>
+<ion-footer>
+  <ion-button expand="block" (click)="saveStade()">
+    Valider
+  </ion-button>
+</ion-footer> 

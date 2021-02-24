@@ -1,4 +1,3 @@
-import { ParcelleApexPageModule } from './parcelle-apex/parcelle-apex.module';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
@@ -21,13 +20,17 @@ import { Device } from '@ionic-native/device/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Network } from '@ionic-native/network/ngx';
 
+import { ParcelleApexPageModule } from './parcelle-apex/parcelle-apex.module';
+import { StadePhenologiquePageModule } from './stade-phenologique/stade-phenologique.module';
 import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.module';
 // import { ParcelleInfoPageModule } from './parcelle-info/parcelle-info.module';
 import { SessionInfoPageModule } from './session-info/session-info.module';
+import { ApexInformationComponent } from './apex-information/apex-information.component';
+import { CommentairesSessionPageModule } from './commentaires-session/commentaires-session.module';
 
 @NgModule({
-  declarations: [AppComponent],
-  entryComponents: [],
+  declarations: [AppComponent, ApexInformationComponent],
+  entryComponents: [ApexInformationComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
@@ -36,6 +39,8 @@ import { SessionInfoPageModule } from './session-info/session-info.module';
     IonicStorageModule.forRoot(),
     ParcelleInputPageModule,
     ParcelleApexPageModule,
+    StadePhenologiquePageModule,
+    CommentairesSessionPageModule,
     SessionInfoPageModule
   ],
   providers: [

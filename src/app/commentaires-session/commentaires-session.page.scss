@@ -12,51 +12,22 @@
 ion-content{
     --background: rgb(155, 173, 182);
 }
+ion-footer{
+    --background: rgb(155, 173, 182);
+    background-color: rgb(155, 173, 182);
+}
 .title_center{
     text-align: center;
 }
-
-.ecimee{
-    color:darkorange;
-    font-size: 1.2em;
-}
-.cardChart{
-    height: 250px;
-    //width: 100%;
+ion-item {
+    padding: 0.5em;
 }
 
-.title{
-    text-align: center;
+ion-textarea {
+    min-height: 200px;
+    height: 400px;
 }
 
-.titleCard{
-    font-size: 1.3em;
-}
-
-.right{
-    text-align: right;
-}
-
-.edit{
-    color:royalblue;
- }
-
-.trash{
-   color: brown;
-}
-
-.center{
-    text-align: center;
-}
-
-.testty{
-    color: rgb(151, 162, 191);
-}
-
-.displayNone{
-    display: none;
-}
-
-.displayBlock{
-    display: block;
+::ng-deep textarea {
+    min-height: 100px;
 }

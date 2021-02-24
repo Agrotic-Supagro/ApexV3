@@ -12,51 +12,34 @@
 ion-content{
     --background: rgb(155, 173, 182);
 }
-.title_center{
-    text-align: center;
+
+
+.titleStade{
+    font-weight: bolder;
+    color: royalblue;
+}
+.sstitle{
+    font-weight: bold;
+}
+.description{
+    text-align: justify;
 }
 
-.ecimee{
-    color:darkorange;
-    font-size: 1.2em;
+ion-grid {
+    padding: 0em;
 }
-.cardChart{
-    height: 250px;
-    //width: 100%;
+ion-col.img{
+    padding-left: 0em;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
-
-.title{
-    text-align: center;
-}
-
-.titleCard{
-    font-size: 1.3em;
+ion-col{
+    padding: 3px;
 }
 
-.right{
-    text-align: right;
+.select{
+    --background:mediumspringgreen ;
 }
-
-.edit{
-    color:royalblue;
- }
-
-.trash{
-   color: brown;
-}
-
-.center{
-    text-align: center;
-}
-
-.testty{
-    color: rgb(151, 162, 191);
-}
-
-.displayNone{
-    display: none;
-}
-
-.displayBlock{
-    display: block;
+.noSelect{
+    --background: none;
 }

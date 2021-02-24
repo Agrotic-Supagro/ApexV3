@@ -2,10 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { DatabaseService } from '../services/database.service';
 import { Platform, NavParams, AlertController, ModalController, ToastController } from '@ionic/angular';
+import { PopoverController } from '@ionic/angular';
 import { GUIDGenerator } from '../services/guidgenerator.service';
 import { DateService } from '../services/dates.service';
 import { LocationTrackerService } from '../services/location-tracker.service';
 import { UserConfigurationService } from '../services/user-configuration.service';
+import { ApexInformationComponent } from '../apex-information/apex-information.component';
+import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
+import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
 
 @Component({
   selector: 'app-parcelle-apex',
@@ -32,6 +36,8 @@ export class ParcelleApexPage implements OnInit {
   public idSession: any;
   public listObservation = [];
 
+  public commentairetext = '';
+
   constructor(
     private plt: Platform,
     public vibration: Vibration,
@@ -44,6 +50,7 @@ export class ParcelleApexPage implements OnInit {
     private dateformat: DateService,
     private locationTracker: LocationTrackerService,
     private conf: UserConfigurationService,
+    public popoverCtrl: PopoverController,
   ) {
     this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
@@ -66,6 +73,28 @@ export class ParcelleApexPage implements OnInit {
       }
     });
     if (this.selectParcelle.length > 0) { this.isList = true; }
+  }
+
+  async notifications(ev: any) {
+    const popover = await this.popoverCtrl.create({
+        component: ApexInformationComponent,
+        event: ev,
+        animated: true,
+        showBackdrop: true
+    });
+    popover.onDidDismiss().then((result) => {
+      console.log(result.data);
+      if (result.data === 'deleteLastObs') {
+        this.deleteLast();
+      } else if (result.data === 'ecimee') {
+        this.saveEcimee();
+      } else if (result.data === 'stadePheno') {
+        this.stadePheno();
+      } else if (result.data === 'commentaire') {
+        this.commentaire();
+      }
+    });
+    return await popover.present();
   }
 
   public addapex(apexvalue) {
@@ -287,4 +316,33 @@ export class ParcelleApexPage implements OnInit {
   public onCancel() {
     this.idParcelle = null;
   }
+
+  public async stadePheno() {
+    const modal = await this.modalController.create({
+      component: StadePhenologiquePage,
+      /*componentProps: {
+        idUser: this.user.id_utilisateur,
+        parcelle: parcelle
+      }*/
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      console.log(dataReturned);
+    });
+    return await modal.present();
+  }
+
+  public async commentaire() {
+    const modal = await this.modalController.create({
+      component: CommentairesSessionPage,
+      componentProps: {
+        commentairetext : this.commentairetext,
+      }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      console.log(dataReturned);
+      this.commentairetext = dataReturned.data.commentaire;
+    });
+    return await modal.present();
+  }
+
 }

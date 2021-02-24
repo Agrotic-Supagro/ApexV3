@@ -55,6 +55,14 @@ const routes: Routes = [{
   {
     path: 'method',
     loadChildren: () => import('./method/method.module').then( m => m.MethodPageModule)
+  },
+  {
+    path: 'stade-phenologique',
+    loadChildren: () => import('./stade-phenologique/stade-phenologique.module').then( m => m.StadePhenologiquePageModule)
+  },
+  {
+    path: 'commentaires-session',
+    loadChildren: () => import('./commentaires-session/commentaires-session.module').then( m => m.CommentairesSessionPageModule)
   }
 ];
 

@@ -28,7 +28,7 @@
             </ion-item>
           </td>
           <td class="al-right">
-            <ion-button small (click)="newNameParcelle()">
+            <ion-button small color="tertiary" (click)="newNameParcelle()">
               <ion-icon name="add-circle"></ion-icon>
             </ion-button></td>
         </tr>
@@ -38,7 +38,7 @@
 </ion-header>
 
 <ion-content class="card-background-page">
-  <ion-grid>
+  <ion-grid class="main">
     <ion-row (click)="addapex('0')" class="box boxtop">
       <ion-col>
         <img src="assets/imgs/stadeP.jpg" class="imgBox" />
@@ -69,7 +69,7 @@
 <ion-footer>
   <ion-grid class="nopadding">
     <ion-row class="nopadding">
-      <ion-col size="2" class="nopadding">
+      <!--<ion-col size="2" class="nopadding">
         <ion-button expand="block" color="danger" (click)="parcelleEcimee()">
           <ion-icon class="iconS"  src="../../../assets/icon/cisaille.svg"></ion-icon>
         </ion-button>
@@ -77,6 +77,11 @@
       <ion-col size="2" class="nopadding">
         <ion-button expand="block" color="warning" (click)="deleteLast()">
           <ion-icon class="iconS" name="return-down-back-sharp"></ion-icon>
+        </ion-button>
+      </ion-col>-->
+      <ion-col size="2" class="nopadding">
+        <ion-button expand="block" color="warning" (click)="notifications($event)">
+          <ion-icon class="iconS" name="ellipsis-horizontal"></ion-icon>
         </ion-button>
       </ion-col>
       <ion-col col-auto class="nopadding">

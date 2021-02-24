@@ -29,6 +29,7 @@ export class ParcelleInfoPage implements OnInit {
   isList = false;
   isRename = false;
   isShare = false;
+  isIFV = true;
 
   newNameParcelle = null;
   public myDate: any = new Date().toISOString();
@@ -53,6 +54,13 @@ export class ParcelleInfoPage implements OnInit {
         this.user = this.router.getCurrentNavigation().extras.state.user;
         console.log('## Parcelle info. User :', this.user);
         this.idUser = this.router.getCurrentNavigation().extras.state.user.id_utilisateur;
+
+        if (this.user.model_ifv === 0) {
+          this.isIFV = true;
+        } else {
+          this.isIFV = false;
+        }
+
         this.parcelle = this.router.getCurrentNavigation().extras.state.parcelle;
         this.database.getInfoParcelle(this.parcelle.id_parcelle).then( data => {
           if (data === null) {
@@ -61,7 +69,9 @@ export class ParcelleInfoPage implements OnInit {
             console.log('InfoParcelle : ', data);
             this.infoSession = data;
             this.makeChartCroissance(data);
-            this.makeChartContrainte(data);
+            if (this.isIFV) {
+              this.makeChartContrainte(data);
+            }
           }
         });
       }
