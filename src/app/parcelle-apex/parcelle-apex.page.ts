@@ -166,6 +166,14 @@ export class ParcelleApexPage implements OnInit {
         const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
         this.database.addUserParcelle(dataToUserParcelle);
 
+        // TABLE session_stadepheno
+        const dataToSessionStade = {id_session: this.idSession, id_stade: this.idStade, etat: 0};
+        this.database.addSessionStadePheno(dataToSessionStade);
+
+        // TABLE session_stadepheno
+        const dataToCommentaire = {txt_comm: this.commentairetext, id_session: this.idSession, etat: 0};
+        this.database.addCommentaire(dataToCommentaire);
+
         // TABLE PARCELLE
         // tslint:disable-next-line:max-line-length
         const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
@@ -234,6 +242,14 @@ export class ParcelleApexPage implements OnInit {
       // tslint:disable-next-line:max-line-length
       const dataToSession = {id_session: this.idSession, date_session: dateSession, apex0: 999, apex1: 999, apex2: 999, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
       this.database.addSession(dataToSession);
+
+      // TABLE session_stadepheno
+      const dataToSessionStade = {id_session: this.idSession, id_stade: this.idStade, etat: 0};
+      this.database.addSessionStadePheno(dataToSessionStade);
+
+      // TABLE session_stadepheno
+      const dataToCommentaire = {txt_comm: this.commentairetext, id_session: this.idSession, etat: 0};
+      this.database.addCommentaire(dataToCommentaire);
 
       await this.modalController.dismiss();
     } else {

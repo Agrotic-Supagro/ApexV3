@@ -41,6 +41,10 @@ ion-content{
     color:royalblue;
  }
 
+ .comment{
+    color:dimgrey;
+ }
+
 .trash{
    color: brown;
 }
@@ -60,3 +64,8 @@ ion-content{
 .displayBlock{
     display: block;
 }
+
+.nopadding {
+    padding-left: 0;
+    padding-right: 0;
+  }

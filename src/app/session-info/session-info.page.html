@@ -71,7 +71,7 @@
 </ion-content>
 
 <ion-footer>
-  <ion-toolbar>
+  <!--<ion-toolbar>
     <div class="rognee">
       <ion-button expand="block" color="danger" (click)="parcelleEcimee()" class="iconSize">
         <ion-icon src="../../../assets/icon/cisaille.svg"></ion-icon>
@@ -82,5 +82,35 @@
           Modifier l'observation
         </ion-button>
     </div>
-  </ion-toolbar>
+  </ion-toolbar>-->
+  <ion-grid class="nopadding">
+    <ion-row class="nopadding">
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="danger" (click)="parcelleEcimee()">
+          <ion-icon src="../../../assets/icon/cisaille.svg"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="success" (click)="stadePheno()">
+          <ion-icon name="leaf"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="dark" (click)="commentaire()">
+          <ion-icon name="chatbox-ellipses"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="nopadding">
+
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" (click)="saveSession()" > 
+          Sauvegarder
+        </ion-button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-footer>

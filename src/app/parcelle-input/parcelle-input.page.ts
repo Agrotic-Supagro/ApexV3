@@ -1,10 +1,12 @@
 import { DateService } from './../services/dates.service';
 import { GUIDGenerator } from './../services/guidgenerator.service';
 import { Component, OnInit } from '@angular/core';
-import { ToastController, AlertController, Platform, ModalController, NavParams } from '@ionic/angular';
+import { ToastController, AlertController, Platform, ModalController, NavParams, PopoverController } from '@ionic/angular';
 import { LocationTrackerService } from '../services/location-tracker.service';
 import { DatabaseService } from '../services/database.service';
 import { UserConfigurationService } from '../services/user-configuration.service';
+import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
+import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
 
 @Component({
   selector: 'app-parcelle-input',
@@ -29,6 +31,9 @@ export class ParcelleInputPage implements OnInit {
   public totApex = 0;
   public thresholdApex = 50;
 
+  public commentairetext = '';
+  public idStade = '';
+
   constructor(
     private plt: Platform,
     public toastController: ToastController,
@@ -40,6 +45,7 @@ export class ParcelleInputPage implements OnInit {
     private locationTracker: LocationTrackerService,
     private navParams: NavParams,
     private conf: UserConfigurationService,
+    public popoverCtrl: PopoverController,
   ) {
     this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
@@ -114,9 +120,19 @@ export class ParcelleInputPage implements OnInit {
       console.log('>> Save Session - Info : ' + dateSession + ' | ' + this.numberof0value + ' ' + this.numberof1value + ' ' + this.numberof2value);
       console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
       console.log('>> Save Session - Parcelle Ecimmée');
+
+      const idsession = this.guid.getGuidSess();
       // TABLE Utilisateur_Parcelle
       const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
       this.database.addUserParcelle(dataToUserParcelle);
+
+      // TABLE session_stadepheno
+      const dataToSessionStade = {id_session: idsession, id_stade: this.idStade, etat: 0};
+      this.database.addSessionStadePheno(dataToSessionStade);
+
+      // TABLE session_stadepheno
+      const dataToCommentaire = {txt_comm: this.commentairetext, id_session: idsession, etat: 0};
+      this.database.addCommentaire(dataToCommentaire);
 
       // TABLE PARCELLE
       // tslint:disable-next-line:max-line-length
@@ -125,7 +141,7 @@ export class ParcelleInputPage implements OnInit {
 
       // TABLE SESSION
       // tslint:disable-next-line:max-line-length
-      const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: 999, apex1: 999, apex2: 999, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+      const dataToSession = {id_session: idsession, date_session: dateSession, apex0: 999, apex1: 999, apex2: 999, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
       this.database.addSession(dataToSession);
 
       await this.modalController.dismiss();
@@ -144,9 +160,6 @@ export class ParcelleInputPage implements OnInit {
     if (this.numberof1value == null) {this.numberof1value = 0; }
     if (this.numberof2value == null) {this.numberof2value = 0; }
 
-
-
-
     if (this.idParcelle !== null) {
       if (this.totApex < 50) {
         const alertNumber = await this.alertCtrl.create({
@@ -159,7 +172,7 @@ export class ParcelleInputPage implements OnInit {
               role: 'cancel',
               cssClass: 'secondary',
               handler: (blah) => {
-                console.log('Confirm Cancel: blah');
+                console.log('Confirm Cancel' + blah);
               }
             }, {
               text: 'Calculer',
@@ -175,14 +188,21 @@ export class ParcelleInputPage implements OnInit {
                   await this.modalController.dismiss();
                 } else {
                   console.log('Session to save');
+                  const idsession = this.guid.getGuidSess();
                   const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
                   this.database.addUserParcelle(dataToUserParcelle);
                   // tslint:disable-next-line:max-line-length
                   const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
                   this.database.addParcelle(dataToParcelle);
                   // tslint:disable-next-line:max-line-length
-                  const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+                  const dataToSession = {id_session: idsession, date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
                   this.database.addSession(dataToSession);
+                  // TABLE session_stadepheno
+                  const dataToSessionStade = {id_session: idsession, id_stade: this.idStade, etat: 0};
+                  this.database.addSessionStadePheno(dataToSessionStade);
+                  // TABLE session_stadepheno
+                  const dataToCommentaire = {txt_comm: this.commentairetext, id_session: idsession, etat: 0};
+                  this.database.addCommentaire(dataToCommentaire);
                   await this.modalController.dismiss();
                 }
               }
@@ -202,14 +222,21 @@ export class ParcelleInputPage implements OnInit {
           await this.modalController.dismiss();
         } else {
           console.log('Session to save');
+          const idsession = this.guid.getGuidSess();
           const dataToUserParcelle = {id_utilisateur: this.idUser, id_parcelle: this.idParcelle, statut:  1, etat: 0};
           this.database.addUserParcelle(dataToUserParcelle);
           // tslint:disable-next-line:max-line-length
           const dataToParcelle = {id_parcelle: this.idParcelle, nom_parcelle: this.nomParcelle, id_proprietaire: this.idProprietaire, etat: 0};
           this.database.addParcelle(dataToParcelle);
           // tslint:disable-next-line:max-line-length
-          const dataToSession = {id_session: this.guid.getGuidSess(), date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
+          const dataToSession = {id_session: idsession, date_session: dateSession, apex0: this.numberof0value, apex1: this.numberof1value, apex2: this.numberof2value, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
           this.database.addSession(dataToSession);
+          // TABLE session_stadepheno
+          const dataToSessionStade = {id_session: idsession, id_stade: this.idStade, etat: 0};
+          this.database.addSessionStadePheno(dataToSessionStade);
+          // TABLE session_stadepheno
+          const dataToCommentaire = {txt_comm: this.commentairetext, id_session: idsession, etat: 0};
+          this.database.addCommentaire(dataToCommentaire);
           await this.modalController.dismiss();
         }
       }
@@ -274,5 +301,33 @@ export class ParcelleInputPage implements OnInit {
 
   public onCancel() {
     this.idParcelle = null;
+  }
+
+  public async stadePheno() {
+    const modal = await this.modalController.create({
+      component: StadePhenologiquePage,
+      componentProps: {
+        idStade: this.idStade,
+      }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      console.log(dataReturned);
+      this.idStade = dataReturned.data;
+    });
+    return await modal.present();
+  }
+
+  public async commentaire() {
+    const modal = await this.modalController.create({
+      component: CommentairesSessionPage,
+      componentProps: {
+        commentairetext : this.commentairetext,
+      }
+    });
+    modal.onDidDismiss().then((dataReturned) => {
+      console.log(dataReturned);
+      this.commentairetext = dataReturned.data.commentaire;
+    });
+    return await modal.present();
   }
 }

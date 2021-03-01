@@ -414,6 +414,36 @@ fetchSongs(): Observable<Parcelle[]> {
     .catch(e => console.log('Fail Add Session | ' , e));
   }
 
+  addSessionStadePheno(sessionStadeData) {
+    // Methode pour recuperer les valeurs dans un json simple
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(sessionStadeData).map(function(_) { return sessionStadeData[_]; });
+
+    // tslint:disable-next-line:max-line-length
+    return this.database.executeSql('INSERT OR IGNORE INTO session_stadepheno '
+    + '(id_session, id_stade, etat) '
+    + 'VALUES (?, ?, ?)', dataTosql)
+    .then(data => {
+      // this.loadDevelopers();
+    })
+    .catch(e => console.log('Fail Add session_stadepheno | ' , e));
+  }
+
+  addCommentaire(commentaireData) {
+    // Methode pour recuperer les valeurs dans un json simple
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(commentaireData).map(function(_) { return commentaireData[_]; });
+
+    // tslint:disable-next-line:max-line-length
+    return this.database.executeSql('INSERT OR IGNORE INTO commentaire '
+    + '(txt_comm, id_session, etat) '
+    + 'VALUES (?, ?, ?)', dataTosql)
+    .then(data => {
+      // this.loadDevelopers();
+    })
+    .catch(e => console.log('Fail Add commentaire | ' , e));
+  }
+
   addObservation(listOfObservation) {
     console.log('>> Save Observation');
     listOfObservation.forEach(observationData => {
@@ -479,6 +509,35 @@ fetchSongs(): Observable<Parcelle[]> {
     .then(data => {
       // this.loadDevelopers();
       console.log('Succes ! Session updated !');
+    }).catch(e => console.log(e));
+  }
+
+  updateCommentaire(commData) {
+    // Methode pour recuperer les valeurs dans un json simple
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(commData).map(function(_) { return commData[_]; });
+    console.log('>> Update Session');
+    return this.database.executeSql('UPDATE commentaire SET '
+    + 'txt_comm= ?, '
+    + 'etat= ? '
+    + 'WHERE id_comm= ?', dataTosql)
+    .then(data => {
+      // this.loadDevelopers();
+      console.log('Succes ! Commentaore updated !');
+    }).catch(e => console.log(e));
+  }
+  updateLienSessionStade(data) {
+    // Methode pour recuperer les valeurs dans un json simple
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(data).map(function(_) { return data[_]; });
+    console.log('>> Update Session');
+    return this.database.executeSql('UPDATE session_stadepheno SET '
+    + 'id_stade= ?, '
+    + 'etat= ? '
+    + 'WHERE id_session= ?', dataTosql)
+    .then(dat => {
+      // this.loadDevelopers();
+      console.log('Succes ! Commentaore updated !');
     }).catch(e => console.log(e));
   }
 
@@ -893,6 +952,10 @@ fetchSongs(): Observable<Parcelle[]> {
   getInfoSession(idSession: any) {
     return this.database.executeSql(
       'SELECT * FROM session '
+    + 'JOIN session_stadepheno '
+    + 'ON session.id_session = session_stadepheno.id_session '
+    + 'JOIN commentaire '
+    + 'ON session.id_session = commentaire.id_session '
     + 'WHERE session.id_session = ?'
     , [idSession]).then(data => {
       if (data.rows) {
@@ -901,7 +964,10 @@ fetchSongs(): Observable<Parcelle[]> {
           date_session: data.rows.item(0).date_session,
           apex0: data.rows.item(0).apex0,
           apex1: data.rows.item(0).apex1,
-          apex2: data.rows.item(0).apex2
+          apex2: data.rows.item(0).apex2,
+          id_comm: data.rows.item(0).id_comm,
+          txt_comm: data.rows.item(0).txt_comm,
+          id_stade: data.rows.item(0).id_stade
         };
       }
     });
