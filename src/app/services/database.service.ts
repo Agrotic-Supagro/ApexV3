@@ -278,6 +278,28 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'etat INTEGER'
     + ')';
 
+    const requeteCommentaireTable = 'CREATE TABLE IF NOT EXISTS commentaire ('
+    + 'id_comm INTEGER PRIMARY KEY AUTOINCREMENT,'
+    + 'txt_comm TEXT,'
+    + 'id_session TEXT,'
+    + 'etat INTEGER'
+    + ')';
+
+    const requeteStadePhenoTable = 'CREATE TABLE IF NOT EXISTS stadepheno ('
+    + 'id_stade TEXT PRIMARY KEY UNIQUE,'
+    + 'nom TEXT,'
+    + 'resume TEXT,'
+    + 'descriptif TEXT,'
+    + 'url_image TEXT'
+    + ')';
+
+    const requeteSessionStadePhenoTable = 'CREATE TABLE IF NOT EXISTS session_stadepheno ('
+    + 'id_session TEXT NOT NULL,'
+    + 'id_stade TEXT NOT NULL,'
+    + 'etat INTEGER,'
+    + 'PRIMARY KEY(id_session, id_stade)'
+    + ')';
+
     this.database.executeSql(requeteUserTable, [])
       .then(() => {
         console.log('Success requet create table User');
@@ -313,6 +335,25 @@ fetchSongs(): Observable<Parcelle[]> {
         console.log('Success requet create table Observation');
       })
       .catch(e => console.log('Fail table Observation | ' + e));
+
+    this.database.executeSql(requeteCommentaireTable, [])
+      .then(() => {
+        console.log('Success requet create table Commentaire');
+      })
+      .catch(e => console.log('Fail table Commentaire | ' + e));
+
+    this.database.executeSql(requeteStadePhenoTable, [])
+      .then(() => {
+        console.log('Success requet create table Stade Pheno');
+        this.populateStadePheno();
+      })
+      .catch(e => console.log('Fail table Stade Pheno | ' + e));
+
+    this.database.executeSql(requeteSessionStadePhenoTable, [])
+      .then(() => {
+        console.log('Success requet create table Session-StadePheno');
+      })
+      .catch(e => console.log('Fail table Session-StadePheno | ' + e));
 
     this.isDbReady.next(true);
   }
@@ -866,6 +907,31 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+
+  getStadePheno() {
+    return this.database.executeSql(
+      'SELECT * FROM stadepheno '
+    + 'ORDER BY id_stade ASC'
+    , []).then(data => {
+      if (data.rows) {
+        const dataPheno = [];
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < data.rows.length; i++) {
+          const std = {
+            id_stade: data.rows.item(i).id_stade,
+            nom: data.rows.item(i).nom,
+            resume: data.rows.item(i).resume,
+            descriptif: data.rows.item(i).descriptif,
+            url_image: data.rows.item(i).url_image
+          };
+          dataPheno.push(std);
+        }
+        return dataPheno;
+      }
+    });
+  }
+
+
   getInfoParcelle(idParcelle: any) {
     let infoParcelle: any = null;
     const dataSession = [];
@@ -990,6 +1056,22 @@ fetchSongs(): Observable<Parcelle[]> {
     .catch(e => console.log('Fail update User & Password | ' + e));
   }
 
+  addStadePheno(updateData) {
+    // tslint:disable-next-line:only-arrow-functions
+    const dataTosql = Object.keys(updateData).map(function(_) { return updateData[_]; });
+    // console.log(dataTosql);
+    // const requete = 'UPDATE utilisateur SET mot_de_passe = ? WHERE email = ? AND id_utilisateur = ?';
+    const requete = 'INSERT OR REPLACE INTO stadepheno '
+    + '(id_stade, nom, resume, descriptif, url_image) '
+    + 'VALUES (?, ?, ?, ?, ?)';
+    return this.database.executeSql(requete, dataTosql)
+    .then(data => {
+      console.log('Success update Stade Pheno');
+      // this.loadDevelopers();
+    })
+    .catch(e => console.log('Fail update Stade Pheno | ' + e));
+  }
+
   // DROP TABLE
   droptable() {
     this.database.executeSql('DELETE FROM \'session\'', [])
@@ -1027,6 +1109,14 @@ fetchSongs(): Observable<Parcelle[]> {
       console.log('Success requet drop table device_info');
     })
     .catch(e => console.log(e));
+  }
+
+  dropTableStadePheno() {
+    this.database.executeSql('DELETE FROM \'stadepheno\'', [])
+    .then(() => {
+      console.log('Success requet drop table stadepheno');
+    })
+    .catch(e => console.log('Fail drop table stadepheno | ' + e));
   }
 
   loadParcelles() {
@@ -1346,4 +1436,16 @@ fetchSongs(): Observable<Parcelle[]> {
         });
       }
     }
+
+  populateStadePheno() {
+    this.serveur.updateStadePheno().subscribe(res => {
+      console.log('Return serveur Update Stade Pheno : ', res);
+      if (res.status) {
+        for (const dataToAdd of res.data) {
+          // console.log(dataToAdd);
+          this.addStadePheno(dataToAdd);
+        }
+      }
+    });
+  }
 }

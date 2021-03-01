@@ -37,6 +37,7 @@ export class ParcelleApexPage implements OnInit {
   public listObservation = [];
 
   public commentairetext = '';
+  public idStade = '';
 
   constructor(
     private plt: Platform,
@@ -320,13 +321,13 @@ export class ParcelleApexPage implements OnInit {
   public async stadePheno() {
     const modal = await this.modalController.create({
       component: StadePhenologiquePage,
-      /*componentProps: {
-        idUser: this.user.id_utilisateur,
-        parcelle: parcelle
-      }*/
+      componentProps: {
+        idStade: this.idStade,
+      }
     });
     modal.onDidDismiss().then((dataReturned) => {
       console.log(dataReturned);
+      this.idStade = dataReturned.data;
     });
     return await modal.present();
   }

@@ -97,4 +97,13 @@ export class ServerService {
     );
   }
 
+  updateStadePheno() {
+    return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/update_stade_pheno.php`, [])
+    .pipe(
+      tap(async (res: any) => {
+        return res;
+      })
+    );
+  }
+
 }
