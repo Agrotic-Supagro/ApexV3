@@ -847,6 +847,10 @@ fetchSongs(): Observable<Parcelle[]> {
             'SELECT * FROM session '
           + 'JOIN parcelle '
           + 'ON parcelle.id_parcelle = session.id_parcelle '
+          + 'JOIN session_stadepheno '
+          + 'ON session.id_session = session_stadepheno.id_session '
+          + 'JOIN stadepheno '
+          + 'ON session_stadepheno.id_stade = stadepheno.id_stade '
           + 'WHERE parcelle.id_parcelle = ? '
           + 'AND session.etat != 2 '
           + 'AND parcelle.etat != 2 '
@@ -914,7 +918,8 @@ fetchSongs(): Observable<Parcelle[]> {
                 ifv_classe: ifvClasse,
                 ic_apex: moyenne.toFixed(2),
                 proprietaire: dataParcelle.rows.item(0).id_proprietaire,
-                partage: partage
+                partage: partage,
+                stade: dataParcelle.rows.item(0).nom
               });
             }
           });

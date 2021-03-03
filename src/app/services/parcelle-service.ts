@@ -8,4 +8,5 @@ export interface Parcelle {
     ic_apex: number;
     proprietaire: string;
     partage?: boolean;
+    stade?: string;
 }

@@ -62,7 +62,8 @@
                 <ion-col size="auto" class="parcelleShare"><ion-icon class="share" name="share-social-sharp"></ion-icon></ion-col>
               </ion-row>
             </ion-grid>
-            <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}</p>
+            <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}<br></p>
+            <p class="center">{{parcelle.stade}}</p>
             <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart" ></div>
             <ng-template #ecimee>
               <ion-grid>
