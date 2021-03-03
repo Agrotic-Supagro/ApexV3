@@ -1241,7 +1241,7 @@ fetchSongs(): Observable<Parcelle[]> {
 
     // syncho des données
     syncData() {
-      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'device_info'];
+      const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation', 'device_info', 'commentaire', 'session_stadepheno'];
       for (const table of tables) {
         const query = 'SELECT * FROM \'' + table + '\' WHERE etat = 0 OR etat = 2';
         this.database.executeSql(query, []).then(data => {
@@ -1251,16 +1251,21 @@ fetchSongs(): Observable<Parcelle[]> {
                 table: table,
                 data: data.rows.item(i)
               };
+              console.log('Synchro data : ', jsonData);
               this.serveur.syncData(jsonData).subscribe(res => {
                 console.log('Return serveur : ', res);
                 if (res.status) {
                   if (res.etat === '2') {
                     if (table === 'session') { this.deleteSession([res.idSession]); }
+                    if (table === 'session_stadepheno') { this.deleteSessionStade([res.idSession]); }
+                    if (table === 'commentaire') { this.deleteCommentaire([res.idSession]); }
                     if (table === 'parcelle') { this.deleteParcelle([res.idParcelle]); }
                     if (table === 'observation') { this.deleteObservation([res.idObservation]); }
                     if (table === 'utilisateur_parcelle') { this.deleteUserParcelle([res.idUser, res.idParcelle]); }
                   } else {
                     if (table === 'session') { this.updateEtatSession([1, res.idSession]); }
+                    if (table === 'session_stadepheno') { this.updateEtatSessionStade([1, res.idSession]); }
+                    if (table === 'commentaire') { this.updateEtatCommentaire([1, res.idSession]); }
                     if (table === 'parcelle') { this.updateEtatParcelle([1, res.idParcelle]); }
                     if (table === 'observation') { this.updateEtatObservation([1, res.idObservation]); }
                     if (table === 'device_info') { this.updateEtatDeviceInfo([1, res.idConf]); }
@@ -1272,6 +1277,26 @@ fetchSongs(): Observable<Parcelle[]> {
           }
         });
       }
+    }
+
+    updateEtatCommentaire(dataToUpdate) {
+      const requete = 'UPDATE commentaire SET etat = ? WHERE id_session = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat commentaire');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table commentaire | ' + e));
+    }
+
+    updateEtatSessionStade(dataToUpdate) {
+      const requete = 'UPDATE session_stadepheno SET etat = ? WHERE id_session = ?';
+      return this.database.executeSql(requete, dataToUpdate)
+      .then(data => {
+        console.log('Success update etat session_stadepheno');
+        // this.loadDevelopers();
+      })
+      .catch(e => console.log('Fail update etat table session_stadepheno | ' + e));
     }
 
     updateEtatSession(dataToUpdate) {
@@ -1368,6 +1393,22 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
+  deleteCommentaire(dataSql) {
+    return this.database.executeSql('DELETE FROM commentaire '
+    + 'WHERE id_session= ?', dataSql)
+    .then(data => {
+      console.log('Delete commentaire : ', dataSql);
+    });
+  }
+
+  deleteSessionStade(dataSql) {
+    return this.database.executeSql('DELETE FROM session_stadepheno '
+    + 'WHERE id_session= ?', dataSql)
+    .then(data => {
+      console.log('Delete session_stadepheno : ', dataSql);
+    });
+  }
+
   recieveParcelleShared(user) {
     const jsonData = {
       idUser: user.id_utilisateur
@@ -1411,7 +1452,7 @@ fetchSongs(): Observable<Parcelle[]> {
 
   recieveData(user) {
     // const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation'];
-    const tables = ['utilisateur_parcelle', 'parcelle', 'session'];
+    const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'commentaire', 'session_stadepheno'];
     // const tables = ['session'];
     for (const table of tables) {
       const jsonData = {
@@ -1446,6 +1487,32 @@ fetchSongs(): Observable<Parcelle[]> {
   }
 
     // SYNC ADD METHODS
+    addSyncCommentaire(dataSql) {
+      dataSql.etat = 1;
+      // Methode pour recuperer les valeurs dans un json simple
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(dataSql).map(function(_) { return dataSql[_]; });
+      return this.database.executeSql('INSERT OR IGNORE INTO commentaire (txt_comm, id_session, etat) '
+      + 'VALUES (?, ?, ?)', dataTosql)
+      .then(data => {
+        console.log('>> Success Add sync commentaire');
+      })
+      .catch(e => console.log('Fail Add commentaire | ' , e));
+    }
+
+    addSyncSessionStade(dataSql) {
+      dataSql.etat = 1;
+      // Methode pour recuperer les valeurs dans un json simple
+      // tslint:disable-next-line:only-arrow-functions
+      const dataTosql = Object.keys(dataSql).map(function(_) { return dataSql[_]; });
+      return this.database.executeSql('INSERT OR IGNORE INTO session_stadepheno (id_session, id_stade, etat) '
+      + 'VALUES ( ?, ?, ?)', dataTosql)
+      .then(data => {
+        console.log('>> Success Add sync session_stadepheno');
+      })
+      .catch(e => console.log('Fail Add session_stadepheno | ' , e));
+    }
+
     addSyncUserParcelle(dataSql) {
       dataSql.etat = 1;
       // Methode pour recuperer les valeurs dans un json simple
