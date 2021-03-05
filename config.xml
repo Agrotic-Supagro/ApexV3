@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="ag.GB.apex" version="3.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="ag.GB.apex" version="4.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ApeX-Vigne</name>
     <description>ApeX-Vigne : Une application mobile gratuite pour faciliter le suivi de la croissance des vignes et estimer la contrainte hydrique</description>
     <author email="guilhem.brunel@supagro.fr" href="https://www.agrotic.org/">Guilhem Brunel</author>
@@ -12,7 +12,7 @@
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
     <preference name="ScrollEnabled" value="false" />
-    <preference name="android-minSdkVersion" value="19" />
+    <preference name="android-minSdkVersion" value="22" />
     <preference name="BackupWebStorage" value="none" />
     <preference name="SplashMaintainAspectRatio" value="true" />
     <preference name="FadeSplashScreenDuration" value="300" />
@@ -20,7 +20,7 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="3000" />
     <platform name="android">
-        <preference name="android-targetSdkVersion" value="28" />
+        <preference name="android-targetSdkVersion" value="29" />
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application" xmlns:android="http://schemas.android.com/apk/res/android">
             <application android:networkSecurityConfig="@xml/network_security_config" />
             <application android:usesCleartextTraffic="true" />
@@ -167,5 +167,7 @@
     <allow-navigation href="http://localhost:8100" sessionid="353ffb58" />
     <plugin name="cordova-plugin-geolocation" spec="^4.0.2" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.2" />
-    <engine name="android" spec="^7.1.4" />
+    <plugin name="cordova-android-support-gradle-release" spec="^3.0.1">
+        <variable name="ANDROID_SUPPORT_VERSION" value="27.+" />
+    </plugin>
 </widget>
