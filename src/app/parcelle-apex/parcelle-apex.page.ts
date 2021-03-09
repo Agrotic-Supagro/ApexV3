@@ -342,7 +342,7 @@ export class ParcelleApexPage implements OnInit {
       }
     });
     modal.onDidDismiss().then((dataReturned) => {
-      console.log(dataReturned);
+      console.log('Return stade Id', dataReturned);
       this.idStade = dataReturned.data;
     });
     return await modal.present();

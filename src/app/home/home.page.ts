@@ -89,6 +89,10 @@ export class HomePage {
     });
   }
 
+  ionViewDidEnter() {
+    // this.computeChart();
+  }
+
   public async sendParcelle(parcelle, slidingItem) {
     const alert = await this.alertCtrl.create({
       header: 'Recevoir les données de la parcelle ' + parcelle.nom_parcelle + ' sur votre email ?',

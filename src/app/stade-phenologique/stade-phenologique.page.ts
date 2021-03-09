@@ -28,6 +28,8 @@ export class StadePhenologiquePage implements OnInit {
         } else {
           console.log(data);
           this.dataList = data;
+          this.dataList = this.dataList.filter(item => item.id_stade !== 'null');
+
         }
       }).then(() => {
         this.isSelected = {id_stade: this.navParams.data.idStade};
@@ -40,7 +42,11 @@ export class StadePhenologiquePage implements OnInit {
 
   ionViewDidEnter() {
     if (this.isSelected.id_stade !== '') {
-      this.scrollToLabels(this.isSelected.id_stade);
+      if (this.isSelected.id_stade !== 'null') {
+        this.scrollToLabels(this.isSelected.id_stade);
+      } else {
+        this.scrollToLabels(this.idPhenoDefault);
+      }
     } else {
       this.scrollToLabels(this.idPhenoDefault);
     }
@@ -70,7 +76,10 @@ export class StadePhenologiquePage implements OnInit {
   }
 
   async saveStade() {
-    const id = this.isSelected.id_stade;
+    let id = 'null';
+    if (this.isSelected.id_stade !== '') {
+      id = this.isSelected.id_stade;
+    }
     await this.modalController.dismiss(id);
   }
 }

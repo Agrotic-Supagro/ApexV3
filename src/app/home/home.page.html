@@ -63,7 +63,7 @@
               </ion-row>
             </ion-grid>
             <p class="subtitlecard">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}<br></p>
-            <p class="center">{{parcelle.stade}}</p>
+            <p class="center" *ngIf="parcelle.stade != 'null'">{{parcelle.stade}}</p>
             <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart" ></div>
             <ng-template #ecimee>
               <ion-grid>
