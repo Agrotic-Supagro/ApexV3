@@ -82,7 +82,10 @@ export class SessionInfoPage implements OnInit {
     await alertEcimee.present();
   }
   public async saveEcimee() {
-      const dateSession = this.dateformat.getDatetime(this.myDate);
+      console.log('Save Session ECIME :');
+      console.log('Date ', new Date(this.myDate).toISOString());
+      const dateSession = this.dateformat.getDatetime(new Date(this.myDate).toISOString());
+      console.log('Convert date', dateSession);
       const today = this.dateformat.getDatetime(new Date().toISOString());
       // tslint:disable-next-line:max-line-length
       console.log('>> Update Session - Info : ' + dateSession + ' | ' + this.numberof0value + ' ' + this.numberof1value + ' ' + this.numberof2value);

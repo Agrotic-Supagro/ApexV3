@@ -69,6 +69,31 @@
 <ion-footer>
   <ion-grid class="nopadding">
     <ion-row class="nopadding">
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="danger" (click)="parcelleEcimee()">
+          <ion-icon src="../../../assets/icon/cisaille.svg"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="light" (click)="deleteLast()">
+          <ion-icon name="return-down-back-sharp"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="medium" (click)="stadePheno()">
+          <ion-icon name="leaf"></ion-icon>
+        </ion-button>
+      </ion-col>
+
+      <ion-col col-auto class="nopadding">
+        <ion-button expand="block" color="dark" (click)="commentaire()">
+          <ion-icon name="chatbox-ellipses"></ion-icon>
+        </ion-button>
+      </ion-col>
+    </ion-row>
+    <ion-row class="nopadding">
       <!--<ion-col size="2" class="nopadding">
         <ion-button expand="block" color="danger" (click)="parcelleEcimee()">
           <ion-icon class="iconS"  src="../../../assets/icon/cisaille.svg"></ion-icon>
@@ -79,14 +104,15 @@
           <ion-icon class="iconS" name="return-down-back-sharp"></ion-icon>
         </ion-button>
       </ion-col>-->
-      <ion-col size="2" class="nopadding">
+      
+      <!--<ion-col size="2" class="nopadding">
         <ion-button expand="block" color="warning" (click)="notifications($event)">
           <ion-icon class="iconS" name="ellipsis-horizontal"></ion-icon>
         </ion-button>
-      </ion-col>
+      </ion-col>-->
       <ion-col col-auto class="nopadding">
         <ng-container *ngIf="numberApex < thresholdApex; else elseTemplate">
-          <ion-button expand="block" color="dark" (click)="apexAlert()" > Observation :
+          <ion-button expand="block" color="secondary" (click)="apexAlert()" > Observation :
             {{numberApex}}/{{thresholdApex}}</ion-button>
         </ng-container>
         <ng-template #elseTemplate>

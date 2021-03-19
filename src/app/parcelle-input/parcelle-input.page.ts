@@ -1,12 +1,14 @@
 import { DateService } from './../services/dates.service';
 import { GUIDGenerator } from './../services/guidgenerator.service';
 import { Component, OnInit } from '@angular/core';
-import { ToastController, AlertController, Platform, ModalController, NavParams, PopoverController } from '@ionic/angular';
+// import { NavParams } from '@ionic/angular';
+import { ToastController, AlertController, Platform, ModalController, PopoverController } from '@ionic/angular';
 import { LocationTrackerService } from '../services/location-tracker.service';
 import { DatabaseService } from '../services/database.service';
 import { UserConfigurationService } from '../services/user-configuration.service';
 import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
 import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-parcelle-input',
@@ -38,20 +40,31 @@ export class ParcelleInputPage implements OnInit {
     private plt: Platform,
     public toastController: ToastController,
     public modalController: ModalController,
+    private route: ActivatedRoute,
+    private router: Router,
     private alertCtrl: AlertController,
     private database: DatabaseService,
     private guid: GUIDGenerator,
     private dateformat: DateService,
     private locationTracker: LocationTrackerService,
-    private navParams: NavParams,
+    // private navParams: NavParams,
     private conf: UserConfigurationService,
     public popoverCtrl: PopoverController,
   ) {
-    this.plt.ready().then(() => {
+    /*this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
       this.conf.getApexThreshold(this.idUser).then(res => {
         this.thresholdApex = res;
       });
+    });*/
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        console.log('Page Parcelle Input. IdUser :', this.router.getCurrentNavigation().extras.state.idUser);
+        this.idUser = this.router.getCurrentNavigation().extras.state.idUser;
+        this.conf.getApexThreshold(this.idUser).then(res => {
+          this.thresholdApex = res;
+        });
+      }
     });
    }
 
@@ -144,7 +157,12 @@ export class ParcelleInputPage implements OnInit {
       const dataToSession = {id_session: idsession, date_session: dateSession, apex0: 999, apex1: 999, apex2: 999, id_observateur: this.idUser, id_parcelle: this.idParcelle, etat: 0};
       this.database.addSession(dataToSession);
 
-      await this.modalController.dismiss();
+      // CLOSE FOR MODAL
+      // await this.modalController.dismiss();
+
+      // CLOSE FOR PAGE
+      this.router.navigateByUrl('/home');
+
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Erreur',
@@ -185,7 +203,10 @@ export class ParcelleInputPage implements OnInit {
                 console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
                 if (this.numberof0value === 0 && this.numberof1value === 0 && this.numberof2value === 0) {
                   console.log('Session unsave !');
-                  await this.modalController.dismiss();
+                  // CLOSE FOR MODAL
+                  // await this.modalController.dismiss();
+                  // CLOSE FOR PAGE
+                  this.router.navigateByUrl('/home');
                 } else {
                   console.log('Session to save');
                   const idsession = this.guid.getGuidSess();
@@ -203,7 +224,10 @@ export class ParcelleInputPage implements OnInit {
                   // TABLE session_stadepheno
                   const dataToCommentaire = {txt_comm: this.commentairetext, id_session: idsession, etat: 0};
                   this.database.addCommentaire(dataToCommentaire);
-                  await this.modalController.dismiss();
+                  // CLOSE FOR MODAL
+                  // await this.modalController.dismiss();
+                  // CLOSE FOR PAGE
+                  this.router.navigateByUrl('/home');
                 }
               }
             }
@@ -219,7 +243,10 @@ export class ParcelleInputPage implements OnInit {
         console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
         if (this.numberof0value === 0 && this.numberof1value === 0 && this.numberof2value === 0) {
           console.log('Session unsave !');
-          await this.modalController.dismiss();
+          // CLOSE FOR MODAL
+          // await this.modalController.dismiss();
+          // CLOSE FOR PAGE
+          this.router.navigateByUrl('/home');
         } else {
           console.log('Session to save');
           const idsession = this.guid.getGuidSess();
@@ -237,7 +264,10 @@ export class ParcelleInputPage implements OnInit {
           // TABLE session_stadepheno
           const dataToCommentaire = {txt_comm: this.commentairetext, id_session: idsession, etat: 0};
           this.database.addCommentaire(dataToCommentaire);
-          await this.modalController.dismiss();
+          // CLOSE FOR MODAL
+          // await this.modalController.dismiss();
+          // CLOSE FOR PAGE
+          this.router.navigateByUrl('/home');
         }
       }
 

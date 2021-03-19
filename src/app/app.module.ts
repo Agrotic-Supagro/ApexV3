@@ -37,11 +37,11 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
     AppRoutingModule,
     HttpClientModule,
     IonicStorageModule.forRoot(),
-    ParcelleInputPageModule,
-    ParcelleApexPageModule,
+    // ParcelleInputPageModule,
+    // ParcelleApexPageModule,
     StadePhenologiquePageModule,
     CommentairesSessionPageModule,
-    SessionInfoPageModule
+    SessionInfoPageModule,
   ],
   providers: [
     StatusBar,

@@ -248,6 +248,38 @@ export class HomePage {
     this.router.navigate(['parcelle-info'], navigationExtras);
   }
 
+  public async openParcelleInputPage() {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        idUser: this.user.id_utilisateur
+      }
+    };
+    this.router.navigate(['/parcelle-input'], navigationExtras);
+  }
+
+  public async openParcelleApexPage() {
+    this.trakcerService.askToTurnOnGPS().then(async gps => {
+      console.log('GPS : ' + gps.locationServicesEnabled);
+      if (gps.locationServicesEnabled) {
+        const navigationExtras: NavigationExtras = {
+          state: {
+            idUser: this.user.id_utilisateur
+          }
+        };
+        this.router.navigate(['/parcelle-apex'], navigationExtras);
+      } else {
+        const alert = await this.alertCtrl.create({
+          header: 'Activez votre Localisation',
+          // tslint:disable-next-line:max-line-length
+          message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+    });
+
+  }
+
   public async openParcelleApex() {
     console.log(this.user);
     this.trakcerService.askToTurnOnGPS().then(async gps => {

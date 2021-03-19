@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Vibration } from '@ionic-native/vibration/ngx';
 import { DatabaseService } from '../services/database.service';
-import { Platform, NavParams, AlertController, ModalController, ToastController } from '@ionic/angular';
+import { Platform, AlertController, ModalController, ToastController } from '@ionic/angular';
 import { PopoverController } from '@ionic/angular';
 import { GUIDGenerator } from '../services/guidgenerator.service';
 import { DateService } from '../services/dates.service';
@@ -10,6 +10,7 @@ import { UserConfigurationService } from '../services/user-configuration.service
 import { ApexInformationComponent } from '../apex-information/apex-information.component';
 import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
 import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-parcelle-apex',
@@ -43,23 +44,36 @@ export class ParcelleApexPage implements OnInit {
     private plt: Platform,
     public vibration: Vibration,
     public toastController: ToastController,
-    private navParams: NavParams,
+    // private navParams: NavParams,
     private alertCtrl: AlertController,
     public modalController: ModalController,
     private database: DatabaseService,
     private guid: GUIDGenerator,
+    private route: ActivatedRoute,
+    private router: Router,
     private dateformat: DateService,
     private locationTracker: LocationTrackerService,
     private conf: UserConfigurationService,
     public popoverCtrl: PopoverController,
   ) {
-    this.plt.ready().then(() => {
+    this.route.queryParams.subscribe(params => {
+      if (this.router.getCurrentNavigation().extras.state) {
+        console.log('Page Parcelle Input. IdUser :', this.router.getCurrentNavigation().extras.state.idUser);
+        this.idUser = this.router.getCurrentNavigation().extras.state.idUser;
+        this.conf.getApexThreshold(this.idUser).then(res => {
+          this.thresholdApex = res;
+        });
+        this.idSession = this.guid.getGuidSess();
+      }
+    });
+    // FOR MODAL
+    /*this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
       this.conf.getApexThreshold(this.idUser).then(res => {
         this.thresholdApex = res;
       });
       this.idSession = this.guid.getGuidSess();
-    });
+    });*/
   }
 
   ngOnInit() {
@@ -159,7 +173,10 @@ export class ParcelleApexPage implements OnInit {
       console.log('>> Save Session - Geoloc : ' + this.locationTracker.getLatitude() + ' ' + this.locationTracker.getLongitude());
       if (this.numberApex0 === 0 && this.numberApex1 === 0 && this.numberApex2 === 0) {
         console.log('Session unsave !');
-        await this.modalController.dismiss();
+        // CLOSE FOR MODAL
+        // await this.modalController.dismiss();
+        // CLOSE FOR PAGE
+        this.router.navigateByUrl('/home');
       } else {
         console.log('Session to save');
         // TABLE Utilisateur_Parcelle
@@ -187,7 +204,10 @@ export class ParcelleApexPage implements OnInit {
         // TABLE OBSERVATION
         this.database.addObservation(this.listObservation);
 
-        await this.modalController.dismiss();
+        // CLOSE FOR MODAL
+        // await this.modalController.dismiss();
+        // CLOSE FOR PAGE
+        this.router.navigateByUrl('/home');
       }
     } else {
       const alert = await this.alertCtrl.create({
@@ -251,7 +271,10 @@ export class ParcelleApexPage implements OnInit {
       const dataToCommentaire = {txt_comm: this.commentairetext, id_session: this.idSession, etat: 0};
       this.database.addCommentaire(dataToCommentaire);
 
-      await this.modalController.dismiss();
+      // CLOSE FOR MODAL
+      // await this.modalController.dismiss();
+      // CLOSE FOR PAGE
+      this.router.navigateByUrl('/home');
     } else {
       const alert = await this.alertCtrl.create({
         header: 'Erreur',

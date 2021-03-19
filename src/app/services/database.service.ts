@@ -25,6 +25,7 @@ export class DatabaseService {
   user: User;
   parcelleList: ParcelleName[];
   listId: any = [];
+  stadeList: any = [];
 
   private storage: SQLiteObject;
   songsList = new BehaviorSubject([]);
@@ -355,6 +356,7 @@ fetchSongs(): Observable<Parcelle[]> {
       })
       .catch(e => console.log('Fail table Session-StadePheno | ' + e));
 
+    this.getStadePheno();
     this.isDbReady.next(true);
   }
 
@@ -905,8 +907,6 @@ fetchSongs(): Observable<Parcelle[]> {
                     }
                   }
                 }
-
-
 
               this.parcelles.push({
                 id_parcelle: dataParcelle.rows.item(0).id_parcelle,
@@ -1586,15 +1586,17 @@ fetchSongs(): Observable<Parcelle[]> {
     });
   }
 
-  findStadePheno(idSession) {
-    return this.database.executeSql('SELECT * FROM session_stadepheno ' +
-    'JOIN stadepheno ' +
-    'ON session_stadepheno.id_stade = stadepheno.id_stade ' +
-    'WHERE id_session = ?', [idSession]).then(dataStade => {
-      if (dataStade.rows.length === 1) {
-        return dataStade.rows.item(0).nom;
-      } else {
-        return 'null';
+  getStadeName() {
+    return this.database.executeSql('SELECT * FROM stadepheno', []).then(dataStade => {
+      this.stadeList = [];
+      if (dataStade.rows.length > 0) {
+        for (let i = 0; i < dataStade.rows.length; i++) {
+          this.stadeList.push({
+            id_stade: dataStade.rows.item(i).id_stade,
+            nom: dataStade.rows.item(i).nom
+           });
+        }
+        return this.stadeList;
       }
     });
   }
