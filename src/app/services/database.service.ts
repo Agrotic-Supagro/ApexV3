@@ -954,6 +954,7 @@ fetchSongs(): Observable<Parcelle[]> {
   }
 
   getInfoSession(idSession: any) {
+
     return this.database.executeSql(
       'SELECT * FROM session '
     + 'JOIN session_stadepheno '
@@ -997,6 +998,53 @@ fetchSongs(): Observable<Parcelle[]> {
           dataPheno.push(std);
         }
         return dataPheno;
+      }
+    });
+  }
+
+  getStadePhenobyId(idParcelle) {
+    // SELECT * FROM session WHERE id_parcelle = ? ORDER BY session.date_session DESC
+    return this.database.executeSql(
+      'SELECT * FROM session WHERE id_parcelle = ? ORDER BY session.date_session DESC'
+      , [idParcelle]).then(data => {
+      if (data.rows) {
+        if (data.rows.length > 0) {
+          const idsession = data.rows.item(0).id_session;
+          return this.database.executeSql(
+            'SELECT * FROM stadepheno '
+            + 'JOIN session_stadepheno '
+            + 'ON session_stadepheno.id_stade = stadepheno.id_stade '
+            + 'WHERE session_stadepheno.id_session = ?'
+            , [idsession]).then(res => {
+              if (res.rows) {
+                console.log('To delete ', res.rows.item(0));
+                if (res.rows.length > 0) {
+                  return res.rows.item(0).resume;
+                } else {
+                  return null;
+                }
+              }
+          });
+        } else {
+          return null;
+        }
+      }
+    });
+  }
+
+  getCommentaireId(idParcelle) {
+    return this.database.executeSql(
+      'SELECT * FROM commentaire '
+      + 'JOIN session '
+      + 'ON session.id_session = commentaire.id_session '
+      + 'WHERE session.id_parcelle = ? '
+      + 'ORDER BY session.date_session DESC'
+    , [idParcelle]).then(data => {
+      if (data.rows) {
+        if (data.rows.length > 0) {
+          return data.rows.item(0).txt_comm;
+        }
+        return null;
       }
     });
   }

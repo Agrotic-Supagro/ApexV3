@@ -138,6 +138,7 @@ export class LoginPage implements OnInit {
           handler: data => {
             const pwd = Math.random().toString(36).slice(-8);
             const dataPwd = {mot_de_passe: pwd, email: data.email};
+            console.log(dataPwd);
             this.auth.resetPassword(dataPwd).subscribe(async res => {
               if (res.status) {
                 console.log('## Return reset pwd :', res.data);

@@ -9,4 +9,5 @@ export interface Parcelle {
     proprietaire: string;
     partage?: boolean;
     stade?: string;
+    commentaire?: string;
 }

@@ -34,6 +34,15 @@ ion-card {
     padding: 4px;
 }
 
+.hr {
+    border-bottom: 1px solid #86919b;
+    margin: 10px 0;
+    width: 42%;
+    margin: auto;
+    margin-top: 0.2em;
+    margin-bottom: 0.5em;
+  }
+
 .list-style{
     padding-top: 0;
     padding-bottom: 0;
@@ -347,3 +356,4 @@ ion-footer {
 .detail{
     margin-top: 0.3em;
 }
+

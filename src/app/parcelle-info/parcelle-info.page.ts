@@ -4,7 +4,7 @@ import { DatabaseService } from '../services/database.service';
 import { DateService } from '../services/dates.service';
 import { Chart } from 'chart.js';
 import { SessionInfoPage } from '../session-info/session-info.page';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ServerService } from '../services/server.service';
 import { NetworkService } from '../services/network.service';
 
@@ -160,6 +160,17 @@ export class ParcelleInfoPage implements OnInit {
         }
       });
     }
+  }
+
+  public async openEditSessionPage(idSession) {
+    const navigationExtras: NavigationExtras = {
+      state: {
+        user: this.user,
+        idSession: idSession,
+        parcelle: this.parcelle
+      }
+    };
+    this.router.navigate(['/session-info'], navigationExtras);
   }
 
   public async editSession(idSession) {

@@ -50,4 +50,5 @@ export class ContactPage {
     });
     toast.present();
   }
+
 }

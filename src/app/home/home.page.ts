@@ -71,7 +71,7 @@ export class HomePage {
           console.log('>> Homepage - IFV : ' + this.user.model_ifv);
         })
         .then(_ => {
-          const datasql = [this.user.id_utilisateur, 0];
+          const datasql = [this.user.id_utilisateur, this.offset];
           this.database.getAllParcelle(datasql, this.filter).then( data => {
             // this.parcelles = this.changeFilter(this.database.parcelles);
             this.parcelles = this.database.parcelles;
@@ -465,6 +465,26 @@ export class HomePage {
       // toSave.destroy();
     }
 
+    this.database.getStadePhenobyId(data.id_parcelle).then(res => {
+      console.log('Résultat Stade : ', res);
+      this.parcelles.find(item => item.nom_parcelle === data.nom_parcelle).stade = res;
+    });
+    this.database.getCommentaireId(data.id_parcelle).then(res => {
+      console.log('Résultat Commentaire : ', res);
+      if (res) {
+        this.parcelles.find(item => item.nom_parcelle === data.nom_parcelle).commentaire = res;
+      }
+    });
+  }
+
+  async showCommentaire(parcelle) {
+    const alert = await this.alertCtrl.create({
+      header: 'Commentaire',
+      // tslint:disable-next-line:max-line-length
+      message: parcelle.commentaire,
+      buttons: ['OK']
+    });
+    await alert.present();
   }
 
   changeFilter(data) {
