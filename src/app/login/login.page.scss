@@ -1,3 +1,83 @@
+.login-button{
+    --background: #45D7C2;
+    margin-bottom: 5%;
+}
+
+.btm{
+    position: fixed;
+    margin-right: auto;
+    margin-left: auto;
+    width: 80%;
+    bottom: 1%;
+}
+.register-button{
+    --background: none;
+    --color : white;
+    border : 1px solid white;
+}
+
+.transparent {
+    color: white;
+    --background: #ffffff5b;
+}
+
+.opacity-input{
+    --placeholder-opacity: 1;
+}
+
+.forgetpwd{
+    text-align: center;
+    color: white;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+.item-form{
+    margin-bottom: 2%;
+}
+.main-button{
+    --box-shadow:none;
+ }
+.button-margin{
+    margin-top: 15%;
+}
+.logo{
+    margin-top: 15%;
+    margin-bottom: 25%;
+    --background: none;
+    margin-left: auto;
+    margin-right: auto;
+    width: 200px;
+}
+.credit{
+    text-align: center;
+    color: rgba(255, 255, 255, 0.534);
+    font-style: italic;
+    font-size: 0.8em;
+}
+
+ion-content{
+    --padding-end: 10%;
+    --padding-start: 10%;
+    height: 100%;
+    //--background: rgb(155, 173, 182);
+    --background: linear-gradient(#1FC2A5, #076589);
+}
+
+
+
+.titlecard{
+    border-radius: 5%;
+    background-color: rgb(69, 169, 187);
+    color: white;
+    font-variant: small-caps;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3em;
+    padding: 0.1em;
+    margin-bottom: 0.1em;
+}
+
 .forgetpw{
     text-align: center;
     font-size: small;
@@ -20,22 +100,7 @@
     --color:#ffffff;
   }
 
-.button-margin{
-    margin-top: 2em;
-}
-
-ion-content{
-    --background: rgb(155, 173, 182);
-}
-
-.titlecard{
-    border-radius: 5%;
-    background-color: rgb(69, 169, 187);
-    color: white;
-    font-variant: small-caps;
-    font-weight: bold;
+.footer{
     text-align: center;
-    font-size: 1.3em;
-    padding: 0.1em;
-    margin-bottom: 0.1em;
+    padding: 0.5em;
 }

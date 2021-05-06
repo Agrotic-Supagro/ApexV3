@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="ag.GB.apex" version="4.1.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="ag.GB.apex" version="4.3.6" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>ApeX-Vigne</name>
     <description>ApeX-Vigne : Une application mobile gratuite pour faciliter le suivi de la croissance des vignes et estimer la contrainte hydrique</description>
     <author email="guilhem.brunel@supagro.fr" href="https://www.agrotic.org/">Guilhem Brunel</author>
