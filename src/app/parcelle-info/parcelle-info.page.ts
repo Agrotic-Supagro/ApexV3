@@ -170,6 +170,7 @@ export class ParcelleInfoPage implements OnInit {
         parcelle: this.parcelle
       }
     };
+    console.log('Data send to edit-sessin ', navigationExtras);
     this.router.navigate(['/session-info'], navigationExtras);
   }
 

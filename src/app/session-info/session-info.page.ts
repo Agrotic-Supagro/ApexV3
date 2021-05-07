@@ -42,11 +42,17 @@ export class SessionInfoPage implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
-        console.log('Page Parcelle Input. IdUser :', this.router.getCurrentNavigation().extras.state.idUser);
+        console.log('received data from Parcelle-info', this.router.getCurrentNavigation().extras.state);
+        console.log('Page Parcelle Input. IdUser :', this.router.getCurrentNavigation().extras.state.user.id_utilisateur);
         this.user = this.router.getCurrentNavigation().extras.state.user;
-        this.idUser = this.router.getCurrentNavigation().extras.state.idUser;
+        this.idUser = this.router.getCurrentNavigation().extras.state.user.id_utilisateur;
         this.idSession = this.router.getCurrentNavigation().extras.state.idSession;
         this.parcelle = this.router.getCurrentNavigation().extras.state.parcelle;
+
+        console.log('User', this.user);
+        console.log('IdUser', this.idUser);
+        console.log('IdSession', this.idSession);
+        console.log('IdParcelle', this.parcelle);
 
         this.navigationExtras = {
           state: {
@@ -59,7 +65,7 @@ export class SessionInfoPage implements OnInit {
           if (data === null) {
             console.log(data);
           } else {
-            console.log(data);
+            console.log('data Session', data);
             this.session = data;
             this.numberof0value = data.apex0;
             this.numberof1value = data.apex1;

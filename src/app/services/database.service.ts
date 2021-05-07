@@ -964,16 +964,39 @@ fetchSongs(): Observable<Parcelle[]> {
     + 'WHERE session.id_session = ?'
     , [idSession]).then(data => {
       if (data.rows) {
-        return {
-          idSession: data.rows.item(0).id_session,
-          date_session: data.rows.item(0).date_session,
-          apex0: data.rows.item(0).apex0,
-          apex1: data.rows.item(0).apex1,
-          apex2: data.rows.item(0).apex2,
-          id_comm: data.rows.item(0).id_comm,
-          txt_comm: data.rows.item(0).txt_comm,
-          id_stade: data.rows.item(0).id_stade
-        };
+        if (data.rows.length > 0) {
+          return {
+            idSession: data.rows.item(0).id_session,
+            date_session: data.rows.item(0).date_session,
+            apex0: data.rows.item(0).apex0,
+            apex1: data.rows.item(0).apex1,
+            apex2: data.rows.item(0).apex2,
+            id_comm: data.rows.item(0).id_comm,
+            txt_comm: data.rows.item(0).txt_comm,
+            id_stade: data.rows.item(0).id_stade
+          };
+        } else {
+          console.log('ici');
+          return this.database.executeSql(
+            'SELECT * FROM session WHERE session.id_session = ?'
+          , [idSession]).then(dataOld => {
+              if (dataOld.rows.length > 0) {
+                console.log('là', dataOld.rows);
+                console.log('là bas', dataOld.rows.item(0));
+                console.log('là bas, tout', dataOld.rows.item(0).apex0);
+                return {
+                  idSession: dataOld.rows.item(0).id_session,
+                  date_session: dataOld.rows.item(0).date_session,
+                  apex0: dataOld.rows.item(0).apex0,
+                  apex1: dataOld.rows.item(0).apex1,
+                  apex2: dataOld.rows.item(0).apex2,
+                  id_comm: '',
+                  txt_comm: '',
+                  id_stade: ''
+                };
+              }
+          });
+        }
       }
     });
   }
