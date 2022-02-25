@@ -2,8 +2,8 @@
   <ion-toolbar class="toolbar-header">
     <ion-grid *ngIf="idParcelle">
         <ion-row (click)="resetNomParcelle()">
-          <ion-col>
-            <ion-title>{{nomParcelle}}</ion-title>
+          <ion-col class="titleparcelle">
+            {{nomParcelle}}
           </ion-col>
           <ion-col col-auto>
             <ion-title class="alignRight">

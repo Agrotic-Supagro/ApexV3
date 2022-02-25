@@ -63,7 +63,7 @@
                 <ion-col size="auto" class="parcelleShare"><ion-icon class="share" name="share-social-sharp"></ion-icon></ion-col>
               </ion-row>
             </ion-grid>
-            <p class="subtitlecard" (click)="parcelleInfoPage(parcelle)">Croissance au {{parcelle.date_session | date :  "dd/MM/yyyy"}} à {{parcelle.date_session | date :  "HH:mm"}}<br></p> 
+            <p class="subtitlecard" (click)="parcelleInfoPage(parcelle)">Croissance au {{parcelle.date_session | datesExtra : 'dates'}} à {{parcelle.date_session | datesExtra : 'heures'}}<br></p> 
             <!--<ion-grid>
               <ion-col *ngIf="parcelle.stade != 'null'">{{parcelle.stade}}</ion-col>
               <ion-col *ngIf="parcelle.commentaire != null" (click)="showCommentaire(parcelle)">Voir commentaire</ion-col>

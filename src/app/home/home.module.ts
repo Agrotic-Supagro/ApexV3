@@ -4,7 +4,7 @@ import { IonicModule } from '@ionic/angular';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { PipesModule } from '../pipes/pipes.module';
 import { HomePage } from './home.page';
 
 @NgModule({
@@ -13,6 +13,7 @@ import { HomePage } from './home.page';
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
+    PipesModule,
     RouterModule.forChild([
       {
         path: '',

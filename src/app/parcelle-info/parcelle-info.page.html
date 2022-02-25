@@ -33,7 +33,7 @@
       <ion-grid *ngFor="let dataSession of infoSession.dataSession">
         <ion-row>
           <ion-col size="auto">
-            <p>Le {{dataSession.dateSession | date :  "dd/MM/yyyy"}} à {{dataSession.dateSession | date :  "HH:mm"}}</p>
+            <p>Le {{dataSession.dateSession | datesExtra : 'dates'}} à {{dataSession.dateSession | datesExtra : 'heures'}}</p>
           </ion-col>
           <ion-col size="2" class="right edit">
             <ion-icon name="eye" (click)="openEditSessionPage(dataSession.idSession)"></ion-icon>

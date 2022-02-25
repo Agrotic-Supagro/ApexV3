@@ -17,7 +17,7 @@ export class SessionInfoPage implements OnInit {
   idSession: any;
   parcelle: any;
   session: any;
-  myDate: any;
+  myDate = new Date().toISOString();;
   numberof0value: number;
   numberof1value: number;
   numberof2value: number;
@@ -70,7 +70,9 @@ export class SessionInfoPage implements OnInit {
             this.numberof0value = data.apex0;
             this.numberof1value = data.apex1;
             this.numberof2value = data.apex2;
-            this.myDate = data.date_session;
+            //console.log('ooooo' + new Date(data.date_session).toISOString());
+            console.log('uuuu '+ new Date().toISOString());
+            this.myDate = new Date('2022-01-07').toISOString();
             this.idStade = data.id_stade;
             this.commentairetext = data.txt_comm;
             this.idComm = data.id_comm;

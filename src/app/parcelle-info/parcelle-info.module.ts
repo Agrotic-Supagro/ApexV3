@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { PipesModule } from '../pipes/pipes.module';
 
 import { IonicModule } from '@ionic/angular';
 
@@ -12,6 +13,7 @@ import { ParcelleInfoPage } from './parcelle-info.page';
   imports: [
     CommonModule,
     FormsModule,
+    PipesModule,
     IonicModule,
     ParcelleInfoPageRoutingModule
   ],
