@@ -73,6 +73,7 @@ ion-card {
     --background: linear-gradient(45deg, rgba(76, 185, 196, 1) 0%, rgba(61, 211, 174, 1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4cb9c4', endColorstr='#3dd3ae', GradientType=1);
     --color: #ffffff;
+    color: white;
 }
 
 .dynamiqueChart{
@@ -303,7 +304,10 @@ ion-card {
 
 ion-footer {
     text-align: center;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.658);
+    padding-top: 3px;
+    padding-bottom: 17px;
+    border-top: #7e7e7e solid 1px;
 }
 
 .colorblue {
@@ -357,3 +361,6 @@ ion-footer {
     margin-top: 0.3em;
 }
 
+ion-menu-button{
+    color: #ffffff;
+}

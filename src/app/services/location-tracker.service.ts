@@ -48,7 +48,7 @@ export class LocationTrackerService {
             this.lng = location.longitude;
           });
 
-          // this.backgroundGeolocation.finish(); // FOR IOS ONLY
+          this.backgroundGeolocation.finish(); // FOR IOS ONLY
         });
     });
 
