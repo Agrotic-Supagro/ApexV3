@@ -9,7 +9,8 @@
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "resources": "capacitor-resources -p android,ios"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +41,7 @@
     "@ionic/angular": "^5.0.0",
     "@ionic/storage": "^2.2.0",
     "@mauron85/cordova-plugin-background-geolocation": "^3.1.0",
+    "capacitor-resources": "^2.0.5",
     "chart.js": "^2.9.3",
     "cordova-android": "^9.0.0",
     "cordova-android-support-gradle-release": "^3.0.1",
