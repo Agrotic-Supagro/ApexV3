@@ -41,7 +41,6 @@
 	<string>The location is used to geo-reference the position of the apex observations to allow the monitoring of the dynamics of the vines</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<!--<string>external-accessory</string>-->
 		<string>fetch</string>
 		<string>location</string>
 		<string>remote-notification</string>
