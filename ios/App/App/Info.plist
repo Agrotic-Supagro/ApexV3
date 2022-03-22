@@ -31,10 +31,6 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>The background location is used to optimize the time to obtain the data during your apex collecting</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>The background location is used to optimize the time to obtain the data during your apex collecting</string>
 	<key>NSLocationUsageDescription</key>
 	<string>The location is used to geo-reference the position of the apex observations to allow the monitoring of the dynamics of the vines</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
