@@ -1,0 +1,7 @@
+{
+    "TITLE": "Welcome to Apex Vigne",
+    "TITLE_2": "Hello {{value}}",
+    "passwordRecup": "Forget password ?",
+    "data": {
+    "name": "My name is {{name_value}}"}
+}

@@ -8,7 +8,7 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite/ngx';
@@ -27,6 +27,13 @@ import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.mo
 import { SessionInfoPageModule } from './session-info/session-info.module';
 import { ApexInformationComponent } from './apex-information/apex-information.component';
 import { CommentairesSessionPageModule } from './commentaires-session/commentaires-session.module';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+}
 
 @NgModule({
   declarations: [AppComponent, ApexInformationComponent],
@@ -42,6 +49,13 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
     StadePhenologiquePageModule,
     CommentairesSessionPageModule,
     SessionInfoPageModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    }),
   ],
   providers: [
     StatusBar,
@@ -59,3 +73,5 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+

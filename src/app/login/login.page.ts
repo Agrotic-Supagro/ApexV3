@@ -3,6 +3,9 @@ import { AuthenticationService } from '../services/authentication.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { AlertController, ToastController, MenuController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
+import { DeviceService } from '../services/device.service';
+import { GlobalConstants } from '../common/global-constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-login',
@@ -23,20 +26,32 @@ export class LoginPage implements OnInit {
   public nbUser2020 = 0;
   public nbParcelle2020 = 0;
   public userOld: any = [];
+  public language : Promise<string>;
 
   constructor(private auth: AuthenticationService,
               private alertCtrl: AlertController,
               private router: Router,
               public toastController: ToastController,
               public menuCtrl: MenuController,
-              private database: DatabaseService
+              private database: DatabaseService,
+              private deviceService : DeviceService,
+              private _translate: TranslateService,
               ) { }
 
   ngOnInit() {
+    this.deviceService.getDeviceLanguage().then( (lang : string) => {
+      console.log("Langage du device : "+lang);
+        GlobalConstants.languageSelected = lang;
+      }
+    );
+  }
 
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.languageSelected);
   }
 
   ionViewWillEnter() {
+    this._translateLanguage();
     this.menuCtrl.enable(false);
     this.database.getNombreUtilisateur().then(data => {
       this.nbUser2020 = data;
