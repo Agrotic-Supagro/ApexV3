@@ -31,10 +31,11 @@ export class LocationTrackerService {
       distanceFilter: 20,
       debug: false,
       enableHighAccuracy : true,
-      stopOnTerminate: false, // enable this to clear background location settings when the app terminates
+      stopOnTerminate: true, // enable this to clear background location settings when the app terminates
       // stopOnTerminate: true, // enable this to clear background location settings when the app terminates
       interval: 1000,
-      startOnBoot: true
+      startOnBoot: true,
+      pauseLocationUpdates : true,
     };
 
     this.backgroundGeolocation.configure(config).then(() => {

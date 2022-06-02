@@ -260,18 +260,28 @@ export class HomePage {
   public async openParcelleApexPage() {
     this.trakcerService.askToTurnOnGPS().then(async gps => {
       console.log('GPS : ' + gps.locationServicesEnabled);
-      if (gps.locationServicesEnabled) {
+      console.log('Auth : ' + gps.authorization);
+      if (gps.locationServicesEnabled && (gps.authorization == 1 || gps.authorization == 2)) {
         const navigationExtras: NavigationExtras = {
           state: {
             idUser: this.user.id_utilisateur
           }
         };
         this.router.navigate(['/parcelle-apex'], navigationExtras);
-      } else {
+      } else if(!gps.locationServicesEnabled){
         const alert = await this.alertCtrl.create({
           header: 'Activez votre Localisation',
           // tslint:disable-next-line:max-line-length
           message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+      else if(gps.authorization == 0) {
+        const alert = await this.alertCtrl.create({
+          header: 'Activez les droits de Localisation',
+          // tslint:disable-next-line:max-line-length
+          message: 'Merci d\'autoriser l\'accès à la position pour l\'application dans vos paramètres de téléphone.',
           buttons: ['OK']
         });
         await alert.present();
@@ -284,7 +294,8 @@ export class HomePage {
     console.log(this.user);
     this.trakcerService.askToTurnOnGPS().then(async gps => {
       console.log('GPS : ' + gps.locationServicesEnabled);
-      if (gps.locationServicesEnabled) {
+      console.log('Auth : ' + gps.authorization);
+      if (gps.locationServicesEnabled && (gps.authorization == 1 || gps.authorization == 2)) {
         const modal = await this.modalController.create({
           component: ParcelleApexPage,
           componentProps: {
@@ -307,11 +318,20 @@ export class HomePage {
           // alert('Modal Sent Data :'+ dataReturned);
         });
         return await modal.present();
-      } else {
+      } else if(!gps.locationServicesEnabled) {
         const alert = await this.alertCtrl.create({
           header: 'Activez votre Localisation',
           // tslint:disable-next-line:max-line-length
           message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
+          buttons: ['OK']
+        });
+        await alert.present();
+      }
+      else if(gps.authorization == 0) {
+        const alert = await this.alertCtrl.create({
+          header: 'Activez les droits de Localisation',
+          // tslint:disable-next-line:max-line-length
+          message: 'Merci d\'autoriser l\'accès à la position pour l\'application dans vos paramètres de téléphone.',
           buttons: ['OK']
         });
         await alert.present();

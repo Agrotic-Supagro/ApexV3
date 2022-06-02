@@ -26,7 +26,8 @@ export class LoginPage implements OnInit {
   public nbUser2020 = 0;
   public nbParcelle2020 = 0;
   public userOld: any = [];
-  public language : Promise<string>;
+  public language : string;
+  public languageIconPath : string;
 
   constructor(private auth: AuthenticationService,
               private alertCtrl: AlertController,
@@ -41,13 +42,23 @@ export class LoginPage implements OnInit {
   ngOnInit() {
     this.deviceService.getDeviceLanguage().then( (lang : string) => {
       console.log("Langage du device : "+lang);
-        GlobalConstants.languageSelected = lang;
+      this.language = lang;
+      GlobalConstants.setLanguageSelected(lang);
+      this.languageIconPath = "../../assets/imgs/" + lang + ".png";
       }
+      
     );
   }
 
   _translateLanguage(): void {
-    this._translate.use(GlobalConstants.languageSelected);
+    this._translate.use(GlobalConstants.getLanguageSelected());
+  }
+
+  changeLanguage() {
+    console.log("change : "+this.language)
+    GlobalConstants.setLanguageSelected(this.language);
+    this._translate.use(GlobalConstants.getLanguageSelected());
+    this.languageIconPath = "../../assets/imgs/" + GlobalConstants.getLanguageSelected() + ".png";
   }
 
   ionViewWillEnter() {

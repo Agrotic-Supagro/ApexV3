@@ -1,7 +1,8 @@
 {
-    "TITLE": "Welcome to Apex Vigne",
-    "TITLE_2": "Hello {{value}}",
+    "email": "Email",
+    "password": "Password",
     "passwordRecup": "Forget password ?",
-    "data": {
-    "name": "My name is {{name_value}}"}
+    "language": "Language",
+    "register": "Register",
+    "connect": "Log in"
 }
