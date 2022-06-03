@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Device, GetLanguageCodeResult } from '@capacitor/device';
+import { Device } from '@capacitor/device';
 
 @Injectable({
   providedIn: 'root'
