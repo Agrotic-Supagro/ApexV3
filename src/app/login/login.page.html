@@ -24,11 +24,11 @@
 
     <ion-row class="langage">
       <p [translate]="'language'" style="color: white;"></p>
-        <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="margin-left: 5%; color: white;">
-          <ion-select-option value="fr">Français</ion-select-option>
-          <ion-select-option value="en">English</ion-select-option>
-        </ion-select>
-        <ion-img [src]="languageIconPath" style="margin-left: 2%"></ion-img>
+      <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="margin-left: 5%; color: white;">
+        <ion-select-option value="fr">Français</ion-select-option>
+        <ion-select-option value="en">English</ion-select-option>
+      </ion-select>
+      <ion-img [src]="languageIconPath"></ion-img>
      </ion-row> 
 
     <!--<div class="btm">
