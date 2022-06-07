@@ -29,7 +29,7 @@ import { ApexInformationComponent } from './apex-information/apex-information.co
 import { CommentairesSessionPageModule } from './commentaires-session/commentaires-session.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-
+import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
 
 export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
@@ -58,6 +58,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
   ],
   providers: [
+    FTP,
     StatusBar,
     SplashScreen,
     SQLite,

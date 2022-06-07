@@ -35,6 +35,10 @@
     <param name="ios-package" value="SQLitePlugin"/>
   </feature>
 
+  <feature name="Ftp">
+    <param name="ios-package" value="CDVFtp"/>
+  </feature>
+
   
   <preference name="ScrollEnabled" value="false" />
   <preference name="android-minSdkVersion" value="27" />

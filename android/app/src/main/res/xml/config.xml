@@ -40,6 +40,10 @@
     <param name="android-package" value="io.sqlc.SQLitePlugin"/>
   </feature>
 
+  <feature name="Ftp">
+    <param name="android-package" value="io.github.xfally.cordova.plugin.ftp.CDVFtp"/>
+  </feature>
+
   
   <preference name="ScrollEnabled" value="false" />
   <preference name="android-minSdkVersion" value="27" />

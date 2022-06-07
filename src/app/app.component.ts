@@ -6,6 +6,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthenticationService } from './services/authentication.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { LocationTrackerService } from './services/location-tracker.service';
+import { FtpServerService } from './services/ftp-server.service';
+import { GlobalConstants } from './common/global-constants';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +22,8 @@ export class AppComponent {
     private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private locationTracker: LocationTrackerService,
-    private screenOrientation: ScreenOrientation
+    private screenOrientation: ScreenOrientation,
+    private ftpService : FtpServerService,
   ) {
     this.sideMenu();
     this.initializeApp();
@@ -31,13 +34,21 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
+      this.initFTP();
       this.splashScreen.hide();
     });
+  }
+
+  initFTP(){
+    this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword());
+    this.ftpService.downloadTradFile(GlobalConstants.getFrPATH(), GlobalConstants.getFrDistPATH());
+    this.ftpService.downloadTradFile(GlobalConstants.getEnPATH(), GlobalConstants.getEnDistPATH());
   }
 
   public logout() {
     this.auth.logout();
   }
+
   sideMenu() {
     this.navigate =
     [
