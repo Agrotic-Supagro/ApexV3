@@ -3,6 +3,7 @@ import { BackgroundGeolocation,
   BackgroundGeolocationEvents,
   BackgroundGeolocationResponse } from '@ionic-native/background-geolocation/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { truncateSync } from 'fs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,6 @@ export class LocationTrackerService {
       debug: false,
       enableHighAccuracy : true,
       stopOnTerminate: true, // enable this to clear background location settings when the app terminates
-      // stopOnTerminate: true, // enable this to clear background location settings when the app terminates
       interval: 1000,
       startOnBoot: true,
       pauseLocationUpdates : true,
@@ -55,8 +55,24 @@ export class LocationTrackerService {
 
     this.backgroundGeolocation.start();
 
+    //In order to not show up the notification when app is in background
+    this.backgroundGeolocation
+      .on(BackgroundGeolocationEvents.background)
+      .subscribe((background: BackgroundGeolocationResponse) => {
+        console.log("APP is now in background, stoping the tracking");
+        this.backgroundGeolocation.stop();
+    });
+
+    
+    this.backgroundGeolocation
+    .on(BackgroundGeolocationEvents.foreground)
+    .subscribe((background: BackgroundGeolocationResponse) => {
+      console.log("APP is now in foreground, starting the tracking");
+      this.backgroundGeolocation.start();
+    });
+
     // If you wish to turn OFF background-tracking, call the #stop method.
-    this.backgroundGeolocation.stop();
+    //this.backgroundGeolocation.stop();
 
     const options = {
       frequency: 2000,
