@@ -1,0 +1,8 @@
+{
+    "email": "Email",
+    "password": "Password",
+    "passwordRecup": "Forget password ?",
+    "language": "Language",
+    "register": "Register",
+    "connect": "Log in"
+}

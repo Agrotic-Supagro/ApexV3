@@ -11,11 +11,11 @@ export class GlobalConstants {
     private static username : string = "apextrad@agrotic.org";
     private static password : string = "?93C+%iV.o0!Ab#^ro";
 
-    //PATH des local files de traduction pour download FTP
-    private static frPATH : string = "./assets/i18n/fr.json";
-    private static enPATH : string = "./assets/i18n/en.json";
+    //PATH des fichiers locaux de traduction (STOCKÉS SUR LE DEVICE) pour download FTP
+    private static frPATH : string = "fr.json";
+    private static enPATH : string = "en.json";
 
-    //PATH des distant files de traduction pour download FTP
+    //PATH des fichiers distants de traduction pour download FTP
     private static frDistPATH : string = "/assets/i18n/fr.json";
     private static enDistPATH : string = "/assets/i18n/en.json";
 

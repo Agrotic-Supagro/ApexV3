@@ -6,6 +6,7 @@ import { DatabaseService } from '../services/database.service';
 import { DeviceService } from '../services/device.service';
 import { GlobalConstants } from '../common/global-constants';
 import { TranslateService } from '@ngx-translate/core';
+import { FtpServerService } from '../services/ftp-server.service';
 
 @Component({
   selector: 'app-login',
@@ -37,6 +38,7 @@ export class LoginPage implements OnInit {
               private database: DatabaseService,
               private deviceService : DeviceService,
               private _translate: TranslateService,
+              private ftpService : FtpServerService,
               ) { }
 
   ngOnInit() {
@@ -46,7 +48,6 @@ export class LoginPage implements OnInit {
       GlobalConstants.setLanguageSelected(lang);
       this.languageIconPath = "../../assets/imgs/" + lang + ".png";
       }
-      
     );
   }
 

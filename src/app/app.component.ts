@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-
 import { Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
@@ -8,6 +7,8 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { LocationTrackerService } from './services/location-tracker.service';
 import { FtpServerService } from './services/ftp-server.service';
 import { GlobalConstants } from './common/global-constants';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+
 
 @Component({
   selector: 'app-root',
@@ -24,6 +25,7 @@ export class AppComponent {
     private locationTracker: LocationTrackerService,
     private screenOrientation: ScreenOrientation,
     private ftpService : FtpServerService,
+    private file : File,
   ) {
     this.sideMenu();
     this.initializeApp();
@@ -34,15 +36,17 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
-      this.initFTP();
       this.splashScreen.hide();
+      this.initFTP();
+      console.log("External root directory :"+this.file.externalRootDirectory);
+      console.log("App root directory :"+this.file.dataDirectory);
     });
   }
 
   initFTP(){
-    this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword());
-    this.ftpService.downloadTradFile(GlobalConstants.getFrPATH(), GlobalConstants.getFrDistPATH());
-    this.ftpService.downloadTradFile(GlobalConstants.getEnPATH(), GlobalConstants.getEnDistPATH());
+    this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword())
+    .then( () => this.ftpService.downloadTradFile(this.file.dataDirectory+GlobalConstants.getFrPATH(), GlobalConstants.getFrDistPATH()))
+    .then( () => this.ftpService.downloadTradFile(this.file.dataDirectory+GlobalConstants.getEnPATH(), GlobalConstants.getEnDistPATH()))
   }
 
   public logout() {

@@ -30,9 +30,14 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
+import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
+import { File } from '@awesome-cordova-plugins/file/ngx';
+import { Capacitor } from '@capacitor/core';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, "./assets/i18n/", ".json");
+  var file : File = new File();
+  console.log("data dir in app module :"+file.dataDirectory);
+  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory), ".json");
 }
 
 @NgModule({
@@ -58,6 +63,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
   ],
   providers: [
+    File,
     FTP,
     StatusBar,
     SplashScreen,
@@ -69,6 +75,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     Device,
     ScreenOrientation,
     Network,
+    FilePath,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
