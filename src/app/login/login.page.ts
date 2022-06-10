@@ -56,7 +56,7 @@ export class LoginPage implements OnInit {
   }
 
   changeLanguage() {
-    console.log("change : "+this.language)
+    console.log("changement de langage : "+this.language)
     GlobalConstants.setLanguageSelected(this.language);
     this._translate.use(GlobalConstants.getLanguageSelected());
     this.languageIconPath = "../../assets/imgs/" + GlobalConstants.getLanguageSelected() + ".png";

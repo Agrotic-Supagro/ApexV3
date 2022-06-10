@@ -12,9 +12,10 @@ import { Capacitor } from '@capacitor/core';
 
 export function HttpLoaderFactory(http: HttpClient) {
   var file : File = new File();
-  console.log("data dir in login module :"+file.dataDirectory);
   return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory), ".json");
 }
+
+
 
 @NgModule({
   imports: [

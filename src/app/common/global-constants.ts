@@ -1,8 +1,6 @@
 
 export class GlobalConstants {
-
-    //Variables globales
-
+    
     //Langage de l'appli
     private static languageSelected : string;
 
@@ -11,11 +9,7 @@ export class GlobalConstants {
     private static username : string = "apextrad@agrotic.org";
     private static password : string = "?93C+%iV.o0!Ab#^ro";
 
-    //PATH des fichiers locaux de traduction (STOCKÉS SUR LE DEVICE) pour download FTP
-    private static frPATH : string = "fr.json";
-    private static enPATH : string = "en.json";
-
-    //PATH des fichiers distants de traduction pour download FTP
+    //PATH des fichiers distants de traduction sur le serveur distant
     private static frDistPATH : string = "/assets/i18n/fr.json";
     private static enDistPATH : string = "/assets/i18n/en.json";
 
@@ -47,20 +41,6 @@ export class GlobalConstants {
     }
     public static getPassword() {
          return this.password;
-    }
-
-    public static setFrPATH(frPATH : string) {
-        this.frPATH = frPATH;
-    }
-    public static getFrPATH() {
-         return this.frPATH;
-    }
-
-    public static setEnPATH(enPATH : string) {
-        this.enPATH = enPATH;
-    }
-    public static getEnPATH() {
-         return this.enPATH;
     }
 
     public static setFrDistPATH(frDistPATH : string) {
