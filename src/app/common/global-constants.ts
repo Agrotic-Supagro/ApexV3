@@ -9,9 +9,8 @@ export class GlobalConstants {
     private static username : string = "apextrad@agrotic.org";
     private static password : string = "?93C+%iV.o0!Ab#^ro";
 
-    //PATH des fichiers distants de traduction sur le serveur distant
-    private static frDistPATH : string = "/assets/i18n/fr.json";
-    private static enDistPATH : string = "/assets/i18n/en.json";
+    //PATH des fichiers de traduction sur le serveur distant
+    private static distPATH : string = "/assets/i18n/";
 
 
     //Getters et Setters
@@ -43,17 +42,10 @@ export class GlobalConstants {
          return this.password;
     }
 
-    public static setFrDistPATH(frDistPATH : string) {
-        this.frDistPATH = frDistPATH;
+    public static setDistPATH(distPATH : string) {
+        this.distPATH = distPATH;
     }
-    public static getFrDistPATH() {
-         return this.frDistPATH;
-    }
-
-    public static setEnDistPATH(enDistPATH : string) {
-        this.enDistPATH = enDistPATH;
-    }
-    public static getEnDistPATH() {
-         return this.enDistPATH;
+    public static getDistPATH() {
+         return this.distPATH;
     }
 }

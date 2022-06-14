@@ -36,7 +36,7 @@ import { Capacitor } from '@capacitor/core';
 
 export function HttpLoaderFactory(http: HttpClient) {
   var file : File = new File();
-  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory), ".json");
+  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory+"assets/i18n/"), ".json");
 }
 
 @NgModule({
