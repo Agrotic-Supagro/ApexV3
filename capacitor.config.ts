@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'auth',
+  appId: 'ag.GB.apex',
+  appName: 'ApeX Vigne',
   webDir: 'www',
   bundledWebRuntime: false,
   cordova: {

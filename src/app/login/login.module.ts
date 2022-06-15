@@ -7,12 +7,11 @@ import { LoginPage } from './login.page';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Capacitor } from '@capacitor/core';
+import { GlobalConstants } from '../common/global-constants';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  var file : File = new File();
-  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory+"assets/i18n/"), ".json");
+  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(GlobalConstants.getDevicePATH()), ".json");
 }
 
 

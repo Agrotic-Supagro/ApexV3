@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">auth</string>
-    <string name="title_activity_main">auth</string>
-    <string name="package_name">io.ionic.starter</string>
-    <string name="custom_url_scheme">io.ionic.starter</string>
+    <string name="app_name">ApeX Vigne</string>
+    <string name="title_activity_main">ApeX Vigne</string>
+    <string name="package_name">ag.GB.apex</string>
+    <string name="custom_url_scheme">ag.GB.apex</string>
     <string name="mauron85_bgloc_account_name">@string/app_name</string>
     <string name="mauron85_bgloc_account_type">$PACKAGE_NAME.account</string>
     <string name="mauron85_bgloc_content_authority">$PACKAGE_NAME</string>

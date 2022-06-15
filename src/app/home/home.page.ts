@@ -281,7 +281,7 @@ export class HomePage {
         const alert = await this.alertCtrl.create({
           header: 'Activez les droits de Localisation',
           // tslint:disable-next-line:max-line-length
-          message: 'Merci d\'autoriser l\'accès à la position pour l\'application dans vos paramètres de téléphone.',
+          message: 'ApeX Vigne a besoin du GPS pour fonctionner. Merci d\'autoriser le GPS dans les paramètres du téléphone.',
           buttons: ['OK']
         });
         await alert.present();

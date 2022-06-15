@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
-import { File, FileEntry, FileError, Metadata } from '@awesome-cordova-plugins/file/ngx';
-import { type } from 'os';
+import { File, FileEntry, Metadata } from '@awesome-cordova-plugins/file/ngx';
+import { GlobalConstants } from '../common/global-constants';
 
 
 @Injectable({
@@ -12,33 +12,26 @@ export class FtpServerService {
   constructor(private ftp : FTP, private file : File) { }
 
   async connectToServer(host : string, username : string, password : string){
-    console.log("entré connect");
     return this.ftp.connect(host, username, password).then(result => {
-      console.log("FTP Connect result : "+ result)
+      console.log("FTP Connect result : "+ result);
+      return result;
     })
     .catch(error => {
       console.log("Error during FTP connection : "+error);
+      throw error;
     });
   }
 
-  //Compare modification dates (local/distant)
+  //Compare modification dates (local/server)
   //Return [true, filename] if we need to update/re-download the trad file
   async checkUpdates(path : string) {
-    console.log("entré check update");
-    var lastElement = false;
-    var tabRes = [];
+    var tabRes : [string, boolean][] = [];
     var serverfileLastModified : Date;
     var localfileLastModified : Date;
     var filename : string;
     return this.ftp.ls(path).then( async result => {
-      console.log("Result : "+result);
       for(const element of result) {
         console.log("Nom du fichier analysé: "+ element.name);
-        console.log("Longueur du tableau : "+result.length);
-        if(result.indexOf(element) + 1 == result.length){
-          console.log("Dernier element : "+element.name);
-          lastElement = true;
-        }
         await this.getOrCreateLocalFile(element)
         .then(async (fileEntry) => {
           console.log("get or create terminé pour : "+element.name);
@@ -46,15 +39,13 @@ export class FtpServerService {
           filename = element.name;
           await this.getMetadata(fileEntry)
           .then(metadata => {
-            console.log("Server File Last Modif : "+serverfileLastModified);
-            console.log("Local File Last Modif : " + metadata.modificationTime);
             localfileLastModified = metadata.modificationTime;
             if(localfileLastModified.toISOString() > serverfileLastModified.toISOString()){
-              console.log("date de modif locale > date serveur pour : "+filename);
+              console.log("Date de modif locale > date serveur pour : "+filename);
               tabRes.push([filename, false]);
             }
             else{
-              console.log("date de modif locale < date serveur pour : "+filename);
+              console.log("Date de modif locale < date serveur pour : "+filename);
               tabRes.push([filename, true]);
             }
           })
@@ -63,8 +54,11 @@ export class FtpServerService {
             throw error;
           });
         })
+        .catch(error => {
+          throw error;
+        })
       }
-      console.log("tabres avant return : "+tabRes);
+      console.log("Resultat check updates : "+tabRes);
       return tabRes;
     })
     .catch(error => {
@@ -80,43 +74,46 @@ export class FtpServerService {
   }
 
   async getOrCreateLocalFile(element : any) {
-    console.log("entre get or create file, element : "+element.name);
-    return this.file.resolveDirectoryUrl(this.file.dataDirectory + "assets/i18n/")
+    return this.file.resolveDirectoryUrl(GlobalConstants.getDevicePATH())
     .then( dirEntry => {
-      console.log("dir entry : "+dirEntry);
       return this.file.getFile(dirEntry, element.name, null)
       .then( res => {
-        console.log("file successfully got : "+res);
+        console.log("File "+element.name+" successfully got");
         return res;
       })
       .catch(error => {
-        console.log("File :" +element.name+" do not exists in assets/i18n/ on the device : "+error);
-        return this.file.createFile(this.file.dataDirectory + "assets/i18n/", element.name, true)
+        console.log("File :" +element.name+" do not exists in assets/i18n/ on the device");
+        return this.file.createFile(GlobalConstants.getDevicePATH(), element.name, true)
         .then( async () => {
-          console.log("file "+element.name+" successfully created")
+          console.log("File "+element.name+" successfully created");
           return this.file.getFile(dirEntry, element.name, null)
           .then( res => {
-            console.log("file successfully got : "+res);
+            console.log("File "+element.name+" successfully got");
             return res;
+          })
+          .catch(error => {
+            console.log("Error while getting the file "+element.name+" : "+error);
+            throw error;
           })
         })
         .catch(error => {
-          console.log("error while creating "+element.name+" file : "+error);
+          console.log("Error while creating "+element.name+" file : "+error);
           throw error;
         });
       })
     })
+    .catch(error => {
+      console.log("Error while resolving directoring url : "+GlobalConstants.getDevicePATH());
+      throw error;
+    })
   }
 
-  //Check if there is assets/i18n directories ON THE DEVICE
-  async checkOrCreateAssetsDirectories(){
-    console.log("entré check or create dir");
+  //Check if there is assets & i18n directories ON THE DEVICE
+  async checkOrCreateAssetsDirectories() {
     return this.file.checkDir(this.file.dataDirectory, "assets").then( res => {
-      console.log("assets existe ? : "+res);
       if(res){
         console.log("assets existe");
         return this.file.checkDir(this.file.dataDirectory+"assets/", "i18n").then( res => {
-          console.log("i18n existe ? : "+res);
           if(res){
             console.log("i18n existe");
           }
@@ -125,44 +122,57 @@ export class FtpServerService {
           console.log("i18n do not exists : "+error);
           return this.file.createDir(this.file.dataDirectory+"assets/", "i18n", true)
           .then( ()  =>  console.log("i18n created"))
-          .catch(error => console.log("Error while creating i18n Dir : "+error));
+          .catch(error => {
+            console.log("Error while creating i18n Dir : "+error);
+            throw error;
+        });
         })
       }
     })
     .catch(error => {
       console.log("assets do not exists : "+error);
+      //First connection of the device
+      GlobalConstants.setFirstConnection(true);
       return this.file.createDir(this.file.dataDirectory, "assets", true)
         .then( () => { 
           console.log("assets created");
           return this.file.createDir(this.file.dataDirectory+"assets/", "i18n", true)
           .then( () => console.log("i18n created"))
-          .catch(error => console.log("Error while creating i18n Dir : "+error)) 
+          .catch(error => {
+            console.log("Error while creating i18n Dir : "+error);
+            throw error;
+          }) 
         })
-        .catch(error => console.log("Error while creating assets Dir : "+error));
+        .catch(error => {
+          console.log("Error while creating assets Dir : "+error)
+          throw error;
+        });
     })
   }
 
-  async downloadFile(localfile : string, remoteFile : string){
-    console.log("entré download");
-    return this.ftp.download(localfile, remoteFile).subscribe(percent => {
+  async downloadFile(localPath : string, remotePath : string){
+    return this.ftp.download(localPath, remotePath).subscribe(percent => {
       if(percent == 1){
         console.log("Download finished");
+        return percent;
       } else {
-        console.log("Download percent : "+ percent);
+        console.log("Download ongoing : "+ percent);
       }
     },
     error => {
-      console.log(" Error while downloading file : "+error);
+      console.log("Error while downloading file at "+remotePath+" : "+error);
+      throw error;
     });
   }
 
   async disconnect() {
-    console.log("entré disconnect");
     return this.ftp.disconnect().then(result => {
       console.log("FTP Disconnect result : "+ result);
+      return result;
     })
     .catch(error => {
       console.log("Error during FTP deconnection : "+error);
+      throw error;
     });
   }
 }

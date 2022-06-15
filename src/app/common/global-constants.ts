@@ -1,19 +1,25 @@
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 export class GlobalConstants {
+
+    private static file : File = new File();
     
-    //Langage de l'appli
+    //App's Language
     private static languageSelected : string;
 
-    //Infos connexion FTP
+    //FTP connection infos
     private static host : string = "ftp.agrotic.org";
     private static username : string = "apextrad@agrotic.org";
     private static password : string = "?93C+%iV.o0!Ab#^ro";
 
-    //PATH des fichiers de traduction sur le serveur distant
-    private static distPATH : string = "/assets/i18n/";
+    //PATH of trad files on the server & on the device
+    private static serverPATH : string = "/assets/i18n/";
+    private static devicePATH : string = GlobalConstants.file.dataDirectory + "assets/i18n/";
 
+    //First Download of the app (or Download after delete)
+    private static firstConnection : boolean = false;
 
-    //Getters et Setters
+    //Getters & Setters
     public static setLanguageSelected(newLang : string) {
         this.languageSelected = newLang;
     }
@@ -42,10 +48,24 @@ export class GlobalConstants {
          return this.password;
     }
 
-    public static setDistPATH(distPATH : string) {
-        this.distPATH = distPATH;
+    public static setServerPATH(serverPATH : string) {
+        this.serverPATH = serverPATH;
     }
-    public static getDistPATH() {
-         return this.distPATH;
+    public static getServerPATH() {
+         return this.serverPATH;
+    }
+
+    public static setDevicePATH(devicePATH : string) {
+        this.devicePATH = devicePATH;
+    }
+    public static getDevicePATH() {
+         return this.devicePATH;
+    }
+
+    public static setFirstConnection(firstConnection : boolean) {
+        this.firstConnection = firstConnection;
+    }
+    public static getFirstConnection() {
+         return this.firstConnection;
     }
 }

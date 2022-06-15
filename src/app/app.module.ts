@@ -30,13 +30,12 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
-import { FilePath } from '@awesome-cordova-plugins/file-path/ngx';
-import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Capacitor } from '@capacitor/core';
+import { GlobalConstants } from './common/global-constants';
+import { File } from '@awesome-cordova-plugins/file/ngx';
 
 export function HttpLoaderFactory(http: HttpClient) {
-  var file : File = new File();
-  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(file.dataDirectory+"assets/i18n/"), ".json");
+  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(GlobalConstants.getDevicePATH()), ".json");
 }
 
 @NgModule({
@@ -74,7 +73,6 @@ export function HttpLoaderFactory(http: HttpClient) {
     Device,
     ScreenOrientation,
     Network,
-    FilePath,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]

@@ -36,23 +36,38 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
+      //this.downloadTradFiles();
       this.splashScreen.hide();
-      this.downloadTradFiles();
     });
   }
 
-  downloadTradFiles(){
-    this.ftpService.checkOrCreateAssetsDirectories()
+  async downloadTradFiles(){
+    console.log("Starting downloadTradFiles()");
+    return this.ftpService.checkOrCreateAssetsDirectories()
     .then( () => this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword()))
-    .then( () => this.ftpService.checkUpdates("/assets/i18n/"))
+    .catch(error => {
+      throw error;
+    })
+    .then( () => this.ftpService.checkUpdates(GlobalConstants.getServerPATH()))
+    .catch(error => {
+      throw error;
+    })
     .then( async tab => {
       for(const element of tab) {
         if(element[1]) {
-          await this.ftpService.downloadFile(this.file.dataDirectory+"assets/i18n/"+element[0], GlobalConstants.getDistPATH()+element[0]);
+          await this.ftpService.downloadFile(GlobalConstants.getDevicePATH()+element[0], GlobalConstants.getServerPATH()+element[0]);
         }
       }
     })
-    //.then disconnect
+    .catch(error => {
+      throw error;
+    })
+    // .then(() => { 
+    //   return this.ftpService.disconnect()
+    // })
+    // .catch(error => {
+    //   throw error;
+    // });
   }
 
   public logout() {
