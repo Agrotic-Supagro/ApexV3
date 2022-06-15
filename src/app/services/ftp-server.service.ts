@@ -40,12 +40,12 @@ export class FtpServerService {
           await this.getMetadata(fileEntry)
           .then(metadata => {
             localfileLastModified = metadata.modificationTime;
-            if(localfileLastModified.toISOString() > serverfileLastModified.toISOString()){
+            if(localfileLastModified.toISOString() > serverfileLastModified.toISOString() && !GlobalConstants.getFirstConnection()){
               console.log("Date de modif locale > date serveur pour : "+filename);
               tabRes.push([filename, false]);
             }
             else{
-              console.log("Date de modif locale < date serveur pour : "+filename);
+              console.log("Date de modif locale < date serveur pour : "+filename+" ou première connexion");
               tabRes.push([filename, true]);
             }
           })

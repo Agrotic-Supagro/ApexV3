@@ -18,11 +18,11 @@
       <ion-input type="password" placeholder="Mot de passe" name="password" [(ngModel)]="credentials.mot_de_passe" class="opacity-input"></ion-input>
     </ion-item>
 
-    <ion-button (click)="login()" expand="full" class="button-margin login-button main-button">Se connecter</ion-button>
+    <ion-button (click)="login()" expand="full" class="button-margin login-button main-button" [translate]="'connect'"></ion-button>
     
     <div class="forgetpwd" (click)="forgetpwd()">Mot de passe oublié ? </div>
 
-    <!-- <ion-row class="langage">
+    <ion-row class="langage">
       <p [translate]="'language'" style="color: white;"></p>
       <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="margin-left: 5%; color: white;">
         <ion-select-option value="fr">Français</ion-select-option>
@@ -31,7 +31,7 @@
        
       </ion-select>
       <ion-img [src]="languageIconPath"></ion-img>
-     </ion-row>  -->
+     </ion-row> 
 
     <!--<div class="btm">
       <ion-button expand="full" class="register-button main-button" routerLink="/register" routerDirection="forward">S'inscrire</ion-button>

@@ -36,38 +36,50 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
-      //this.downloadTradFiles();
       this.splashScreen.hide();
+      this.downloadTradFiles()
+      .then((res) => {
+        console.log("downloadTradFiles() finished"+res);
+      })
+      .catch(error => {
+        console.log("Error during downloadTradFiles() : "+error+"\n If it's device's first connection, using local trad file(s).");
+      })
     });
   }
 
   async downloadTradFiles(){
-    console.log("Starting downloadTradFiles()");
+    console.log("Entered downloadTradFiles()");
     return this.ftpService.checkOrCreateAssetsDirectories()
-    .then( () => this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword()))
+    .then( () => { 
+      return this.ftpService.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword())
+    })
     .catch(error => {
       throw error;
     })
-    .then( () => this.ftpService.checkUpdates(GlobalConstants.getServerPATH()))
+    .then( () => {
+      return this.ftpService.checkUpdates(GlobalConstants.getServerPATH())
+    })
     .catch(error => {
       throw error;
     })
     .then( async tab => {
       for(const element of tab) {
         if(element[1]) {
-          await this.ftpService.downloadFile(GlobalConstants.getDevicePATH()+element[0], GlobalConstants.getServerPATH()+element[0]);
+          await this.ftpService.downloadFile(GlobalConstants.getDevicePATH()+element[0], GlobalConstants.getServerPATH()+element[0])
+          //a confimer? demain
+          .then((res) => {
+            console.log("res dl : "+res);
+          })
+          .catch(error => {
+            throw error;
+          });
         }
       }
+      return "DL FINISHED";
     })
     .catch(error => {
       throw error;
     })
-    // .then(() => { 
-    //   return this.ftpService.disconnect()
-    // })
-    // .catch(error => {
-    //   throw error;
-    // });
   }
 
   public logout() {
