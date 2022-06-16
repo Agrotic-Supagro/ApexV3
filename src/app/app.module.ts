@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
@@ -33,9 +33,29 @@ import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
 import { Capacitor } from '@capacitor/core';
 import { GlobalConstants } from './common/global-constants';
 import { File } from '@awesome-cordova-plugins/file/ngx';
+import { FtpServerService } from './services/ftp-server.service';
+
+
 
 export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(GlobalConstants.getDevicePATH()), ".json");
+
+  // if(GlobalConstants.getFirstConnection()){
+  //   console.log("First connection, loading local trad files ");
+  //   return new TranslateHttpLoader(http, "../assets/i18n/", ".json");
+  // } 
+  // else{
+    return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
+  // }
+}
+
+export function downloadTradFiles(ftpServerService: FtpServerService) {
+  return () => ftpServerService.downloadTradFiles()
+  .catch(error => {
+    if(GlobalConstants.getFirstConnection()){
+      console.log("Error during download of trad files & first connection, using local trad files");
+      GlobalConstants.setPathForHttpLoader("@src/assets/i18n/");
+    }
+  });
 }
 
 @NgModule({
@@ -73,7 +93,14 @@ export function HttpLoaderFactory(http: HttpClient) {
     Device,
     ScreenOrientation,
     Network,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    FtpServerService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: downloadTradFiles,
+      deps: [FtpServerService],
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

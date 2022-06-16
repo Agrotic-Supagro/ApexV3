@@ -1,4 +1,5 @@
 import { File } from '@awesome-cordova-plugins/file/ngx';
+import { Capacitor } from '@capacitor/core';
 
 export class GlobalConstants {
 
@@ -18,6 +19,9 @@ export class GlobalConstants {
 
     //First Download of the app (or Download after delete)
     private static firstConnection : boolean = false;
+
+    //Path used by the translate plugin to load the .json trad files
+    private static pathForHttpLoader : string = Capacitor.convertFileSrc(GlobalConstants.getDevicePATH());
 
     //Getters & Setters
     public static setLanguageSelected(newLang : string) {
@@ -67,5 +71,12 @@ export class GlobalConstants {
     }
     public static getFirstConnection() {
          return this.firstConnection;
+    }
+
+    public static setPathForHttpLoader(pathForHttpLoader : string) {
+        this.pathForHttpLoader = pathForHttpLoader;
+    }
+    public static getPathForHttpLoader() {
+         return this.pathForHttpLoader;
     }
 }

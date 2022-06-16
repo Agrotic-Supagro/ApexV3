@@ -9,7 +9,7 @@ export class DeviceService {
   constructor() { }
 
   async getDeviceLanguage() : Promise<string> {
-    const language = await (await Device.getLanguageCode()).value;
+    const language = (await Device.getLanguageCode()).value;
     return language;
   }
 

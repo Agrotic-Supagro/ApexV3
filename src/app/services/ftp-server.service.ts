@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
 import { File, FileEntry, Metadata } from '@awesome-cordova-plugins/file/ngx';
 import { GlobalConstants } from '../common/global-constants';
+import { Observable, Subject } from 'rxjs';
 
 
 @Injectable({
@@ -73,6 +74,7 @@ export class FtpServerService {
     });
   }
 
+  //Get or create a file ON THE DEVICE
   async getOrCreateLocalFile(element : any) {
     return this.file.resolveDirectoryUrl(GlobalConstants.getDevicePATH())
     .then( dirEntry => {
@@ -108,7 +110,7 @@ export class FtpServerService {
     })
   }
 
-  //Check if there is assets & i18n directories ON THE DEVICE
+  //Check if there is assets/i18n/ directories ON THE DEVICE
   async checkOrCreateAssetsDirectories() {
     return this.file.checkDir(this.file.dataDirectory, "assets").then( res => {
       if(res){
@@ -131,7 +133,7 @@ export class FtpServerService {
     })
     .catch(error => {
       console.log("assets do not exists : "+error);
-      //First connection of the device
+      console.log("First connection of the device");
       GlobalConstants.setFirstConnection(true);
       return this.file.createDir(this.file.dataDirectory, "assets", true)
         .then( () => { 
@@ -150,19 +152,21 @@ export class FtpServerService {
     })
   }
 
-  async downloadFile(localPath : string, remotePath : string){
-    return this.ftp.download(localPath, remotePath).subscribe(percent => {
-      if(percent == 1){
-        console.log("Download finished");
-        return percent;
-      } else {
-        console.log("Download ongoing : "+ percent);
-      }
-    },
-    error => {
-      console.log("Error while downloading file at "+remotePath+" : "+error);
-      throw error;
-    });
+  async downloadFile(localPath : string, remotePath : string) {
+    return new Promise((resolve, reject) => {
+      this.ftp.download(localPath, remotePath).subscribe(percent => {
+        if(percent == 1){
+          //Download finished
+          resolve(percent);
+        } else {
+          console.log("Download ongoing : "+ percent);
+        }
+      },
+      error => {
+        console.log("Error while downloading file at "+remotePath+" : "+error);
+        reject(error);
+      });
+    })
   }
 
   async disconnect() {
@@ -174,5 +178,45 @@ export class FtpServerService {
       console.log("Error during FTP deconnection : "+error);
       throw error;
     });
+  }
+
+  async downloadTradFiles(){
+    console.log("Starting downloadTradFiles() process");
+    return this.checkOrCreateAssetsDirectories()
+    .then( () => { 
+       return this.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword())
+    })
+    .catch(error => {
+      throw error;
+    })
+    .then( () => {
+      return this.checkUpdates(GlobalConstants.getServerPATH())
+    })
+    .catch(error => {
+      throw error;
+    })
+    .then( async tab => {
+      for(const element of tab) {
+        if(element[1]) {
+          await this.downloadFile(GlobalConstants.getDevicePATH()+element[0], GlobalConstants.getServerPATH()+element[0])
+          //a confimer? demain
+          .then((res) => {
+            console.log("Download Finished : percent = "+res);
+          })
+          .catch(error => {
+            throw error;
+          });
+        }
+      }
+    })
+    .catch(error => {
+      throw error;
+    })
+    .then( () => {
+      return this.disconnect();
+    })
+    .catch(error => {
+      throw error;
+    })
   }
 }

@@ -10,15 +10,16 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { Capacitor } from '@capacitor/core';
 import { GlobalConstants } from '../common/global-constants';
 
-import { File } from '@awesome-cordova-plugins/file/ngx';
-
 export function HttpLoaderFactory(http: HttpClient) {
 
-  var file = new File();
-  console.log("Capacitor conversion : "+Capacitor.convertFileSrc(GlobalConstants.getDevicePATH()));
-  console.log("Capacitor conversionbis : "+Capacitor.convertFileSrc(file.dataDirectory));
-
-  return new TranslateHttpLoader(http, Capacitor.convertFileSrc(GlobalConstants.getDevicePATH()), ".json");
+  // if(GlobalConstants.getFirstConnection()){
+  //   console.log("First connection, loading local trad files ");
+  //   return new TranslateHttpLoader(http, "../../assets/i18n/", ".json");
+  // } 
+  // else{
+    console.log("je suis la coucou");
+    return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
+  // }
 }
 
 
