@@ -8,6 +8,8 @@ import { ServerService } from '../services/server.service';
 import {Validators, FormBuilder } from '@angular/forms';
 import { DateService } from '../services/dates.service';
 import { UserConfigurationService } from '../services/user-configuration.service';
+import { GlobalConstants } from '../common/global-constants';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-account',
@@ -22,6 +24,9 @@ export class AccountPage implements OnInit {
   threshold: any;
   isLoading: boolean;
   allDataEgg = 0;
+  public language : string;
+  public languageIconPath : string;
+  public supportedLanguages : Map<string, string>;
 
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -65,6 +70,7 @@ export class AccountPage implements OnInit {
     private database: DatabaseService,
     private formBuilder: FormBuilder,
     private conf: UserConfigurationService,
+    private _translate: TranslateService,
   ) {
 
    }
@@ -77,6 +83,22 @@ export class AccountPage implements OnInit {
     .then(email => {
       this.getUser(email);
     });
+    this._translateLanguage();
+    this.language = GlobalConstants.getLanguageSelected();
+    this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+    this.supportedLanguages = GlobalConstants.getSupportedLanguages();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
+  }
+
+  changeLanguage() {
+    console.log("Language changed : "+this.language);
+    GlobalConstants.setLanguageSelected(this.language);
+    this._translate.use(GlobalConstants.getLanguageSelected());
+    this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+    //this.deviceService.saveLanguageSelected();
   }
 
   getUser(email) {

@@ -8,20 +8,27 @@ export class GlobalConstants {
     //App's Language
     private static languageSelected : string;
 
+    private static supportedLanguages = new Map<string, string>();
+
     //FTP connection infos
     private static host : string = "ftp.agrotic.org";
     private static username : string = "apextrad@agrotic.org";
     private static password : string = "?93C+%iV.o0!Ab#^ro";
 
     //PATH of trad files on the server & on the device
-    private static serverPATH : string = "/assets/i18n/";
-    private static devicePATH : string = GlobalConstants.file.dataDirectory + "assets/i18n/";
+    private static serverTradPATH : string = "/assets/i18n/";
+    private static deviceTradDirectoryPATH : string = GlobalConstants.file.dataDirectory + "assets/i18n/";
 
     //First Download of the app (or Download after delete)
     private static firstConnection : boolean = false;
 
+    private static tradFilesNeverDownloaded : boolean = false;
+
     //Path used by the translate plugin to load the .json trad files
-    private static pathForHttpLoader : string = Capacitor.convertFileSrc(GlobalConstants.getDevicePATH());
+    private static pathForHttpLoader : string = Capacitor.convertFileSrc(GlobalConstants.getDeviceTradDirectoryPATH());
+
+    //Path used by the translate plugin to load the .json trad files
+    private static pathForCountryIcons : string = Capacitor.convertFileSrc(GlobalConstants.file.dataDirectory + "assets/countriesIcons/");
 
     //Getters & Setters
     public static setLanguageSelected(newLang : string) {
@@ -52,18 +59,18 @@ export class GlobalConstants {
          return this.password;
     }
 
-    public static setServerPATH(serverPATH : string) {
-        this.serverPATH = serverPATH;
+    public static setServerTradPATH(serverTradPATH : string) {
+        this.serverTradPATH = serverTradPATH;
     }
-    public static getServerPATH() {
-         return this.serverPATH;
+    public static getServerTradPATH() {
+         return this.serverTradPATH;
     }
 
-    public static setDevicePATH(devicePATH : string) {
-        this.devicePATH = devicePATH;
+    public static setDeviceTradDirectoryPATH(deviceTradDirectoryPATH : string) {
+        this.deviceTradDirectoryPATH = deviceTradDirectoryPATH;
     }
-    public static getDevicePATH() {
-         return this.devicePATH;
+    public static getDeviceTradDirectoryPATH() {
+         return this.deviceTradDirectoryPATH;
     }
 
     public static setFirstConnection(firstConnection : boolean) {
@@ -73,10 +80,37 @@ export class GlobalConstants {
          return this.firstConnection;
     }
 
+    public static setTradFilesNeverDownloaded(tradFilesNeverDownloaded : boolean) {
+        this.tradFilesNeverDownloaded = tradFilesNeverDownloaded;
+    }
+    public static getTradFilesNeverDownloaded() {
+         return this.tradFilesNeverDownloaded;
+    }
+
     public static setPathForHttpLoader(pathForHttpLoader : string) {
         this.pathForHttpLoader = pathForHttpLoader;
     }
     public static getPathForHttpLoader() {
          return this.pathForHttpLoader;
+    }
+
+    public static setPathForCountryIcons(pathForCountryIcons : string) {
+        this.pathForCountryIcons = pathForCountryIcons;
+    }
+    public static getPathForCountryIcons() {
+         return this.pathForCountryIcons;
+    }
+
+    public static setSupportedLanguages(key : string, value  : string) {
+        this.supportedLanguages.set(key, value);
+    }
+    public static loadSupportedLanguaged(array : ArrayBuffer) {
+        
+    }
+    public static resetSupportedLanguages() {
+        this.supportedLanguages = new Map<string, string>();
+    }
+    public static getSupportedLanguages() {
+         return this.supportedLanguages;
     }
 }

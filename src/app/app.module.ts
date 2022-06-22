@@ -38,24 +38,26 @@ import { FtpServerService } from './services/ftp-server.service';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
-
-  // if(GlobalConstants.getFirstConnection()){
-  //   console.log("First connection, loading local trad files ");
-  //   return new TranslateHttpLoader(http, "../assets/i18n/", ".json");
-  // } 
-  // else{
-    return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
-  // }
+  console.log("entré http loader : "+GlobalConstants.getPathForHttpLoader());
+  return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
 }
 
-export function downloadTradFiles(ftpServerService: FtpServerService) {
-  return () => ftpServerService.downloadTradFiles()
-  .catch(error => {
-    if(GlobalConstants.getFirstConnection()){
-      console.log("Error during download of trad files & first connection, using local trad files");
-      GlobalConstants.setPathForHttpLoader("@src/assets/i18n/");
+export function downloadTradContent(ftpServerService: FtpServerService) {
+  return () => ftpServerService.downloadTradContent()
+  .catch(async error => {
+    console.log("Error during download of trad content "+error);
+    if (GlobalConstants.getTradFilesNeverDownloaded()) {
+      console.log("Trad files have never been downloaded, using local trad content");
+      //Local path for trad files
+      GlobalConstants.setPathForHttpLoader("/assets/i18n/");
+      //Local path for coutry icons 
+      GlobalConstants.setPathForCountryIcons("/assets/imgs/");
+      //Local supported Languages
+      GlobalConstants.resetSupportedLanguages();
+      GlobalConstants.setSupportedLanguages("Français", "fr");
+      GlobalConstants.setSupportedLanguages("English", "en");
     }
-  });
+  })
 }
 
 @NgModule({
@@ -97,7 +99,7 @@ export function downloadTradFiles(ftpServerService: FtpServerService) {
     FtpServerService,
     {
       provide: APP_INITIALIZER,
-      useFactory: downloadTradFiles,
+      useFactory: downloadTradContent,
       deps: [FtpServerService],
       multi: true
     },

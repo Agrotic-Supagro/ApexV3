@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Accueil</ion-title>
+    <ion-title [translate]="'home'"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content >
   <!--<ion-button (click)="openParcelleApexPage()">Test</ion-button>-->
   <canvas id="barChart" class="vaten"></canvas>
-  <h3 class="centerclass">Nouvelle observation</h3>
+  <h3 class="centerclass" [translate]="'newObservation'"></h3>
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -21,24 +21,23 @@
       </ion-col>
     </ion-row>
   </ion-grid>
-  <h3 class="centerclass">Liste des parcelles</h3>
+  <h3 class="centerclass" [translate]="'listOfParcels'"></h3>
   <ion-grid>
     <ion-radio-group [(ngModel)]="filter" (ionChange)="reloadData()">
     <ion-row>
       <ion-col size="4">
-        <ion-item>
-          Tri par :
+        <ion-item [translate]="'sortby'">
         </ion-item>
       </ion-col>
       <ion-col size="4">
         <ion-item>
-          <ion-label>Date</ion-label>
+          <ion-label [translate]="'date'"></ion-label>
           <ion-radio value="date" ></ion-radio>
         </ion-item>
       </ion-col>
       <ion-col>
         <ion-item>
-          <ion-label>Nom</ion-label>
+          <ion-label [translate]="'name'"></ion-label>
           <ion-radio value="nom" ></ion-radio>
         </ion-item>
       </ion-col>
@@ -63,13 +62,14 @@
                 <ion-col size="auto" class="parcelleShare"><ion-icon class="share" name="share-social-sharp"></ion-icon></ion-col>
               </ion-row>
             </ion-grid>
-            <p class="subtitlecard" (click)="parcelleInfoPage(parcelle)">Croissance au {{parcelle.date_session | datesExtra : 'dates'}} à {{parcelle.date_session | datesExtra : 'heures'}}<br></p> 
+            <p class="subtitlecard" (click)="parcelleInfoPage(parcelle)"> <span [translate]="'growthOn'"></span> {{parcelle.date_session | datesExtra : 'dates'}} 
+              <span [translate]="'at'"></span> {{parcelle.date_session | datesExtra : 'heures'}}<br></p> 
             <!--<ion-grid>
               <ion-col *ngIf="parcelle.stade != 'null'">{{parcelle.stade}}</ion-col>
               <ion-col *ngIf="parcelle.commentaire != null" (click)="showCommentaire(parcelle)">Voir commentaire</ion-col>
             </ion-grid>-->  
             <p class="center" *ngIf="parcelle.stade != 'null'">{{parcelle.stade}} </p>
-            <p class="center" *ngIf="parcelle.commentaire != null" (click)="showCommentaire(parcelle)">Voir le commentaire <ion-icon name="chatbox-ellipses-outline"></ion-icon></p>
+            <p class="center" *ngIf="parcelle.commentaire != null" (click)="showCommentaire(parcelle)" [translate]="'seeComment'"><ion-icon name="chatbox-ellipses-outline"></ion-icon></p>
             <div class="hr"> </div>
             <div *ngIf="parcelle.ifv_classe != 4; else ecimee" id="{{parcelle.nom_parcelle}}" class="dynamiqueChart" (click)="parcelleInfoPage(parcelle)"></div>
             <ng-template #ecimee>
@@ -78,8 +78,7 @@
                   <ion-col >
                     <img src="assets/imgs/rognee.png" class="iconRognee"/>
                   </ion-col>
-                  <ion-col class="parcelleRognee"> 
-                    Parcelle écimée
+                  <ion-col class="parcelleRognee" [translate]="'toppedParcel'">
                   </ion-col>
                 </ion-row>
               </ion-grid>
@@ -90,7 +89,7 @@
                   <p class="subtitlecard" >iC-Apex</p>
                 </ion-col>
                 <ion-col size="8">
-                  <p class="subtitlecard" >Dynamique de la croissance</p>
+                  <p class="subtitlecard" [translate]="'growthDynamics'"></p>
                 </ion-col>
               </ion-row>
               <ion-row (click)="parcelleInfoPage(parcelle)">
@@ -107,25 +106,21 @@
               </ion-row>
             </ion-grid>
             <span *ngIf="user.model_ifv == 0" (click)="parcelleInfoPage(parcelle)">
-            <p class="titleCH">Interprétation de la contrainte hydrique</p>
+            <p class="titleCH" [translate]="'interpOfWaterStress'"></p>
             <ion-grid class="classIVF">
               <ion-row>
-                <ion-col [ngClass]="(parcelle.ifv_classe == 0) ? 'absente' : 'absenteLight'">
-                  Absente
+                <ion-col [ngClass]="(parcelle.ifv_classe == 0) ? 'absente' : 'absenteLight'" [translate]="'absent'">
                 </ion-col>
-                <ion-col [ngClass]="(parcelle.ifv_classe == 1) ? 'moderee' : 'modereeLight'">
-                  Modérée
+                <ion-col [ngClass]="(parcelle.ifv_classe == 1) ? 'moderee' : 'modereeLight'" [translate]="'moderate'">
                 </ion-col>
-                <ion-col [ngClass]="(parcelle.ifv_classe == 2) ? 'importante' : 'importanteLight'">
-                  Forte
+                <ion-col [ngClass]="(parcelle.ifv_classe == 2) ? 'importante' : 'importanteLight'" [translate]="'strong'">
                 </ion-col>
-                <ion-col [ngClass]="(parcelle.ifv_classe == 3) ? 'forte' : 'forteLight'">
-                  Sévère
+                <ion-col [ngClass]="(parcelle.ifv_classe == 3) ? 'forte' : 'forteLight'" [translate]="'strict'">
                 </ion-col>
               </ion-row>
             </ion-grid>
           </span>
-          <p class="center detail italic" (click)="parcelleInfoPage(parcelle)"><ion-icon  name="bar-chart-outline"></ion-icon> Détails de la parcelle...</p>
+          <p class="center detail italic" (click)="parcelleInfoPage(parcelle)" [translate]="'parcelDetails'"><ion-icon  name="bar-chart-outline"></ion-icon></p>
           </ion-card-content>
         </ion-card>
       </ion-item>
@@ -141,8 +136,8 @@
   </ion-list>
 </ion-content>
 <ion-footer>
-  <ion-button *ngIf="offset == 0" small color="light" class="smallbutton" >Prec.</ion-button>
-  <ion-button *ngIf="offset != 0" small class="colorblue" (click)="loadless()">Prec.</ion-button>
-  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()">Suiv.</ion-button>
-  <ion-button *ngIf="limiteMax" small color="light" class="smallbutton" >Suiv.</ion-button>
+  <ion-button *ngIf="offset == 0" small color="light" class="smallbutton" [translate]="'prev'">Prec.</ion-button>
+  <ion-button *ngIf="offset != 0" small class="colorblue" (click)="loadless()" [translate]="'prev'">Prec.</ion-button>
+  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()" [translate]="'next'">Suiv.</ion-button>
+  <ion-button *ngIf="limiteMax" small color="light" class="smallbutton" [translate]="'next'">Suiv.</ion-button>
 </ion-footer>

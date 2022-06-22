@@ -13,6 +13,8 @@ import { UserConfigurationService } from '../services/user-configuration.service
 import { ServerService } from '../services/server.service';
 import { NetworkService } from '../services/network.service';
 import { LocationTrackerService } from '../services/location-tracker.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-home',
@@ -48,6 +50,7 @@ export class HomePage {
     private database: DatabaseService,
     private conf: UserConfigurationService,
     private trakcerService: LocationTrackerService,
+    private _translate: TranslateService,
     ) {
       setInterval(() => {
         if (this.networkService.getCurrentNetworkStatus() === 0) {
@@ -55,6 +58,14 @@ export class HomePage {
         }
      }, 20000);
     }
+
+  ngOnInit(){
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
+  }
 
   ionViewWillEnter() {
     this.menuCtrl.enable(true);

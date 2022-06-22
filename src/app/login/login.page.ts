@@ -29,6 +29,7 @@ export class LoginPage implements OnInit {
   public userOld: any = [];
   public language : string;
   public languageIconPath : string;
+  public supportedLanguages : Map<string, string>;
 
   constructor(private auth: AuthenticationService,
               private alertCtrl: AlertController,
@@ -42,13 +43,10 @@ export class LoginPage implements OnInit {
               ) { }
 
   ngOnInit() {
-    this.deviceService.getDeviceLanguage().then( (lang : string) => {
-      console.log("Langage du device : "+lang);
-      this.language = lang;
-      GlobalConstants.setLanguageSelected(lang);
-      this.languageIconPath = "../../assets/imgs/" + lang + ".png";
-      }
-    );
+    this._translateLanguage();
+    this.language = GlobalConstants.getLanguageSelected();
+    this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+    this.supportedLanguages = GlobalConstants.getSupportedLanguages();
   }
 
   _translateLanguage(): void {
@@ -56,14 +54,14 @@ export class LoginPage implements OnInit {
   }
 
   changeLanguage() {
-    console.log("Language changed : "+this.language)
+    console.log("Language changed : "+this.language);
     GlobalConstants.setLanguageSelected(this.language);
     this._translate.use(GlobalConstants.getLanguageSelected());
-    this.languageIconPath = "../../assets/imgs/" + GlobalConstants.getLanguageSelected() + ".png";
+    this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+    //this.deviceService.saveLanguageSelected();
   }
 
   ionViewWillEnter() {
-    this._translateLanguage();
     this.menuCtrl.enable(false);
     this.database.getNombreUtilisateur().then(data => {
       this.nbUser2020 = data;

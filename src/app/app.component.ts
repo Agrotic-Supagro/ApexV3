@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { Platform } from '@ionic/angular';
+import { ApplicationInitStatus, Component } from '@angular/core';
+import { AlertController, Platform } from '@ionic/angular';
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthenticationService } from './services/authentication.service';
@@ -7,6 +7,8 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { LocationTrackerService } from './services/location-tracker.service';
 import { FtpServerService } from './services/ftp-server.service';
 import { GlobalConstants } from './common/global-constants';
+import { TranslateService } from '@ngx-translate/core';
+import { DeviceService } from './services/device.service';
 
 @Component({
   selector: 'app-root',
@@ -23,28 +25,60 @@ export class AppComponent {
     private locationTracker: LocationTrackerService,
     private screenOrientation: ScreenOrientation,
     private ftpService : FtpServerService,
+    private alertCtrl: AlertController,
+    private _translate: TranslateService,
+    private deviceService : DeviceService,
+
   ) {
     this.sideMenu();
     this.initializeApp();
     this.screenOrientation.lock(this.screenOrientation.ORIENTATIONS.PORTRAIT);
   }
-  
 
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
-    //   this.ftpService.downloadTradFiles().then(() => {
-    //     console.log("downloadTradFiles() finished");
-    //   })
-    //   .catch(error => {
-    //     console.log("Error during downloadTradFiles() : "+error);
-    //     // if(GlobalConstants.getFirstConnection()){
-    //       //set le path a local
-    //     // }
-    //   });
-      this.splashScreen.hide();
+      //this.splashScreen.hide();
     });
+  }
+
+  ngOnInit(){
+    this.deviceService.getDeviceLanguage().then( (deviceLang : string) => {
+      console.log("Langage du device : "+deviceLang);
+      this.handleDeviceLanguage(deviceLang);
+      this._translateLanguage();
+      });
+    this.checkTradFiles();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
+  }
+
+  handleDeviceLanguage(deviceLang : string){
+    var found = false;
+    GlobalConstants.getSupportedLanguages().forEach((value : string, key : string) => {
+      if(value == deviceLang) {
+        found = true;
+        GlobalConstants.setLanguageSelected(deviceLang);
+      }
+    })
+    if(!found){
+      GlobalConstants.setLanguageSelected("en");
+    }
+  }
+
+  async checkTradFiles(){
+    if(GlobalConstants.getTradFilesNeverDownloaded()){
+      const alert = await this.alertCtrl.create({
+        header: 'Attention',
+        message: 'Pour bénéficier de tous les langages de l\'application, ' +
+        'veuillez vous connecter à internet et/ou à un réseau permettant le téléchargement de fichiers (Ex. 4G).',
+        buttons: ['OK']
+      });
+      await alert.present();
+    }
   }
 
   public logout() {
