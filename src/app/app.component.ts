@@ -1,6 +1,5 @@
 import { ApplicationInitStatus, Component } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthenticationService } from './services/authentication.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
@@ -9,6 +8,7 @@ import { FtpServerService } from './services/ftp-server.service';
 import { GlobalConstants } from './common/global-constants';
 import { TranslateService } from '@ngx-translate/core';
 import { DeviceService } from './services/device.service';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 @Component({
   selector: 'app-root',
@@ -20,7 +20,6 @@ export class AppComponent {
   constructor(
     private platform: Platform,
     private auth: AuthenticationService,
-    private splashScreen: SplashScreen,
     private statusBar: StatusBar,
     private locationTracker: LocationTrackerService,
     private screenOrientation: ScreenOrientation,
@@ -45,6 +44,7 @@ export class AppComponent {
   ngOnInit(){
     this._translateLanguage();
     this.checkTradFiles();
+    SplashScreen.hide();
   }
 
   _translateLanguage(): void {

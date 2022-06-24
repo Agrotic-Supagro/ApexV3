@@ -10,13 +10,13 @@ const config: CapacitorConfig = {
       ScrollEnabled: 'false',
       'android-minSdkVersion': '27',
       BackupWebStorage: 'none',
-      SplashMaintainAspectRatio: 'true',
-      FadeSplashScreenDuration: '300',
-      SplashShowOnlyFirstTime: 'false',
-      SplashScreen: 'screen',
-      AutoHideSplashScreen : 'false',
     }
-  }
+  },
+  plugins: {
+    SplashScreen: {
+      launchAutoHide: false,
+    },
+  },
 };
 
 export default config;

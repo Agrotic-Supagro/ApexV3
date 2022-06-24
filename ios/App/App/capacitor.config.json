@@ -7,12 +7,7 @@
 		"preferences": {
 			"ScrollEnabled": "false",
 			"android-minSdkVersion": "27",
-			"BackupWebStorage": "none",
-			"SplashMaintainAspectRatio": "true",
-			"FadeSplashScreenDuration": "300",
-			"SplashShowOnlyFirstTime": "false",
-			"SplashScreen": "screen",
-			"SplashScreenDelay": "3000"
+			"BackupWebStorage": "none"
 		}
 	}
 }

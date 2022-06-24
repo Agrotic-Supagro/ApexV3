@@ -3,8 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
-import { SplashScreen } from '@ionic-native/splash-screen/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
+import { SplashScreen } from '@capacitor/splash-screen';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -38,9 +38,7 @@ import { DeviceService } from './services/device.service';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 
-
 export function HttpLoaderFactory(http: HttpClient) {
-  console.log("entré http loader : "+GlobalConstants.getPathForHttpLoader());
   return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
 }
 
@@ -50,7 +48,7 @@ export function downloadTradContent(ftpServerService: FtpServerService) {
   var nativeStorage : NativeStorage = new NativeStorage();
 
   return () => nativeStorage.getItem('languageSelected')
-  .then(data => {
+    .then(data => {
       console.log("Users changed the language, using this one : "+data);
       return ftpServerService.downloadTradContent(data)
       .then(() => {
@@ -105,9 +103,9 @@ export function downloadTradContent(ftpServerService: FtpServerService) {
           }
         })
       })
-    }
-  );
+    })
 }
+
 
 @NgModule({
   declarations: [AppComponent, ApexInformationComponent],
@@ -135,7 +133,6 @@ export function downloadTradContent(ftpServerService: FtpServerService) {
     File,
     FTP,
     StatusBar,
-    SplashScreen,
     SQLite,
     Vibration,
     Geolocation,

@@ -53,8 +53,6 @@ export class FtpServerService {
             if(entry.isFile){
               var found = false;
               for(const elem of result) {
-                console.log(elem.name);
-                console.log(entry.name);
                 if(elem.name == entry.name) {
                   found = true;
                 }
@@ -194,11 +192,11 @@ export class FtpServerService {
     })
     .then( () => {
       if(GlobalConstants.getDeviceLanguageSupported() && !GlobalConstants.getTradFileNeverDownloaded()){
-        console.log("entré set language selected :"+countryCode);
+        console.log("entré set language selected:"+countryCode);
         GlobalConstants.setLanguageSelected(countryCode);
       }
       if(!GlobalConstants.getDeviceLanguageSupported()){
-        console.log("entré set language selected :"+countryCode);
+        console.log("entré set language selected english:"+countryCode);
         GlobalConstants.setLanguageSelected("en");
       }
       return this.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword());

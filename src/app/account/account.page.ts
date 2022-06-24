@@ -109,7 +109,6 @@ export class AccountPage implements OnInit {
         });
         loading.present()
         .then(() => {
-          console.log("filename : "+this.language);
           this.ftpService.downloadTradContent(this.language)
           .then(() => {
             this.previousLanguage = this.language;
@@ -120,7 +119,7 @@ export class AccountPage implements OnInit {
             loading.dismiss();
             this.nativeStorage.setItem('languageSelected', this.language)
             .then(
-              () => console.log('Stored Language!'),
+              () => console.log('Stored Language ! : '+this.language),
               error => console.error('Error storing Language', error)
             );
           })
@@ -145,6 +144,11 @@ export class AccountPage implements OnInit {
         GlobalConstants.setLanguageSelected(this.language);
         this._translate.use(GlobalConstants.getLanguageSelected());
         this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+        this.nativeStorage.setItem('languageSelected', this.language)
+        .then(
+          () => console.log('Stored Language ! : '+this.language),
+          error => console.error('Error storing Language', error)
+        );
       }
     }
   }
