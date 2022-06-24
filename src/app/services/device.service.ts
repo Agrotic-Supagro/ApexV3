@@ -46,7 +46,27 @@ export class DeviceService {
     })
   }
 
-  async checkFilesExistence(deviceDirectoryPATH : string, directoryToCheck : string){
+  //Check the countryCodeConversion LOCAL FILE to compute the supported languages
+  async computeSupportedLanguages(countryCode : string){
+    console.log("Trying to compute supported languages");
+    try {
+      var data = await this.getJSONCountrycodeConversionFile();
+      $.each(data, function(key, val) {
+        if(!GlobalConstants.getSupportedLanguages().has(key as string)){
+          GlobalConstants.setSupportedLanguages(val ,key as string);
+        }
+        if(key == countryCode){
+          console.log("Device language code supported");
+          GlobalConstants.setDeviceLanguageSupported(true);
+        }
+      })
+    }
+    catch(error){
+      console.log("Error during compute supported languages"+error);
+    }
+  }
+
+  async checkFileExistence(deviceDirectoryPATH : string, directoryToCheck : string, filename : string){
     return this.file.listDir(deviceDirectoryPATH, directoryToCheck)
     .then(async entries => {
       if(entries.length == 0){
@@ -57,83 +77,32 @@ export class DeviceService {
         return entries;
       }
       else{
-        var count = 0;
+        var found = false;
         for(const entry of entries){
           if(entry.isFile){
-            var metadata = await this.getMetadata(entry);
-            //Fichier vide
-            if(metadata.size == 0){
-              count += 1;
+            if(entry.name == filename){
+              found = true;
+              var metadata = await this.getMetadata(entry);
+              //Fichier vide
+              if(metadata.size == 0){
+                if(directoryToCheck.includes("i18n")){
+                  GlobalConstants.setTradFileNeverDownloaded(true);
+                }
+              }
+              else{
+                console.log("Fichier "+filename+".json"+ "dans "+ directoryToCheck +" présent");
+              }
             }
           }
         }
-        if(count == entries.length){
-          console.log("Tous les fichiers de "+ directoryToCheck +" sont vides");
-          if(directoryToCheck.includes("i18n")){
-            GlobalConstants.setTradFilesNeverDownloaded(true);
-          }
-        }
-        else{
-          console.log("Fichiers dans "+ directoryToCheck +" présents");
+        if(!found && directoryToCheck.includes("i18n")){
+          GlobalConstants.setTradFileNeverDownloaded(true);
         }
         return entries;
       }
     })
     .catch(error => {
       console.log("Error during checkFilesExistence : "+error);
-      throw error;
-    })
-  }
-
-  //TODO
-  async loadLanguageSelected(){
-
-  }
-
-  async saveLanguageSelected(){
-    
-  }
-
-  async computeSupportedLanguages(){
-    return this.file.listDir(this.file.dataDirectory + "assets/", "i18n")
-    .then(async entries => {
-      if(entries.length == 0){
-        console.log("Dossier assets/i18n/ vide");
-        return entries;
-      }
-      else{
-        for(const entry of entries){
-          if(entry.isFile){
-            var metadata = await this.getMetadata(entry);
-            //Fichier vide
-            if(metadata.size == 0){
-            }
-            else{
-              var split = entry.name.split(".json");
-              var countryCode = split[0];
-              try {
-                var data = await this.getJSONCountrycodeConversionFile();
-                var language : string = countryCode;
-                $.each(data, function(key, val) {
-                  if(key == countryCode){
-                    language = val;
-                  }
-                })
-                if(!GlobalConstants.getSupportedLanguages().has(language)){
-                  GlobalConstants.setSupportedLanguages(language, countryCode);
-                }
-              }
-              catch(error){
-                console.log("Error during compute supported languages"+error);
-              }
-            }
-          }
-        }
-        return entries;
-      }
-    })
-    .catch(error => {
-      console.log("Error during computeSupportedLanguages : "+error);
       throw error;
     })
   }
@@ -148,7 +117,7 @@ export class DeviceService {
         return res;
       })
       .catch(error => {
-        console.log("File :" +element.name+" do not exists in assets/i18n/ on the device");
+        console.log("File :" +element.name+" do not exists in "+deviceDirectoryPATH+" on the device");
         return this.file.createFile(deviceDirectoryPATH, element.name, true)
         .then( async () => {
           console.log("File "+element.name+" successfully created");

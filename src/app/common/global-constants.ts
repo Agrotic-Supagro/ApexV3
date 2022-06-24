@@ -23,6 +23,8 @@ export class GlobalConstants {
     private static firstConnection : boolean = false;
 
     private static tradFilesNeverDownloaded : boolean = false;
+    private static tradFileNeverDownloaded : boolean = false;
+    private static deviceLanguageSupported : boolean = false;
 
     //Path used by the translate plugin to load the .json trad files
     private static pathForHttpLoader : string = Capacitor.convertFileSrc(GlobalConstants.getDeviceTradDirectoryPATH());
@@ -80,11 +82,25 @@ export class GlobalConstants {
          return this.firstConnection;
     }
 
+    public static setDeviceLanguageSupported(deviceLanguageSupported : boolean) {
+        this.deviceLanguageSupported = deviceLanguageSupported;
+    }
+    public static getDeviceLanguageSupported() {
+         return this.deviceLanguageSupported;
+    }
+
     public static setTradFilesNeverDownloaded(tradFilesNeverDownloaded : boolean) {
         this.tradFilesNeverDownloaded = tradFilesNeverDownloaded;
     }
     public static getTradFilesNeverDownloaded() {
          return this.tradFilesNeverDownloaded;
+    }
+
+    public static setTradFileNeverDownloaded(tradFileNeverDownloaded : boolean) {
+        this.tradFileNeverDownloaded = tradFileNeverDownloaded;
+    }
+    public static getTradFileNeverDownloaded() {
+         return this.tradFileNeverDownloaded;
     }
 
     public static setPathForHttpLoader(pathForHttpLoader : string) {

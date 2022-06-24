@@ -39,34 +39,16 @@ export class AppComponent {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
       this.locationTracker.startTracking();
-      //this.splashScreen.hide();
     });
   }
 
   ngOnInit(){
-    this.deviceService.getDeviceLanguage().then( (deviceLang : string) => {
-      console.log("Langage du device : "+deviceLang);
-      this.handleDeviceLanguage(deviceLang);
-      this._translateLanguage();
-      });
+    this._translateLanguage();
     this.checkTradFiles();
   }
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
-  }
-
-  handleDeviceLanguage(deviceLang : string){
-    var found = false;
-    GlobalConstants.getSupportedLanguages().forEach((value : string, key : string) => {
-      if(value == deviceLang) {
-        found = true;
-        GlobalConstants.setLanguageSelected(deviceLang);
-      }
-    })
-    if(!found){
-      GlobalConstants.setLanguageSelected("en");
-    }
   }
 
   async checkTradFiles(){

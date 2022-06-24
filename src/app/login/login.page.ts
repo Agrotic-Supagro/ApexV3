@@ -3,10 +3,11 @@ import { AuthenticationService } from '../services/authentication.service';
 import { Router, NavigationExtras } from '@angular/router';
 import { AlertController, ToastController, MenuController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
-import { DeviceService } from '../services/device.service';
 import { GlobalConstants } from '../common/global-constants';
 import { TranslateService } from '@ngx-translate/core';
 import { FtpServerService } from '../services/ftp-server.service';
+import { LoadingController } from '@ionic/angular';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 @Component({
   selector: 'app-login',
@@ -28,6 +29,7 @@ export class LoginPage implements OnInit {
   public nbParcelle2020 = 0;
   public userOld: any = [];
   public language : string;
+  public previousLanguage : string;
   public languageIconPath : string;
   public supportedLanguages : Map<string, string>;
 
@@ -37,14 +39,16 @@ export class LoginPage implements OnInit {
               public toastController: ToastController,
               public menuCtrl: MenuController,
               private database: DatabaseService,
-              private deviceService : DeviceService,
               private _translate: TranslateService,
               private ftpService : FtpServerService,
+              public loadingController: LoadingController,
+              private nativeStorage: NativeStorage,
               ) { }
 
   ngOnInit() {
     this._translateLanguage();
     this.language = GlobalConstants.getLanguageSelected();
+    this.previousLanguage = this.language;
     this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
     this.supportedLanguages = GlobalConstants.getSupportedLanguages();
   }
@@ -53,12 +57,54 @@ export class LoginPage implements OnInit {
     this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
-  changeLanguage() {
-    console.log("Language changed : "+this.language);
-    GlobalConstants.setLanguageSelected(this.language);
-    this._translate.use(GlobalConstants.getLanguageSelected());
-    this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
-    //this.deviceService.saveLanguageSelected();
+  async changeLanguage() {
+    if(this.language != this.previousLanguage){
+      console.log("Languages different");
+      if(!GlobalConstants.getTradFilesNeverDownloaded() || GlobalConstants.getDeviceLanguageSupported()){
+        console.log("User wants to change language : "+this.language);
+        const loading = await this.loadingController.create({
+          message: 'Veuillez patienter...',
+        });
+        loading.present()
+        .then(() => {
+          console.log("filename : "+this.language);
+          this.ftpService.downloadTradContent(this.language)
+          .then(() => {
+            this.previousLanguage = this.language;
+            GlobalConstants.setLanguageSelected(this.language);
+            this._translate.use(GlobalConstants.getLanguageSelected());
+            this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+            //this.deviceService.saveLanguageSelected();
+            loading.dismiss();
+            this.nativeStorage.setItem('languageSelected', this.language)
+            .then(
+              () => console.log('Stored Language!'),
+              error => console.error('Error storing Language', error)
+            );
+          })
+          .catch(error => {
+            console.log("Error while changing language : "+error);
+            this.language = this.previousLanguage;
+            GlobalConstants.setLanguageSelected(this.language);
+            loading.dismiss()
+            .then(  async () => {
+              const alert = await this.alertCtrl.create({
+                header: 'Erreur',
+                message: 'Échec du téléchargement de la langue',
+                buttons: ['OK']
+              });
+              await alert.present();
+            })
+          })
+        })
+      }
+      else{
+        this.previousLanguage = this.language;
+        GlobalConstants.setLanguageSelected(this.language);
+        this._translate.use(GlobalConstants.getLanguageSelected());
+        this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
+      }
+    }
   }
 
   ionViewWillEnter() {

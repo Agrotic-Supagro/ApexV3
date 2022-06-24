@@ -34,6 +34,8 @@ import { Capacitor } from '@capacitor/core';
 import { GlobalConstants } from './common/global-constants';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { FtpServerService } from './services/ftp-server.service';
+import { DeviceService } from './services/device.service';
+import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
 
 
 
@@ -43,21 +45,68 @@ export function HttpLoaderFactory(http: HttpClient) {
 }
 
 export function downloadTradContent(ftpServerService: FtpServerService) {
-  return () => ftpServerService.downloadTradContent()
-  .catch(async error => {
-    console.log("Error during download of trad content "+error);
-    if (GlobalConstants.getTradFilesNeverDownloaded()) {
-      console.log("Trad files have never been downloaded, using local trad content");
-      //Local path for trad files
-      GlobalConstants.setPathForHttpLoader("/assets/i18n/");
-      //Local path for coutry icons 
-      GlobalConstants.setPathForCountryIcons("/assets/imgs/");
-      //Local supported Languages
-      GlobalConstants.resetSupportedLanguages();
-      GlobalConstants.setSupportedLanguages("Français", "fr");
-      GlobalConstants.setSupportedLanguages("English", "en");
+  var file = new File();
+  var deviceService : DeviceService = new DeviceService(file);
+  var nativeStorage : NativeStorage = new NativeStorage();
+
+  return () => nativeStorage.getItem('languageSelected')
+  .then(data => {
+      console.log("Users changed the language, using this one : "+data);
+      return ftpServerService.downloadTradContent(data)
+      .then(() => {
+      })
+      .catch(async error => {
+        console.log("Error during download of trad content "+error);
+        if (GlobalConstants.getTradFilesNeverDownloaded()) {
+          console.log("Trad files have never been downloaded, using local trad content");
+          //Local path for trad files
+          GlobalConstants.setPathForHttpLoader("/assets/i18n/");
+          //Local path for coutry icons 
+          GlobalConstants.setPathForCountryIcons("/assets/imgs/");
+          //Local supported Languages
+          GlobalConstants.resetSupportedLanguages();
+          GlobalConstants.setSupportedLanguages("Français", "fr");
+          GlobalConstants.setSupportedLanguages("English", "en");
+          if(data == "fr"){
+            GlobalConstants.setLanguageSelected("fr");
+          }
+          else{
+            GlobalConstants.setLanguageSelected("en");
+          }
+        }
+      })
+    },
+    error => {
+      console.log("Users didn't changed the language, using device\'s one");
+      return deviceService.getDeviceLanguage()
+      .then( async devLang => {
+        console.log("langage du device : "+devLang);
+        return ftpServerService.downloadTradContent(devLang)
+        .then(() => {
+        })
+        .catch(async error => {
+          console.log("Error during download of trad content "+error);
+          if (GlobalConstants.getTradFilesNeverDownloaded()) {
+            console.log("Trad files have never been downloaded, using local trad content");
+            //Local path for trad files
+            GlobalConstants.setPathForHttpLoader("/assets/i18n/");
+            //Local path for coutry icons 
+            GlobalConstants.setPathForCountryIcons("/assets/imgs/");
+            //Local supported Languages
+            GlobalConstants.resetSupportedLanguages();
+            GlobalConstants.setSupportedLanguages("Français", "fr");
+            GlobalConstants.setSupportedLanguages("English", "en");
+            if(devLang == "fr"){
+              GlobalConstants.setLanguageSelected("fr");
+            }
+            else{
+              GlobalConstants.setLanguageSelected("en");
+            }
+          }
+        })
+      })
     }
-  })
+  );
 }
 
 @NgModule({
@@ -94,6 +143,7 @@ export function downloadTradContent(ftpServerService: FtpServerService) {
     EmailComposer,
     Device,
     ScreenOrientation,
+    NativeStorage,
     Network,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     FtpServerService,
