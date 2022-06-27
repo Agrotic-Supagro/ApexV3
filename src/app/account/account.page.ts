@@ -131,7 +131,7 @@ export class AccountPage implements OnInit {
             .then(  async () => {
               const alert = await this.alertCtrl.create({
                 header: 'Erreur',
-                message: 'Échec du téléchargement de la langue',
+                message: 'Échec du téléchargement de la langue, vous devez être connecté à Internet.',
                 buttons: ['OK']
               });
               await alert.present();
