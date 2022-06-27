@@ -1,15 +1,11 @@
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouteReuseStrategy } from '@angular/router';
-
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
-import { SplashScreen } from '@capacitor/splash-screen';
-
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-
 import { IonicStorageModule } from '@ionic/storage';
 import { SQLite } from '@ionic-native/sqlite/ngx';
 import { EmailComposer } from '@ionic-native/email-composer/ngx';
@@ -19,10 +15,7 @@ import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { Device } from '@ionic-native/device/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { Network } from '@ionic-native/network/ngx';
-
-import { ParcelleApexPageModule } from './parcelle-apex/parcelle-apex.module';
 import { StadePhenologiquePageModule } from './stade-phenologique/stade-phenologique.module';
-import { ParcelleInputPageModule } from '../app/parcelle-input/parcelle-input.module';
 // import { ParcelleInfoPageModule } from './parcelle-info/parcelle-info.module';
 import { SessionInfoPageModule } from './session-info/session-info.module';
 import { ApexInformationComponent } from './apex-information/apex-information.component';
@@ -30,7 +23,6 @@ import { CommentairesSessionPageModule } from './commentaires-session/commentair
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { FTP } from '@awesome-cordova-plugins/ftp/ngx';
-import { Capacitor } from '@capacitor/core';
 import { GlobalConstants } from './common/global-constants';
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { FtpServerService } from './services/ftp-server.service';
@@ -42,7 +34,7 @@ export function HttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, GlobalConstants.getPathForHttpLoader(), ".json");
 }
 
-export function downloadTradContent(ftpServerService: FtpServerService) {
+export function initTradContent(ftpServerService: FtpServerService) {
   var file = new File();
   var deviceService : DeviceService = new DeviceService(file);
   var nativeStorage : NativeStorage = new NativeStorage();
@@ -146,7 +138,7 @@ export function downloadTradContent(ftpServerService: FtpServerService) {
     FtpServerService,
     {
       provide: APP_INITIALIZER,
-      useFactory: downloadTradContent,
+      useFactory: initTradContent,
       deps: [FtpServerService],
       multi: true
     },

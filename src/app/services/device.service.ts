@@ -50,6 +50,7 @@ export class DeviceService {
   async computeSupportedLanguages(countryCode : string){
     console.log("Trying to compute supported languages");
     try {
+      GlobalConstants.resetSupportedLanguages();
       var data = await this.getJSONCountrycodeConversionFile();
       $.each(data, function(key, val) {
         if(!GlobalConstants.getSupportedLanguages().has(key as string)){

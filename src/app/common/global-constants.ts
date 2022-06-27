@@ -8,6 +8,7 @@ export class GlobalConstants {
     //App's Language
     private static languageSelected : string;
 
+    //Based on Server file countryCodeConversion.json
     private static supportedLanguages = new Map<string, string>();
 
     //FTP connection infos
@@ -31,6 +32,8 @@ export class GlobalConstants {
 
     //Path used by the translate plugin to load the .json trad files
     private static pathForCountryIcons : string = Capacitor.convertFileSrc(GlobalConstants.file.dataDirectory + "assets/countriesIcons/");
+
+    private static elapsedSeconds : number = 0;
 
     //Getters & Setters
     public static setLanguageSelected(newLang : string) {
@@ -128,5 +131,15 @@ export class GlobalConstants {
     }
     public static getSupportedLanguages() {
          return this.supportedLanguages;
+    }
+
+    public static incrementElapsedSeconds() {
+        this.elapsedSeconds += 1;
+    }
+    public static getElapsedSeconds() {
+        return this.elapsedSeconds;
+    }
+    public static resetElapsedSeconds(){
+        this.elapsedSeconds = 0;
     }
 }

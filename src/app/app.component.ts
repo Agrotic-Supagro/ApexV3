@@ -1,13 +1,11 @@
-import { ApplicationInitStatus, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { AlertController, Platform } from '@ionic/angular';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AuthenticationService } from './services/authentication.service';
 import { ScreenOrientation } from '@ionic-native/screen-orientation/ngx';
 import { LocationTrackerService } from './services/location-tracker.service';
-import { FtpServerService } from './services/ftp-server.service';
 import { GlobalConstants } from './common/global-constants';
 import { TranslateService } from '@ngx-translate/core';
-import { DeviceService } from './services/device.service';
 import { SplashScreen } from '@capacitor/splash-screen';
 
 @Component({
@@ -23,10 +21,8 @@ export class AppComponent {
     private statusBar: StatusBar,
     private locationTracker: LocationTrackerService,
     private screenOrientation: ScreenOrientation,
-    private ftpService : FtpServerService,
     private alertCtrl: AlertController,
     private _translate: TranslateService,
-    private deviceService : DeviceService,
 
   ) {
     this.sideMenu();
@@ -45,6 +41,12 @@ export class AppComponent {
     this._translateLanguage();
     this.checkTradFiles();
     SplashScreen.hide();
+    //Count the seconds since app launched
+    var counter = setInterval(this.incrementTime, 1000);
+  }
+
+  incrementTime(){
+    GlobalConstants.incrementElapsedSeconds();
   }
 
   _translateLanguage(): void {

@@ -1,9 +1,10 @@
 import { Injectable, NgZone } from '@angular/core';
+import { SplashScreen } from '@capacitor/splash-screen';
 import { BackgroundGeolocation,
   BackgroundGeolocationEvents,
   BackgroundGeolocationResponse } from '@ionic-native/background-geolocation/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
-import { truncateSync } from 'fs';
+import { GlobalConstants } from '../common/global-constants';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class LocationTrackerService {
   constructor(
     public zone: NgZone,
     public geolocation: Geolocation,
-    public backgroundGeolocation: BackgroundGeolocation
+    public backgroundGeolocation: BackgroundGeolocation,
   ) { }
 
   askToTurnOnGPS() {
@@ -48,7 +49,6 @@ export class LocationTrackerService {
             this.lat = location.latitude;
             this.lng = location.longitude;
           });
-
           this.backgroundGeolocation.finish(); // FOR IOS ONLY
         });
     });
@@ -61,6 +61,13 @@ export class LocationTrackerService {
       .subscribe((background: BackgroundGeolocationResponse) => {
         console.log("APP is now in background, stoping the tracking");
         this.backgroundGeolocation.stop();
+        console.log("APP is now in background, checking updates for the selected languages and for the supported languages");
+        console.log("Time elapsed (in sec) since last update : "+GlobalConstants.getElapsedSeconds());
+        if(GlobalConstants.getElapsedSeconds() >= 86400){
+          console.log("24h since last update, reloading the app to check updates on server (trad files)");
+          window.location.reload();
+          SplashScreen.show();
+        }
     });
 
     
