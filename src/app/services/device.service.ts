@@ -56,7 +56,7 @@ export class DeviceService {
         if(!GlobalConstants.getSupportedLanguages().has(key as string)){
           GlobalConstants.setSupportedLanguages(val ,key as string);
         }
-        if(key == countryCode){
+        if(countryCode.includes(key as string)){
           console.log("Device language code supported");
           GlobalConstants.setDeviceLanguageSupported(true);
         }

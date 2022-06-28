@@ -58,7 +58,7 @@ export class AppComponent {
       const alert = await this.alertCtrl.create({
         header: 'Attention',
         message: 'Pour bénéficier de tous les langages de l\'application, ' +
-        'veuillez vous connecter à internet et/ou à un réseau permettant le téléchargement de fichiers (Ex. 4G).',
+        'veuillez vous connecter à Internet.',
         buttons: ['OK']
       });
       await alert.present();

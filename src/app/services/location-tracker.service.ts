@@ -61,7 +61,7 @@ export class LocationTrackerService {
       .subscribe((background: BackgroundGeolocationResponse) => {
         console.log("APP is now in background, stoping the tracking");
         this.backgroundGeolocation.stop();
-        console.log("APP is now in background, checking updates for the selected languages and for the supported languages");
+        //Checking Updates of trad files every 24h if app stays in background
         console.log("Time elapsed (in sec) since last update : "+GlobalConstants.getElapsedSeconds());
         if(GlobalConstants.getElapsedSeconds() >= 86400){
           console.log("24h since last update, reloading the app to check updates on server (trad files)");

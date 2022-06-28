@@ -24,8 +24,6 @@ export class FtpServerService {
     });
   }
 
-  
-
   //Compare modification dates (local/server)
   //Return an array of for ex. [true, filename] if we need to update/re-download a file
   async checkUpdatesInServerDirectory(serverDirectoryPATH : string, deviceDirectoryPATH : string, filename? : string) {
@@ -174,6 +172,7 @@ export class FtpServerService {
     });
   }
 
+  //Function that is called to do all the process of downloading/checking updates of trad files
   async downloadTradContent(countryCode : string){
     console.log("Starting downloadTradContent process");
     return this.deviceService.checkOrCreateAssetsDirectories()
@@ -192,11 +191,11 @@ export class FtpServerService {
     })
     .then( () => {
       if(GlobalConstants.getDeviceLanguageSupported() && !GlobalConstants.getTradFileNeverDownloaded()){
-        console.log("entré set language selected:"+countryCode);
+        console.log("set language selected:"+countryCode);
         GlobalConstants.setLanguageSelected(countryCode);
       }
       if(!GlobalConstants.getDeviceLanguageSupported()){
-        console.log("entré set language selected english:"+countryCode);
+        console.log("set language selected english:"+countryCode);
         GlobalConstants.setLanguageSelected("en");
       }
       return this.connectToServer(GlobalConstants.getHost(),GlobalConstants.getUsername(), GlobalConstants.getPassword());
@@ -205,7 +204,7 @@ export class FtpServerService {
       throw error;
     })
     .then( () => {
-      return this.checkUpdatesInServerDirectory("/assets/traductionHelper/", this.file.dataDirectory + "assets/traductionHelper/");
+      return this.checkUpdatesInServerDirectory(GlobalConstants.getServerHelperPATH(), GlobalConstants.getDeviceHelperDirectoryPATH());
     })
     .catch(error => {
       throw error;
@@ -213,13 +212,13 @@ export class FtpServerService {
     .then( async tab => {
       for(const element of tab) {
         if(element[1]) {
-          await this.downloadFile(this.file.dataDirectory + "assets/traductionHelper/"+element[0], "/assets/traductionHelper/"+element[0])
+          await this.downloadFile(GlobalConstants.getDeviceHelperDirectoryPATH()+element[0], GlobalConstants.getServerHelperPATH()+element[0])
           .then(async (res) => {
             console.log("Download Finished for " +element[0]+" : percent = "+res);
             if(element[0] == "countryCodeConversion.json"){
               const computed = await this.deviceService.computeSupportedLanguages(countryCode);
               if(GlobalConstants.getDeviceLanguageSupported() && !GlobalConstants.getTradFileNeverDownloaded()){
-                console.log("entré set language selected :"+countryCode);
+                console.log("set language selected :"+countryCode);
                 GlobalConstants.setLanguageSelected(countryCode);
               }
             }
@@ -242,7 +241,7 @@ export class FtpServerService {
         filename = countryCode + ".png";
       }
       console.log("file to check: "+filename);
-      return this.checkUpdatesInServerDirectory("/assets/countriesIcons/", this.file.dataDirectory + "assets/countriesIcons/", filename);
+      return this.checkUpdatesInServerDirectory(GlobalConstants.getServerIconsPATH(), GlobalConstants.getDeviceIconsDirectoryPATH(), filename);
     })
     .catch(error => {
       throw error;
@@ -250,7 +249,7 @@ export class FtpServerService {
     .then( async tab => {
       for(const element of tab) {
         if(element[1]) {
-          await this.downloadFile(this.file.dataDirectory + "assets/countriesIcons/"+element[0], "/assets/countriesIcons/"+element[0])
+          await this.downloadFile(GlobalConstants.getDeviceIconsDirectoryPATH()+element[0], GlobalConstants.getServerIconsPATH()+element[0])
           .then(async (res) => {
             console.log("Download Finished for " +element[0]+" : percent = "+res);
           })
@@ -289,7 +288,12 @@ export class FtpServerService {
           });
         }
       }
+      GlobalConstants.setTradFileNeverDownloaded(false);
       GlobalConstants.setTradFilesNeverDownloaded(false);
+      if(GlobalConstants.getDeviceLanguageSupported() && !GlobalConstants.getTradFileNeverDownloaded()){
+        console.log("set language selected :"+countryCode);
+        GlobalConstants.setLanguageSelected(countryCode);
+      }
     })
     .catch(error => {
       throw error;

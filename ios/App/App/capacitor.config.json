@@ -9,5 +9,10 @@
 			"android-minSdkVersion": "27",
 			"BackupWebStorage": "none"
 		}
+	},
+	"plugins": {
+		"SplashScreen": {
+			"launchAutoHide": false
+		}
 	}
 }
