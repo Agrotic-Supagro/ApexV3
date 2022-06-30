@@ -15,6 +15,9 @@ import { SplashScreen } from '@capacitor/splash-screen';
 })
 export class AppComponent {
   navigate: any;
+  warning : string;
+  message : string;
+  okBtn : string;
     
   constructor(
     private platform: Platform,
@@ -52,15 +55,23 @@ export class AppComponent {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    this._translate.get('warning').subscribe( res => {
+      this.warning = res;
+    })
+    this._translate.get('languagesMsg').subscribe( res => {
+      this.message = res;
+    })
+    this._translate.get('okButton').subscribe( res => {
+      this.okBtn = res;
+    })
   }
 
   async checkTradFiles(){
     if(GlobalConstants.getTradFilesNeverDownloaded()){
       const alert = await this.alertCtrl.create({
-        header: 'Attention',
-        message: 'Pour bénéficier de tous les langages de l\'application, ' +
-        'veuillez vous connecter à Internet.',
-        buttons: ['OK']
+        header: this.warning,
+        message: this.message,
+        buttons: [this.okBtn]
       });
       await alert.present();
     }

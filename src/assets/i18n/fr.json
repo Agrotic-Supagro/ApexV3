@@ -135,5 +135,8 @@
     "contact" : "Contact",
     "number" : "nombre...",
     "enterComment" : "Entrez votre commentaire ici...",
-    "emailPH": "E-mail..."
+    "emailPH": "E-mail...",
+    "warning" : "Attention",
+    "languagesMsg" : "Pour bénéficier de tous les langages de l'application, veuillez vous connecter à Internet.",
+    "okButton" : "OK"
 }   
