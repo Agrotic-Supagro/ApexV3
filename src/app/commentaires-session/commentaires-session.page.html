@@ -1,17 +1,16 @@
 <ion-header>
   <ion-toolbar class="toolbar-header title_center">
-    <ion-title>Commentaires</ion-title>
+    <ion-title [translate]="'comments'"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-item>
-    <ion-textarea placeholder="Entrer votre commentaire ici..." [(ngModel)]="commentairetext"></ion-textarea>
+    <ion-textarea placeholder="{{ 'enterComment' | translate }}" [(ngModel)]="commentairetext"></ion-textarea>
   </ion-item>
 </ion-content>
 
 <ion-footer>
-  <ion-button expand="block" (click)="saveCommentaire()">
-    Sauvegarder
+  <ion-button expand="block" (click)="saveCommentaire()" [translate]="'save'">
   </ion-button>
 </ion-footer> 

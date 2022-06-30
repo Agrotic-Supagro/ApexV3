@@ -9,6 +9,8 @@ import { UserConfigurationService } from '../services/user-configuration.service
 import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
 import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-parcelle-input',
@@ -50,6 +52,7 @@ export class ParcelleInputPage implements OnInit {
     // private navParams: NavParams,
     private conf: UserConfigurationService,
     public popoverCtrl: PopoverController,
+    private _translate: TranslateService,
   ) {
     /*this.plt.ready().then(() => {
       this.idUser = this.navParams.data.idUser;
@@ -69,6 +72,7 @@ export class ParcelleInputPage implements OnInit {
    }
 
   ngOnInit() {
+    this._translateLanguage();
     this.selectParcelle = [];
     this.database.getListParcelle().then( data => {
       if (data === null) {
@@ -80,6 +84,10 @@ export class ParcelleInputPage implements OnInit {
       }
     });
     if (this.selectParcelle.length > 0) { this.isList = true; }
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   public updateTotApex() {

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-tutorial',
@@ -13,9 +15,14 @@ export class TutorialPage implements OnInit {
     speed: 400
   };
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private _translate: TranslateService,) { }
 
   ngOnInit() {
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
 

@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController, ModalController, NavParams, Platform } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-stade-phenologique',
@@ -20,6 +22,7 @@ export class StadePhenologiquePage implements OnInit {
     private navParams: NavParams,
     private database: DatabaseService,
     public modalController: ModalController,
+    private _translate: TranslateService,
   ) {
     this.plt.ready().then(() => {
       this.database.getStadePheno().then( data => {
@@ -38,6 +41,11 @@ export class StadePhenologiquePage implements OnInit {
   }
 
   ngOnInit() {
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   ionViewDidEnter() {

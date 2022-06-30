@@ -5,6 +5,8 @@ import { DateService } from '../services/dates.service';
 import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
 import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-session-info',
@@ -37,9 +39,11 @@ export class SessionInfoPage implements OnInit {
     private dateformat: DateService,
     private route: ActivatedRoute,
     private router: Router,
+    private _translate: TranslateService,
   ) { }
 
   ngOnInit() {
+    this._translateLanguage();
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
         console.log('received data from Parcelle-info', this.router.getCurrentNavigation().extras.state);
@@ -112,6 +116,10 @@ export class SessionInfoPage implements OnInit {
         }
       }
     });*/
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   public async parcelleEcimee() {

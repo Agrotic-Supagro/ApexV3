@@ -15,6 +15,7 @@ import { SplashScreen } from '@capacitor/splash-screen';
 })
 export class AppComponent {
   navigate: any;
+    
   constructor(
     private platform: Platform,
     private auth: AuthenticationService,
@@ -42,7 +43,7 @@ export class AppComponent {
     this.checkTradFiles();
     SplashScreen.hide();
     //Count the seconds since app launched
-    var counter = setInterval(this.incrementTime, 1000);
+    //var counter = setInterval(this.incrementTime, 1000);
   }
 
   incrementTime(){
@@ -73,32 +74,32 @@ export class AppComponent {
     this.navigate =
     [
       {
-        title : 'Accueil',
+        title : "home",
         url   : '/home',
         icon  : 'home'
       },
       {
-        title : 'La méthode des apex',
+        title : "apexMethd",
         url   : '/method',
         icon  : 'leaf'
       },
       {
-        title : 'Tutoriel ApeX-Vigne',
+        title : "tutoApex",
         url   : '/tutorial',
         icon  : 'library'
       },
       {
-        title : 'Compte et données',
+        title : "account",
         url   : '/account',
         icon  : 'person'
       },
       {
-        title : 'Contact',
+        title : "contact",
         url   : '/contact',
         icon  : 'mail'
       },
       {
-        title : 'A propos',
+        title : "about",
         url   : '/about',
         icon  : 'information-circle'
       }

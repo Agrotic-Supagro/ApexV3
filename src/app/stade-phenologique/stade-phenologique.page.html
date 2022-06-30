@@ -1,6 +1,6 @@
 <ion-header>
   <ion-toolbar class="toolbar-header title_center">
-    <ion-title>Liste stades phénologiques <ion-icon name="swap-vertical"></ion-icon></ion-title>
+    <ion-title [translate]="'listPheno'"><ion-icon name="swap-vertical"></ion-icon></ion-title>
   </ion-toolbar>
 </ion-header>
 
@@ -24,7 +24,6 @@
   </ion-list>
 </ion-content> 
 <ion-footer>
-  <ion-button expand="block" (click)="saveStade()">
-    Valider
+  <ion-button expand="block" (click)="saveStade()" [translate]="'validate'">
   </ion-button>
 </ion-footer> 

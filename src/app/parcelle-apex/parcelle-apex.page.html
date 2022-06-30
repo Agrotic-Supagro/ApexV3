@@ -17,14 +17,14 @@
         <tr>
           <td class="paddinLeft">
             <ion-item class="shadowInput" *ngIf="isList">
-              <ion-label>Choisir une parcelle</ion-label>
+              <ion-label [translate]="'chooseParcel'"></ion-label>
               <ion-select [(ngModel)]="idParcelle" okText="Ok" cancelText="Annuler" (ionCancel)="onCancel()"
                 (ionChange)="changeParcelle()">
                 <ion-select-option *ngFor="let parcelle of selectParcelle" value="{{parcelle.id_parcelle}}">{{parcelle.nom_parcelle}}</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item *ngIf="!isList" class="al-right graycolor">
-              <i>Ajouter le nom d'une parcelle -></i>
+              <i [translate]="'addParcel'"></i>
             </ion-item>
           </td>
           <td class="center">
@@ -44,7 +44,7 @@
         <img src="assets/imgs/stadeP.jpg" class="imgBox" />
       </ion-col>
       <ion-col>
-        <span class="apex-title">Pleine croissance</span>
+        <span class="apex-title" [translate]="'fullGrow'"></span>
       </ion-col>
     </ion-row>
     <ion-row (click)="addapex('1')" class="box boxbottom">
@@ -52,7 +52,7 @@
         <img src="assets/imgs/stadeR.jpg" class="imgBox" />
       </ion-col>
       <ion-col>
-        <span class="apex-title">Croissance ralentie</span>
+        <span class="apex-title" [translate]="'slowGrow'"></span>
       </ion-col>
     </ion-row>
     <ion-row (click)="addapex('2')" class="box boxmiddle">
@@ -60,7 +60,7 @@
         <img src="assets/imgs/stadeC.jpg" class="imgBox" />
       </ion-col>
       <ion-col>
-        <span class="apex-title">Arrêt de croissance</span>
+        <span class="apex-title" [translate]="'stopGrow'"></span>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -112,11 +112,13 @@
       </ion-col>-->
       <ion-col col-auto class="nopadding">
         <ng-container *ngIf="numberApex < thresholdApex; else elseTemplate">
-          <ion-button expand="block" color="secondary" (click)="apexAlert()" > Observation :
-            {{numberApex}}/{{thresholdApex}}</ion-button>
+          <ion-button expand="block" color="secondary" (click)="apexAlert()"> <span [translate]="'nbObs'"></span> {{numberApex}}/{{thresholdApex}} </ion-button>
         </ng-container>
         <ng-template #elseTemplate>
-          <ion-button expand="block" (click)="saveSession()" >Calculer ({{numberApex}} apex)
+          <ion-button expand="block" (click)="saveSession()">
+            <span [translate]="'computeApex'"></span>
+            {{numberApex}}
+            <span [translate]="'computeApex2'"></span>
           </ion-button>
         </ng-template>
       </ion-col>

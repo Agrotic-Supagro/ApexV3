@@ -3,14 +3,14 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title (click)="downloadAllData()">Compte et données</ion-title>
+    <ion-title (click)="downloadAllData()" [translate]="'account'"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-card>
     <ion-card-content *ngIf="!isEdit">
-      <p class="titlecard">Vos informations personnelles</p>
+      <p class="titlecard" [translate]="'yourInfos'"></p>
       <ion-grid class="leftSize">
         <ion-row>
           <ion-col size="auto">
@@ -41,16 +41,16 @@
         </ion-row>
         <ion-row>
           <ion-col pullLg class="center">
-            <ion-button size="small" color="light" (click)="isEdit = !isEdit" > Editer </ion-button>
+            <ion-button size="small" color="light" (click)="isEdit = !isEdit" [translate]="'edit'"></ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
     <ion-card-content *ngIf="isEdit">
-      <p class="titlecard">Editer vos informations personnelles</p>
+      <p class="titlecard" [translate]="'editInfos'"></p>
       <form [formGroup]="registrationForm" (ngSubmit)="updateUser()">
         <ion-item>
-          <ion-label position="floating">Prénom</ion-label>
+          <ion-label position="floating" [translate]="'surname'"></ion-label>
           <ion-input autocapitalize inputmode="text" formControlName="prenom" [(ngModel)]="user.prenom" ></ion-input>
         </ion-item>
         <div *ngFor="let error of errorMessages.prenom">
@@ -60,7 +60,7 @@
         </div>
   
         <ion-item>
-          <ion-label position="floating">Nom</ion-label>
+          <ion-label position="floating" [translate]="'name'"></ion-label>
           <ion-input autocapitalize inputmode="text" formControlName="nom" [(ngModel)]="user.nom"></ion-input>
         </ion-item>
         <div *ngFor="let error of errorMessages.nom">
@@ -70,7 +70,7 @@
         </div>
   
         <ion-item>
-          <ion-label position="floating">Email</ion-label>
+          <ion-label position="floating" [translate]="'email'"></ion-label>
           <ion-input inputmode="text" formControlName="email" [(ngModel)]="user.email"></ion-input>
         </ion-item>
         <div *ngFor="let error of errorMessages.email">
@@ -80,31 +80,30 @@
         </div>
   
         <ion-item>
-          <ion-label position="floating">Structure</ion-label>
+          <ion-label position="floating" [translate]="'structure'"></ion-label>
           <ion-input inputmode="text" formControlName="structure" [(ngModel)]="user.structure"></ion-input>
         </ion-item>
  
         <ion-grid>
           <ion-row>
             <ion-col pullLg class="center">
-              <ion-button size="small" color="light" (click)="isEdit = !isEdit" > Annuler </ion-button>
+              <ion-button size="small" color="light" (click)="isEdit = !isEdit" [translate]="'cancel'"> </ion-button>
             </ion-col>
             <ion-col pullLg class="center">
-              <ion-button size="small" type="submit" [disabled]="!registrationForm.valid"> Valider</ion-button>
+              <ion-button size="small" type="submit" [disabled]="!registrationForm.valid" [translate]="'validate'"></ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
       </form>
     </ion-card-content>
     <ion-card-content>
-      <p class="titlecard">Votre mot de passe</p>
+      <p class="titlecard" [translate]="'yourPwd'"></p>
       <ion-grid>
         <ion-row *ngIf="!isPwd" (click)="isPwd = !isPwd" >
           <ion-col size="auto">
             <ion-icon name="eye"></ion-icon>
           </ion-col>
-          <ion-col>
-            Voir votre mot de passe actuel
+          <ion-col [translate]="'seePwd'">
           </ion-col>
         </ion-row>
         <ion-row *ngIf="isPwd" (click)="isPwd = !isPwd" >
@@ -117,14 +116,14 @@
         </ion-row>
         <ion-row>
           <ion-col pullLg class="center">
-            <ion-button size="small" color="light" (click)="changePwd()" > Changer mot de passe </ion-button>
+            <ion-button size="small" color="light" (click)="changePwd()" [translate]="'changePwd'"></ion-button>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-card-content>
 
     <ion-card-content>
-      <p class="titlecard">Langue de l'application</p>
+      <p class="titlecard" [translate]="'appLang'"></p>
         <ion-row class="langage">
           <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="color: black;">
             <ion-select-option *ngFor="let country of supportedLanguages | keyvalue" value="{{country.value}}"> {{country.key}} </ion-select-option>
@@ -137,22 +136,20 @@
 
   <ion-card>
     <ion-card-content>
-      <p class="titlecard">Gestion des données <ion-icon name="help-circle" (click)="info()"></ion-icon></p>
+      <p class="titlecard" [translate]="'dataManag'"> <ion-icon name="help-circle" (click)="info()"></ion-icon></p>
       <ion-grid class="center">
         <ion-row>
           <ion-col class="linecol" size="6">
-            <ion-button size="small" color="secondary" (click)="sendData()" ><ion-icon name="paper-plane"></ion-icon> Envoyer </ion-button>
+            <ion-button size="small" color="secondary" (click)="sendData()" [translate]="'send'"><ion-icon name="paper-plane"></ion-icon> </ion-button>
           </ion-col>
           <ion-col size="6">
-            <ion-button size="small" color="tertiary" (click)="receiveData()" ><ion-icon name="cloud-download"></ion-icon> Synchroniser </ion-button>
+            <ion-button size="small" color="tertiary" (click)="receiveData()" [translate]="'sync'"><ion-icon name="cloud-download"></ion-icon> </ion-button>
           </ion-col>
         </ion-row>
         <ion-row>
-          <ion-col class="linecol" size="6">
-            Envoyer toutes vos données par email (CSV)
+          <ion-col class="linecol" size="6" [translate]="'sendCsv'">
           </ion-col>
-          <ion-col size="6">
-            Synchroniser vos données du serveur (ApeX-Vigne)
+          <ion-col size="6" [translate]="'syncServer'">
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -161,25 +158,24 @@
 
   <ion-card>
     <ion-card-content>
-      <p class="titlecard">Configuration</p>
-      <p>Interprétation de la contrainte hydrique </p>
+      <p class="titlecard" [translate]="'config'"></p>
+      <p [translate]="'interpOfWaterStress'"></p>
       <ion-item>
-        <ion-label>Module de l'IFV (<span *ngIf="isIfv" >activé</span><span *ngIf="!isIfv" >désactivé</span>)</ion-label>
+        <ion-label> <span [translate]="'ifvModule'"> </span> (<span *ngIf="isIfv" [translate]="'activated'"></span><span *ngIf="!isIfv" [translate]="'desactivated'"></span>)  </ion-label>
         <ion-toggle [(ngModel)]="isIfv" (ionChange)="updateIFV()" ></ion-toggle>
       </ion-item>
     </ion-card-content>
 
     <ion-card-content>
-      <p class="titlecard">Observation des apex</p>
-      <p class="leftSize">Définissez le nombre minimum d'apex à observer pour chaque parcelle.</p>
+      <p class="titlecard" [translate]="'obsApex'"></p>
+      <p class="leftSize" [translate]="'minimumApex'"></p>
 
       <ion-item class="leftSize">
-        <ion-label color="primary">
-          Nombre d'apex à observer
+        <ion-label color="primary" [translate]="'nbApexObs'">
         </ion-label>
-        <ion-input type="number" placeholder="nombre ..." [(ngModel)]="threshold"></ion-input>
+        <ion-input type="number" placeholder="{{ 'number' | translate }}" [(ngModel)]="threshold"></ion-input>
       </ion-item>
-      <div class="center"><ion-button size="small" color="secondary"  (click)="updateThreshold()">Valider</ion-button></div>
+      <div class="center"><ion-button size="small" color="secondary"  (click)="updateThreshold()" [translate]="'validate'"></ion-button></div>
     </ion-card-content>
   </ion-card>
 

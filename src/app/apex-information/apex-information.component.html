@@ -5,22 +5,22 @@
 
   <ion-item (click)="stadePheno()">
     <ion-icon name="leaf" color="success"></ion-icon>
-    <ion-label>Ajouter stade phéno.</ion-label>
+    <ion-label [translate]="'addPheno'"></ion-label>
   </ion-item>
 
   <ion-item (click)="commentaire()">
     <ion-icon name="chatbox-ellipses" color="secondary"></ion-icon>
-    <ion-label>Ajouter commentaire</ion-label>
+    <ion-label [translate]="'addComment'"></ion-label>
   </ion-item>
 
   <ion-item (click)="ecimee()">
     <ion-icon src="../../../assets/icon/cisaille.svg" ></ion-icon>
-    <ion-label>Marquer comme écimée</ion-label>
+    <ion-label [translate]="'markAsTopped'"></ion-label>
   </ion-item>
 
   <ion-item (click)="deleteLastObs()">
     <ion-icon name="return-down-back-sharp" color="danger"></ion-icon>
-    <ion-label>Supprimer dernière observation</ion-label>
+    <ion-label [translate]="'deleteLastObs'"></ion-label>
   </ion-item>
 
 </ion-list>

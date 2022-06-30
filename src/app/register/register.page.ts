@@ -3,6 +3,8 @@ import { ToastController } from '@ionic/angular';
 import {Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../services/authentication.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-register',
@@ -50,9 +52,18 @@ export class RegisterPage {
               public toastController: ToastController,
               private router: Router,
               private auth: AuthenticationService,
-              private formBuilder: FormBuilder
+              private formBuilder: FormBuilder,
+              private _translate: TranslateService,
               ) {
 
+  }
+
+  ngOnInit(){
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   get prenom() {

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { PopoverController, } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
+
 
 @Component({
   selector: 'app-apex-information',
@@ -10,9 +13,16 @@ export class ApexInformationComponent implements OnInit {
 
   constructor(
     private popoverController: PopoverController,
+    private _translate: TranslateService,
     ) { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
+  }
 
   stadePheno() {
     this.popoverController.dismiss('stadePheno');

@@ -136,8 +136,8 @@
   </ion-list>
 </ion-content>
 <ion-footer>
-  <ion-button *ngIf="offset == 0" small color="light" class="smallbutton" [translate]="'prev'">Prec.</ion-button>
-  <ion-button *ngIf="offset != 0" small class="colorblue" (click)="loadless()" [translate]="'prev'">Prec.</ion-button>
-  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()" [translate]="'next'">Suiv.</ion-button>
-  <ion-button *ngIf="limiteMax" small color="light" class="smallbutton" [translate]="'next'">Suiv.</ion-button>
+  <ion-button *ngIf="offset == 0" small color="light" class="smallbutton" [translate]="'prev'"></ion-button>
+  <ion-button *ngIf="offset != 0" small class="colorblue" (click)="loadless()" [translate]="'prev'"></ion-button>
+  <ion-button *ngIf="!limiteMax" small class="colorgreen" (click)="loadmore()" [translate]="'next'"></ion-button>
+  <ion-button *ngIf="limiteMax" small color="light" class="smallbutton" [translate]="'next'"></ion-button>
 </ion-footer>

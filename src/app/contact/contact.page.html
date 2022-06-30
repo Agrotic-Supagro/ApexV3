@@ -3,17 +3,17 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Nous contacter</ion-title>
+    <ion-title [translate]="'contactUs'"></ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
 
-<p class="pjustify">N'hésitez pas à nous faire part de vos <b>questions</b>, <b>remarques</b> ou <b>suggestions</b> relatives à l'utilisation de cette application en nous envoyant un e-mail à l'adresse <b>apexvigne@agrotic.org</b> ou directement par l'application.</p>
+<p class="pjustify" [innerHTML]="'feedbackEmail' | translate"></p>
 
-<h6>Nous écrire :</h6>
+<h6 [translate]="'writeToUs'"></h6>
 <ion-item>
-  <ion-textarea rows="15" class="txt" placeholder="Corps de l'email..." [(ngModel)]="emailtext"></ion-textarea>
+  <ion-textarea rows="15" class="txt" placeholder="{{ 'emailContent' | translate }}" [(ngModel)]="emailtext"></ion-textarea>
 </ion-item>
-<ion-button (click)="sendEmail()" expand="block">Envoyer l'e-mail</ion-button>
+<ion-button (click)="sendEmail()" expand="block" [translate]="'sendEmail'"></ion-button>
 </ion-content>

@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { Platform, ToastController } from '@ionic/angular';
 import { DatabaseService } from '../services/database.service';
 import { Storage } from '@ionic/storage';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-contact',
@@ -18,7 +20,8 @@ export class ContactPage {
     private plt: Platform,
     public toastController: ToastController,
     private storage: Storage,
-    private database: DatabaseService
+    private database: DatabaseService,
+    private _translate: TranslateService,
     ) {
       this.plt.ready().then(() => {
         this.storage.get('TOKEN_KEY').then(val => {
@@ -28,6 +31,14 @@ export class ContactPage {
           });
         });
       });
+  }
+
+  ngOnInit(){
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   sendEmail() {

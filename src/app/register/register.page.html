@@ -10,11 +10,11 @@
 <ion-content class="ion-padding">
   <ion-card class="margin-card">
     <ion-card-header>
-      <ion-card-title class="ion-text-center">Vos informations</ion-card-title>
+      <ion-card-title class="ion-text-center" [translate]="'infoRegister'"></ion-card-title>
     </ion-card-header>
     <form [formGroup]="registrationForm" (ngSubmit)="registerForm()">
       <ion-item>
-        <ion-label position="floating">Prénom</ion-label>
+        <ion-label position="floating" [translate]="'surname'"></ion-label>
         <ion-input autocapitalize inputmode="text" formControlName="prenom"></ion-input>
       </ion-item>
       <div *ngFor="let error of errorMessages.prenom">
@@ -24,7 +24,7 @@
       </div>
 
       <ion-item>
-        <ion-label position="floating">Nom</ion-label>
+        <ion-label position="floating" [translate]="'name'"></ion-label>
         <ion-input autocapitalize inputmode="text" formControlName="nom"></ion-input>
       </ion-item>
       <div *ngFor="let error of errorMessages.nom">
@@ -34,7 +34,7 @@
       </div>
 
       <ion-item>
-        <ion-label position="floating">Email</ion-label>
+        <ion-label position="floating" [translate]="'email'"></ion-label>
         <ion-input inputmode="text" formControlName="email"></ion-input>
       </ion-item>
       <div *ngFor="let error of errorMessages.email">
@@ -44,12 +44,12 @@
       </div>
 
       <ion-item>
-        <ion-label position="floating">Structure</ion-label>
+        <ion-label position="floating" [translate]="'structure'"></ion-label>
         <ion-input inputmode="text" formControlName="structure"></ion-input>
       </ion-item>
 
       <ion-item >
-        <ion-label position="floating">Mot de passe</ion-label>
+        <ion-label position="floating" [translate]="'password'"></ion-label>
         <ion-input type="password" formControlName="mot_de_passe"></ion-input>
       </ion-item>
       <div *ngFor="let error of errorMessages.mot_de_passe">
@@ -58,7 +58,7 @@
         </ng-container>
       </div>
       <div class="ion-text-center register-button paddin-button">
-        <ion-button type="submit" [disabled]="!registrationForm.valid">S'enregistrer</ion-button>
+        <ion-button type="submit" [disabled]="!registrationForm.valid" [translate]="'confirmRegister'"></ion-button>
       </div>
     </form>
   </ion-card>

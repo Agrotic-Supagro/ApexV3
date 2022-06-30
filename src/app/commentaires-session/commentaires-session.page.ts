@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, NavParams, Platform } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-commentaires-session',
@@ -14,6 +16,7 @@ export class CommentairesSessionPage implements OnInit {
     private plt: Platform,
     private navParams: NavParams,
     public modalController: ModalController,
+    private _translate: TranslateService,
   ) {
     this.plt.ready().then(() => {
       this.commentairetext = this.navParams.data.commentairetext;
@@ -21,6 +24,11 @@ export class CommentairesSessionPage implements OnInit {
   }
 
   ngOnInit() {
+    this._translateLanguage();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   async saveCommentaire() {

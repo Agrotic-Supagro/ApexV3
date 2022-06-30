@@ -11,6 +11,8 @@ import { ApexInformationComponent } from '../apex-information/apex-information.c
 import { StadePhenologiquePage } from '../stade-phenologique/stade-phenologique.page';
 import { CommentairesSessionPage } from '../commentaires-session/commentaires-session.page';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-parcelle-apex',
@@ -55,6 +57,7 @@ export class ParcelleApexPage implements OnInit {
     private locationTracker: LocationTrackerService,
     private conf: UserConfigurationService,
     public popoverCtrl: PopoverController,
+    private _translate: TranslateService,
   ) {
     this.route.queryParams.subscribe(params => {
       if (this.router.getCurrentNavigation().extras.state) {
@@ -77,6 +80,7 @@ export class ParcelleApexPage implements OnInit {
   }
 
   ngOnInit() {
+    this._translateLanguage();
     this.selectParcelle = [];
     this.database.getListParcelle().then( data => {
       if (data === null) {
@@ -88,6 +92,10 @@ export class ParcelleApexPage implements OnInit {
       }
     });
     if (this.selectParcelle.length > 0) { this.isList = true; }
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   async notifications(ev: any) {

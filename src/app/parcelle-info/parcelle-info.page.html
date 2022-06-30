@@ -7,7 +7,7 @@
 <ion-content>
   <ion-card>
     <ion-card-header>
-      <span class="titleCard">Suivi de la croissance</span>
+      <span class="titleCard" [translate]="'growthMonitor'"></span>
     </ion-card-header>
     <ion-card-content class="cardChart" >
         <canvas #lineCanvasCroissance></canvas>
@@ -16,7 +16,7 @@
 
   <ion-card [ngClass]="(isIFV) ? 'displayBlock' : 'displayNone'">
     <ion-card-header>
-      <span class="titleCard">Interprétation contrainte hydrique</span>
+      <span class="titleCard" [translate]="'interpOfWaterStress'"></span>
     </ion-card-header>
     <ion-card-content class="cardChart" >
       <canvas #lineCanvasContrainte></canvas>
@@ -27,13 +27,13 @@
     <ion-card-header (click)="isList = !isList">
       <ion-icon name="caret-up-outline" *ngIf="isList"></ion-icon>
       <ion-icon name="caret-down-outline" *ngIf="!isList"></ion-icon>
-      <span class="titleCard">Liste des observations</span>
+      <span class="titleCard" [translate]="'obsList'"></span>
     </ion-card-header>
     <ion-card-content *ngIf="isList">
       <ion-grid *ngFor="let dataSession of infoSession.dataSession">
         <ion-row>
           <ion-col size="auto">
-            <p>Le {{dataSession.dateSession | datesExtra : 'dates'}} à {{dataSession.dateSession | datesExtra : 'heures'}}</p>
+            <p> <span [translate]="'the'"></span> {{dataSession.dateSession | datesExtra : 'dates'}} <span [translate]="'at'"></span> {{dataSession.dateSession | datesExtra : 'heures'}}</p>
           </ion-col>
           <ion-col size="2" class="right edit">
             <ion-icon name="eye" (click)="openEditSessionPage(dataSession.idSession)"></ion-icon>
@@ -50,16 +50,16 @@
     <ion-card-header (click)="isShare = !isShare">
       <ion-icon name="caret-up-outline" *ngIf="isShare"></ion-icon>
       <ion-icon name="caret-down-outline" *ngIf="!isShare"></ion-icon>
-      <span class="titleCard">Partager la parcelle</span>
+      <span class="titleCard" [translate]="'shareParcel'"></span>
     </ion-card-header>
     <ion-card-content *ngIf="isShare">
       <ion-item>
-        <ion-label position="floating">Email du destinataire</ion-label>
-        <ion-input type="email" placeholder="email..." [(ngModel)]="emailForShare" ></ion-input>
+        <ion-label position="floating" [translate]="'recpEmail'"></ion-label>
+        <ion-input type="email" placeholder="{{ 'emailPH' | translate }}" [(ngModel)]="emailForShare" ></ion-input>
       </ion-item>
-      <ion-button expand="block" size="small" color="warning" (click)="shareParcelle()">Partager</ion-button>
+      <ion-button expand="block" size="small" color="warning" (click)="shareParcelle()" [translate]="'share'"></ion-button>
       <br />
-      <p class="center">Plus d'information <ion-icon name="help-circle" (click)="help()"></ion-icon></p>
+      <p class="center" [translate]="'moreInfo'"><ion-icon name="help-circle" (click)="help()"></ion-icon></p>
     </ion-card-content>
   </ion-card>
 
@@ -67,14 +67,14 @@
     <ion-card-header (click)="isRename = !isRename">
       <ion-icon name="caret-up-outline" *ngIf="isRename"></ion-icon>
       <ion-icon name="caret-down-outline" *ngIf="!isRename"></ion-icon>
-      <span class="titleCard">Renommer la parcelle</span>
+      <span class="titleCard" [translate]="'renameParcel'"></span>
     </ion-card-header>
     <ion-card-content *ngIf="isRename">
       <ion-item>
-        <ion-label position="floating">Nouveau nom de la parcelle</ion-label>
+        <ion-label position="floating" [translate]="'newNameParcel'"></ion-label>
         <ion-input placeholder="..." [(ngModel)]="newNameParcelle" ></ion-input>
       </ion-item>
-      <ion-button expand="block" size="small" color="secondary" (click)="renameParcelle()">Renommer</ion-button>
+      <ion-button expand="block" size="small" color="secondary" (click)="renameParcelle()" [translate]="'rename'"></ion-button>
     </ion-card-content>
   </ion-card>
 
@@ -82,16 +82,16 @@
     <ion-card-header (click)="isDelete = !isDelete">
       <ion-icon name="caret-up-outline" *ngIf="isDelete"></ion-icon>
       <ion-icon name="caret-down-outline" *ngIf="!isDelete"></ion-icon>
-      <span class="titleCard">Supprimer la parcelle</span>
+      <span class="titleCard" [translate]="'deleteParcel'"></span>
     </ion-card-header>
     <ion-card-content *ngIf="isDelete">
-      <p>Cette action est irréversible et supprimera toutes les informations concernant la parcelle {{parcelle.nom_parcelle}}.</p>
-      <ion-button expand="block" size="small" color="danger" (click)="deleteParcelle()">Supprimer</ion-button>
+      <p> <span [translate]="'warningDelete'"></span> {{parcelle.nom_parcelle}}.</p>
+      <ion-button expand="block" size="small" color="danger" (click)="deleteParcelle()" [translate]="'delete'"></ion-button>
     </ion-card-content>
   </ion-card>
 
 </ion-content>
 
 <ion-footer class="title_center">
-  <ion-button (click)="closePage()" > Fermer </ion-button>
+  <ion-button (click)="closePage()" [translate]="'close'"></ion-button>
 </ion-footer>

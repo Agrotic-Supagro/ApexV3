@@ -17,14 +17,14 @@
         <tr>
           <td class="paddinLeft">
             <ion-item class="shadowInput" *ngIf="isList">
-              <ion-label>Choisir une parcelle</ion-label>
+              <ion-label [translate]="'chooseParcel'"></ion-label>
               <ion-select [(ngModel)]="idParcelle" okText="Ok" cancelText="Annuler" (ionCancel)="onCancel()"
                 (ionChange)="changeParcelle()">
                 <ion-select-option *ngFor="let parcelle of selectParcelle" value="{{parcelle.id_parcelle}}">{{parcelle.nom_parcelle}}</ion-select-option>
               </ion-select>
             </ion-item>
             <ion-item *ngIf="!isList" class="al-right graycolor">
-              <i>Ajouter le nom d'une parcelle -></i>
+              <i [translate]="'addParcel'"></i>
             </ion-item>
           </td>
           <td class="center">
@@ -41,7 +41,7 @@
   <ion-grid>
     <ion-row>
         <ion-col size="3" >
-            <ion-label color="primary" stacked class="datecss">Date</ion-label>
+            <ion-label color="primary" stacked class="datecss" [translate]="'date'"></ion-label>
         </ion-col>
         <ion-col>
             <ion-datetime [(ngModel)]="myDate" displayFormat="DD/MM/YYYY" pickerFormat="DD/MM/YYYY" placeholder="{{myDate}}" doneText="ok" cancelText="annuler" ></ion-datetime>
@@ -49,7 +49,7 @@
     </ion-row>
   <ion-row>
     <ion-col>
-      <ion-label color="primary" stacked>APEX : pleine croissance</ion-label>
+      <ion-label color="primary" stacked >APEX : <span [translate]="'fullGrow'"></span></ion-label>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -58,13 +58,13 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof0value" (ngModelChange)="updateTotApex()"></ion-input>
+        <ion-input type="number" min="0" placeholder="{{ 'number' | translate }}" [(ngModel)]="numberof0value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-label color="primary" stacked>APEX : croissance ralentie</ion-label>
+      <ion-label color="primary" stacked>APEX : <span [translate]="'slowGrow'"></span></ion-label>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -73,13 +73,13 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof1value" (ngModelChange)="updateTotApex()"></ion-input>
+        <ion-input type="number" min="0" placeholder="{{ 'number' | translate }}" [(ngModel)]="numberof1value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
-      <ion-label color="primary" stacked>APEX : arrêt de croissance</ion-label>
+      <ion-label color="primary" stacked>APEX : <span [translate]="'stopGrow'"></span></ion-label>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -88,7 +88,7 @@
     </ion-col>
     <ion-col>
       <ion-item>
-        <ion-input type="number" min="0" placeholder="nombre ..." [(ngModel)]="numberof2value" (ngModelChange)="updateTotApex()"></ion-input>
+        <ion-input type="number" min="0" placeholder="{{ 'number' | translate }}" [(ngModel)]="numberof2value" (ngModelChange)="updateTotApex()"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>
@@ -133,7 +133,9 @@
 
       <ion-col col-auto class="nopadding">
         <ion-button expand="block" (click)="saveSession()" > 
-          Calculer ({{totApex}} Apex)
+          <span [translate]="'computeApex'"></span>
+          {{totApex}}
+          <span [translate]="'computeApex2'"></span>
         </ion-button>
       </ion-col>
     </ion-row>

@@ -7,6 +7,8 @@ import { SessionInfoPage } from '../session-info/session-info.page';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ServerService } from '../services/server.service';
 import { NetworkService } from '../services/network.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 @Component({
   selector: 'app-parcelle-info',
@@ -45,6 +47,7 @@ export class ParcelleInfoPage implements OnInit {
     private alertCtrl: AlertController,
     private database: DatabaseService,
     private dateformat: DateService,
+    private _translate: TranslateService,
     // private navParams: NavParams
   ) {
 
@@ -83,7 +86,11 @@ export class ParcelleInfoPage implements OnInit {
   }
 
   ngOnInit() {
+    this._translateLanguage();
+  }
 
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
   }
 
   public initInfoParcelle() {
