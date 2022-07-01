@@ -31,6 +31,38 @@ export class AccountPage implements OnInit {
   public languageIconPath : string;
   public supportedLanguages : Map<string, string>;
 
+  //Trad objects
+  surnameMand = { key : "surnameMand", value : ""};
+  surnameInd = { key : "surnameInd", value : ""};
+  nameMand  = { key : "nameMand", value : ""};
+  nameInd = { key : "nameInd", value : ""};
+  emailMand  = { key : "emailMand", value : ""};
+  emailInd  = { key : "emailInd", value : ""};
+  waitMsg  = { key : "waitMsg", value : ""};
+  error  = { key : "error", value : ""};
+  dlMsg  = { key : "dlMsg", value : ""};
+  okBtn  = { key : "okBtn", value : ""};
+  dataSent  = { key : "dataSent", value : ""};
+  dataNotSent  = { key : "dataNotSent", value : ""};
+  updateInfoDone  = { key : "updateInfoDone", value : ""};
+  updateNbApexDone  = { key : "updateNbApexDone", value : ""};
+  infoDl  = { key : "infoDl", value : ""};
+  infoHeader  = { key : "infoHeader", value : ""};
+  dlInfoMsg  = { key : "dlInfoMsg", value : ""};
+  waitDlData  = { key : "waitDlData", value : ""};
+  inputPwd  = { key : "inputPwd", value : ""};
+  cancel  = { key : "cancel", value : ""};
+  send  = { key : "send", value : ""};
+  successPwdChanged  = { key : "successPwdChanged", value : ""};
+  errorPwdChanged  = { key : "errorPwdChanged", value : ""};
+  incorrectPwd  = { key : "incorrectPwd", value : ""};
+  ifvDesac  = { key : "ifvDesac", value : ""};
+  ifvAct  = { key : "ifvAct", value : ""};
+  dataSendToApex  = { key : "dataSendToApex", value : ""};
+  tabOfVars = [this.surnameMand, this.surnameInd, this.nameMand, this.nameInd, this.emailMand, this.emailInd, this.waitMsg, this.error,
+    this.dlMsg, this.okBtn, this.dataSent, this.dataNotSent, this.updateInfoDone, this.updateNbApexDone, this.infoDl, this.infoHeader, this.dlInfoMsg, this.waitDlData,
+    this.inputPwd, this.cancel, this.send, this.successPwdChanged, this.incorrectPwd, this.ifvDesac, this.ifvAct, this.dataSendToApex];
+
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
     nom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -46,16 +78,16 @@ export class AccountPage implements OnInit {
   );
   public errorMessages = {
     prenom: [
-      { type: 'required', message: 'Le prénom est obligatoire ' },
-      { type: 'maxlength', message: 'Le prénom ne peut pas comporter plus de 40 caractères' }
+      { type: 'required', message: this.tabOfVars[this.tabOfVars.indexOf(this.surnameMand)] },
+      { type: 'maxlength', message: this.surnameInd }
     ],
     nom: [
-      { type: 'required', message: 'Le nom est obligatoire ' },
-      { type: 'maxlength', message: 'Le nom ne peut pas comporter plus de 40 caractères' }
+      { type: 'required', message: this.nameMand },
+      { type: 'maxlength', message: this.nameInd }
     ],
     email: [
-      { type: 'required', message: 'L\'email est obligatoire ' },
-      { type: 'pattern', message: 'Veuillez saisir une adresse électronique valide' }
+      { type: 'required', message: this.emailMand },
+      { type: 'pattern', message: this.emailInd }
     ]
   };
 
@@ -97,6 +129,11 @@ export class AccountPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   async changeLanguage() {
@@ -105,7 +142,7 @@ export class AccountPage implements OnInit {
       if(!GlobalConstants.getTradFilesNeverDownloaded() || GlobalConstants.getDeviceLanguageSupported()){
         console.log("User wants to change language : "+this.language);
         const loading = await this.loadingController.create({
-          message: 'Veuillez patienter...',
+          message: this.waitMsg.value,
         });
         loading.present()
         .then(() => {
@@ -113,7 +150,7 @@ export class AccountPage implements OnInit {
           .then(() => {
             this.previousLanguage = this.language;
             GlobalConstants.setLanguageSelected(this.language);
-            this._translate.use(GlobalConstants.getLanguageSelected());
+            this._translateLanguage();
             this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
             //this.deviceService.saveLanguageSelected();
             loading.dismiss();
@@ -130,9 +167,9 @@ export class AccountPage implements OnInit {
             loading.dismiss()
             .then(  async () => {
               const alert = await this.alertCtrl.create({
-                header: 'Erreur',
-                message: 'Échec du téléchargement de la langue, vous devez être connecté à Internet.',
-                buttons: ['OK']
+                header: this.error.value,
+                message: this.dlMsg.value,
+                buttons: [this.okBtn.value]
               });
               await alert.present();
             })
@@ -142,7 +179,7 @@ export class AccountPage implements OnInit {
       else{
         this.previousLanguage = this.language;
         GlobalConstants.setLanguageSelected(this.language);
-        this._translate.use(GlobalConstants.getLanguageSelected());
+        this._translateLanguage();
         this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
         this.nativeStorage.setItem('languageSelected', this.language)
         .then(
@@ -175,9 +212,9 @@ export class AccountPage implements OnInit {
     console.log(data);
     this.serveur.sendData(data).subscribe(async res => {
         if (res.status) {
-          this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
+          this.presentToast(this.dataSent.value);
         } else {
-          this.presentToast('Erreur. Veuillez vérifier que votre email est correct et réessayez.');
+          this.presentToast(this.dataNotSent.value);
         }
     });
   }
@@ -195,7 +232,7 @@ export class AccountPage implements OnInit {
     };
     this.database.updateUser(dataUpdate).then(data => {
       if (data) {
-        this.presentToast('Informations mises à jours !');
+        this.presentToast(this.updateInfoDone.value);
         const dataServer = {
           table: 'utilisateur',
           data: dataUpdate
@@ -213,7 +250,7 @@ export class AccountPage implements OnInit {
 
   updateThreshold() {
     this.conf.updateApexThreshold(this.user.id_utilisateur, this.threshold);
-    this.presentToast('Nombre d\'apex éditées');
+    this.presentToast(this.updateNbApexDone.value);
   }
 
   receiveData() {
@@ -221,17 +258,14 @@ export class AccountPage implements OnInit {
     console.log('>> Recieve Data');
     this.database.recieveData(this.user);
     this.dismissLoader();
-    this.presentToast('Vos données ont été téléchargées avec succès');
+    this.presentToast(this.infoDl.value);
   }
 
   async info() {
     const alert = await this.alertCtrl.create({
-      header: 'Informations',
-      message: ' La fonction d\'<b>envoie</b> des données, vous permet de revevoir par email un fichier (tableur) contenant '
-      + 'l\'ensemble de vos données acquises avec l\'application ApexVigne.'
-      + '<br /><br />La fonction de <b>synchronisation</b> des données, vous permet de récupérer sur l\'application '
-      + 'ApexVigne vos données sauvegarder sur le serveur.',
-      buttons: ['OK']
+      header: this.infoHeader.value,
+      message: this.dlInfoMsg.value,
+      buttons: [this.okBtn.value]
     });
 
     await alert.present();
@@ -240,7 +274,7 @@ export class AccountPage implements OnInit {
   async showLoading() {
     this.isLoading = true;
     return await this.loadingController.create({
-      message: 'Veuillez patienter pendant le téléchargement de vos données...',
+      message: this.waitDlData.value,
       spinner: 'circles'
     }).then(a => {
       a.present().then(() => {
@@ -259,7 +293,7 @@ export class AccountPage implements OnInit {
 
   async changePwd() {
     const alert = await this.alertCtrl.create({
-      header: 'Taper votre nouveau mot de passe',
+      header: this.inputPwd.value,
       inputs: [
         {
           name: 'pwd',
@@ -268,14 +302,14 @@ export class AccountPage implements OnInit {
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'cancel',
           handler: data => {
             console.log('Cancel clicked');
           }
         },
         {
-          text: 'Envoyer',
+          text: this.send.value,
           handler: data => {
             console.log(data);
             if (data.pwd !== '' && data.pwd !== null) {
@@ -288,13 +322,13 @@ export class AccountPage implements OnInit {
                   this.database.updatePassword(dataPwd);
                   this.user.mdp = pwd;
                   this.isPwd = false;
-                  this.presentToast('Mot de passe changé avec succès !');
+                  this.presentToast(this.successPwdChanged.value);
                 } else {
-                  this.presentToast('Une erreur c\'est produite, merci de réessayer');
+                  this.presentToast(this.errorPwdChanged.value);
                 }
               });
             } else {
-              this.presentToast('Mot de passe incorrect, merci d\'en choisir un autre');
+              this.presentToast(this.incorrectPwd.value);
             }
           }
         }
@@ -312,9 +346,9 @@ export class AccountPage implements OnInit {
     this.database.updateIFV(dataUpdate).then(data => {
       if (data) {
         if (this.isIfv) {
-          this.presentToast('Modèle IFV activé !');
+          this.presentToast(this.ifvAct.value);
         } else {
-          this.presentToast('Modèle IFV désactivé !');
+          this.presentToast(this.ifvDesac.value);
         }
       }
     });
@@ -348,7 +382,7 @@ export class AccountPage implements OnInit {
     this.allDataEgg ++;
     if (this.allDataEgg === 5) {
       this.sendAllData();
-      this.presentToast('Vos données vont être envoyées à l\'équipe apex');
+      this.presentToast(this.dataSendToApex.value);
       this.allDataEgg = 0;
     }
   }

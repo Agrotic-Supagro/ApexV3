@@ -15,9 +15,11 @@ import { SplashScreen } from '@capacitor/splash-screen';
 })
 export class AppComponent {
   navigate: any;
-  warning : string;
-  message : string;
-  okBtn : string;
+
+  //Trad var
+  warning : string = "";
+  message : string = "";
+  okBtn : string = "";
     
   constructor(
     private platform: Platform,
@@ -43,7 +45,6 @@ export class AppComponent {
 
   ngOnInit(){
     this._translateLanguage();
-    this.checkTradFiles();
     SplashScreen.hide();
     //Count the seconds since app launched
     //var counter = setInterval(this.incrementTime, 1000);
@@ -61,8 +62,9 @@ export class AppComponent {
     this._translate.get('languagesMsg').subscribe( res => {
       this.message = res;
     })
-    this._translate.get('okButton').subscribe( res => {
+    this._translate.get('okBtn').subscribe( res => {
       this.okBtn = res;
+      this.checkTradFiles();
     })
   }
 

@@ -33,6 +33,22 @@ export class LoginPage implements OnInit {
   public languageIconPath : string;
   public supportedLanguages : Map<string, string>;
 
+  //Trad objects
+  errorConn = { key : "errorConn", value : ""};
+  wrongID = { key : "wrongID", value : ""};
+  reInitMdp  = { key : "reInitMdp", value : ""};
+  yourEmail = { key : "yourEmail", value : ""};
+  emailSent  = { key : "emailSent", value : ""};
+  emailDoesntExist  = { key : "emailDoesntExist", value : ""};
+  error  = { key : "error", value : ""};
+  waitMsg  = { key : "waitMsg", value : ""};
+  okBtn  = { key : "okBtn", value : ""};
+  dlMsg  = { key : "dlMsg", value : ""};
+  cancel  = { key : "cancel", value : ""};
+  send  = { key : "send", value : ""};
+  tabOfVars = [ this.errorConn,  this.wrongID, this.reInitMdp, this.yourEmail, this.emailSent, this.emailDoesntExist, this.error, this.waitMsg,
+    this.okBtn, this.dlMsg, this.cancel, this.send,];
+
   constructor(private auth: AuthenticationService,
               private alertCtrl: AlertController,
               private router: Router,
@@ -55,6 +71,11 @@ export class LoginPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   async changeLanguage() {
@@ -63,7 +84,7 @@ export class LoginPage implements OnInit {
       if(!GlobalConstants.getTradFilesNeverDownloaded() || GlobalConstants.getDeviceLanguageSupported()){
         console.log("User wants to change language : "+this.language);
         const loading = await this.loadingController.create({
-          message: 'Veuillez patienter...',
+          message: this.waitMsg.value,
         });
         loading.present()
         .then(() => {
@@ -71,7 +92,7 @@ export class LoginPage implements OnInit {
           .then(() => {
             this.previousLanguage = this.language;
             GlobalConstants.setLanguageSelected(this.language);
-            this._translate.use(GlobalConstants.getLanguageSelected());
+            this._translateLanguage();
             this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
             //this.deviceService.saveLanguageSelected();
             loading.dismiss();
@@ -88,9 +109,9 @@ export class LoginPage implements OnInit {
             loading.dismiss()
             .then(  async () => {
               const alert = await this.alertCtrl.create({
-                header: 'Erreur',
-                message: 'Échec du téléchargement de la langue, vous devez être connecté à Internet.',
-                buttons: ['OK']
+                header: this.error.value,
+                message: this.dlMsg.value,
+                buttons: [this.okBtn.value]
               });
               await alert.present();
             })
@@ -100,7 +121,7 @@ export class LoginPage implements OnInit {
       else{
         this.previousLanguage = this.language;
         GlobalConstants.setLanguageSelected(this.language);
-        this._translate.use(GlobalConstants.getLanguageSelected());
+        this._translateLanguage();
         this.languageIconPath = GlobalConstants.getPathForCountryIcons() + this.language + ".png";
         this.nativeStorage.setItem('languageSelected', this.language)
         .then(
@@ -158,9 +179,9 @@ export class LoginPage implements OnInit {
 
       } else {
         const alert = await this.alertCtrl.create({
-          header: 'Échec de l\'authentification',
-          message: 'Identifiants incorrects !',
-          buttons: ['OK']
+          header: this.errorConn.value,
+          message: this.wrongID.value,
+          buttons: [this.okBtn.value]
         });
         await alert.present();
       }
@@ -192,24 +213,24 @@ export class LoginPage implements OnInit {
 
   async presentPrompt() {
     const alert = await this.alertCtrl.create({
-      header: 'Réinitialiser le mot de passe',
+      header: this.reInitMdp.value,
       inputs: [
         {
           name: 'email',
           type: 'email',
-          placeholder: 'Votre email'
+          placeholder: this.yourEmail.value
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'cancel',
           handler: data => {
             console.log('Cancel clicked');
           }
         },
         {
-          text: 'Envoyer',
+          text: this.send.value,
           handler: data => {
             const pwd = Math.random().toString(36).slice(-8);
             const dataPwd = {mot_de_passe: pwd, email: data.email};
@@ -219,9 +240,9 @@ export class LoginPage implements OnInit {
                 console.log('## Return reset pwd :', res.data);
                 // this.database.updatePassword(dataPwd);
                 this.database.updateUserPassword(res.data);
-                this.presentToast('L\'email a été envoyé. Veuillez vérifier votre boite mail.');
+                this.presentToast(this.emailSent.value);
               } else {
-                this.presentToast('Erreur. L\'email n`\'existe pas. Veuillez vous inscrire.');
+                this.presentToast(this.emailDoesntExist.value);
               }
             });
 

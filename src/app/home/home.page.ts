@@ -35,6 +35,38 @@ export class HomePage {
   canvasIdIncrement = 0;
   jwt: any;
 
+  //Trad objects
+  recvPacelData = { key : "recvPacelData", value : ""};
+  onEmail = { key : "onEmail", value : ""};
+  cancel  = { key : "cancel", value : ""};
+  send = { key : "send", value : ""};
+  dataSent  = { key : "dataSent", value : ""};
+  dataNotSent  = { key : "dataNotSent", value : ""};
+  needNetwork  = { key : "needNetwork", value : ""};
+  shareParcel  = { key : "shareParcel", value : ""};
+  byEmail  = { key : "byEmail", value : ""};
+  email  = { key : "email", value : ""};
+  share  = { key : "share", value : ""};
+  sucessShare  = { key : "sucessShare", value : ""};
+  emailForShareError  = { key : "emailForShareError", value : ""};
+  deleteParcelQst  = { key : "deleteParcelQst", value : ""};
+  warningDelete  = { key : "warningDelete", value : ""};
+  noBtn  = { key : "noBtn", value : ""};
+  delete  = { key : "delete", value : ""};
+  parcelDeleted  = { key : "parcelDeleted", value : ""};
+  activateLoc  = { key : "activateLoc", value : ""};
+  gpsMsg  = { key : "gpsMsg", value : ""};
+  activateLocRights  = { key : "activateLocRights", value : ""};
+  rightsMsg  = { key : "activateLocRights", value : ""};
+  graphFullGrowth  = { key : "graphFullGrowth", value : ""};
+  graphSlowedGrowth  = { key : "graphSlowedGrowth", value : ""};
+  graphGrowthArrest  = { key : "graphGrowthArrest", value : ""};
+  comment  = { key : "comment", value : ""};
+  okBtn  = { key : "okBtn", value : ""};
+  tabOfVars = [ this.recvPacelData, this.onEmail, this.cancel, this.send, this.dataSent, this.dataNotSent, this.needNetwork, this.shareParcel, 
+    this.byEmail, this.email, this.share, this.sucessShare, this.emailForShareError, this.deleteParcelQst, this.warningDelete, this.noBtn, this.delete, this.parcelDeleted, 
+    this.activateLoc, this.gpsMsg, this.activateLocRights, this.rightsMsg, this.graphFullGrowth, this.graphSlowedGrowth, this.graphGrowthArrest, this.comment, this.okBtn];
+
   constructor(
     private plt: Platform,
     public toastController: ToastController,
@@ -65,6 +97,11 @@ export class HomePage {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   ionViewWillEnter() {
@@ -106,28 +143,28 @@ export class HomePage {
 
   public async sendParcelle(parcelle, slidingItem) {
     const alert = await this.alertCtrl.create({
-      header: 'Recevoir les données de la parcelle ' + parcelle.nom_parcelle + ' sur votre email ?',
+      header: this.recvPacelData.value + parcelle.nom_parcelle + this.onEmail.value,
       buttons: [
         {
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Envoyer',
+          text: this.send.value,
           handler: (alertData) => {
             const data = { email: this.user.email, method: 'parcelle', idParcelle: parcelle.id_parcelle, userName: this.user.nom};
             if (this.networkService.getCurrentNetworkStatus() === 0) {
               this.serveur.sendData(data).subscribe(async res => {
                 if (res.status) {
-                  this.presentToast('Vos données vous ont été envoyées. Veuillez vérifier votre boite mail.');
+                  this.presentToast(this.dataSent);
                 } else {
-                  this.presentToast('Erreur. Veuillez vérifier que votre email est correct et réessayez.');
+                  this.presentToast(this.dataNotSent.value);
                 }
             });
             } else {
-            this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+            this.presentToast(this.needNetwork.value);
             }
             slidingItem.close();
           }
@@ -139,23 +176,23 @@ export class HomePage {
 
   public async shareParcelle(parcelle, slidingItem) {
     const alert = await this.alertCtrl.create({
-      header: 'Partager la parcelle ' + parcelle.nom_parcelle + ' par email :',
+      header: this.shareParcel.value + parcelle.nom_parcelle + this.byEmail.value,
       inputs: [
         {
           name: 'email',
           type: 'text',
-          placeholder: 'email'
+          placeholder: this.email.value
         }
       ],
       buttons: [
         {
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Partager',
+          text: this.share.value,
           handler: (alertData) => {
             const dataShare = {
               idOwner: this.user.id_utilisateur,
@@ -167,13 +204,13 @@ export class HomePage {
             if (this.networkService.getCurrentNetworkStatus() === 0) {
               this.serveur.shareParcelle(dataShare).subscribe(res => {
                 if (res.status) {
-                  this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+                  this.presentToast(this.sucessShare.value);
                 } else {
-                  this.presentToast('Email de partage non reconnu. Etes-vous sur que cet email est associé à un compte existant ?');
+                  this.presentToast(this.emailForShareError.value);
                 }
               });
             } else {
-              this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+              this.presentToast(this.needNetwork.value);
             }
 
             slidingItem.close();
@@ -186,17 +223,17 @@ export class HomePage {
 
   public async deleteParcelle(idParcelle) {
     const alert = await this.alertCtrl.create({
-      header: 'Voulez-vous supprimer cette parcelle ?',
-      message: 'Cette action est irréversible',
+      header: this.deleteParcelQst.value,
+      message: this.warningDelete.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Supprimer',
+          text: this.delete.value,
           handler: () => {
             console.log('Confirm Okay');
             this.database.updateParcelleBeforeDelete(idParcelle).then(data => {
@@ -212,7 +249,7 @@ export class HomePage {
                   this.computeChart();
                   // this.changeFilter();
                 });
-                this.presentToast('Parcelle supprimée avec succès!');
+                this.presentToast(this.parcelDeleted.value);
               }
             });
           }
@@ -281,19 +318,19 @@ export class HomePage {
         this.router.navigate(['/parcelle-apex'], navigationExtras);
       } else if(!gps.locationServicesEnabled){
         const alert = await this.alertCtrl.create({
-          header: 'Activez votre Localisation',
+          header: this.activateLoc.value,
           // tslint:disable-next-line:max-line-length
-          message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
-          buttons: ['OK']
+          message: this.gpsMsg.value,
+          buttons: [this.okBtn.value]
         });
         await alert.present();
       }
       else if(gps.authorization == 0) {
         const alert = await this.alertCtrl.create({
-          header: 'Activez les droits de Localisation',
+          header: this.activateLocRights.value,
           // tslint:disable-next-line:max-line-length
-          message: 'ApeX Vigne a besoin du GPS pour fonctionner. Merci d\'autoriser le GPS dans les paramètres du téléphone.',
-          buttons: ['OK']
+          message: this.rightsMsg.value,
+          buttons: [this.okBtn.value]
         });
         await alert.present();
       }
@@ -331,19 +368,19 @@ export class HomePage {
         return await modal.present();
       } else if(!gps.locationServicesEnabled) {
         const alert = await this.alertCtrl.create({
-          header: 'Activez votre Localisation',
+          header: this.activateLoc.value,
           // tslint:disable-next-line:max-line-length
-          message: 'Merci d\'activer votre localisation par GPS pour saisir de nouvelles observations.',
-          buttons: ['OK']
+          message: this.gpsMsg.value,
+          buttons: [this.okBtn.value]
         });
         await alert.present();
       }
       else if(gps.authorization == 0) {
         const alert = await this.alertCtrl.create({
-          header: 'Activez les droits de Localisation',
+          header: this.activateLocRights.value,
           // tslint:disable-next-line:max-line-length
-          message: 'Merci d\'autoriser l\'accès à la position pour l\'application dans vos paramètres de téléphone.',
-          buttons: ['OK']
+          message: this.rightsMsg.value,
+          buttons: [this.okBtn.value]
         });
         await alert.present();
       }
@@ -449,7 +486,7 @@ export class HomePage {
           type: 'pie',
           data: {
               // tslint:disable-next-line:max-line-length
-              labels: [data.apex[0] + '% Pleine croissance', data.apex[1] + '% Croissance ralentie', data.apex[2] + '% Arrêt de croissance'],
+              labels: [data.apex[0] + this.graphFullGrowth.value, data.apex[1] + this.graphSlowedGrowth.value, data.apex[2] + this.graphGrowthArrest.value],
               datasets: [{
                 backgroundColor: [
                   '#2C6109',
@@ -510,10 +547,10 @@ export class HomePage {
 
   async showCommentaire(parcelle) {
     const alert = await this.alertCtrl.create({
-      header: 'Commentaire',
+      header: this.comment.value,
       // tslint:disable-next-line:max-line-length
       message: parcelle.commentaire,
-      buttons: ['OK']
+      buttons: [this.okBtn.value]
     });
     await alert.present();
   }

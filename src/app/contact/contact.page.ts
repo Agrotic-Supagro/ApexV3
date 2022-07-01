@@ -15,6 +15,11 @@ export class ContactPage {
 
   public emailtext = '';
   public emailUser = '';
+
+   //Trad var
+   emailSent : string = "";
+   emailSentError : string = "";
+
   constructor(
     private server: ServerService,
     private plt: Platform,
@@ -39,6 +44,12 @@ export class ContactPage {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    this._translate.get("emailSent").subscribe( res => {
+      this.emailSent = res;
+    })
+    this._translate.get("emailSentError").subscribe( res => {
+      this.emailSentError = res;
+    })
   }
 
   sendEmail() {
@@ -46,9 +57,9 @@ export class ContactPage {
       const dataEmail = { email: this.emailUser, corps_email: this.emailtext};
       this.server.sendEmail(dataEmail).subscribe(async res => {
         if (res.status) {
-          this.presentToast('L\'email a été envoyé.');
+          this.presentToast(this.emailSent);
         } else {
-          this.presentToast('Erreur dans l\'envoie de l\'email. Veuillez essayer de nouveau');
+          this.presentToast(this.emailSentError);
         }
       });
     }
