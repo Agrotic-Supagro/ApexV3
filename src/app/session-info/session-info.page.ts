@@ -30,6 +30,12 @@ export class SessionInfoPage implements OnInit {
   public commentairetext = '';
   public idStade = '';
 
+    //Trad objects
+    markAsToppedQstn = { key : "markAsToppedQstn", value : ""};
+    noBtn = { key : "noBtn", value : ""};
+    yesBtn = { key : "yesBtn", value : ""};
+    tabOfVars = [this.markAsToppedQstn, this.noBtn, this.yesBtn];
+
   constructor(
     private plt: Platform,
     public toastController: ToastController,
@@ -76,7 +82,7 @@ export class SessionInfoPage implements OnInit {
             this.numberof2value = data.apex2;
             //console.log('ooooo' + new Date(data.date_session).toISOString());
             console.log('uuuu '+ new Date().toISOString());
-            this.myDate = new Date('2022-01-07').toISOString();
+            this.myDate = new Date(data.date_session).toISOString();
             this.idStade = data.id_stade;
             this.commentairetext = data.txt_comm;
             this.idComm = data.id_comm;
@@ -120,20 +126,25 @@ export class SessionInfoPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   public async parcelleEcimee() {
     const alertEcimee = await this.alertCtrl.create({
-      message: 'Marquer la parcelle comme écimée ?',
+      message: this.markAsToppedQstn.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Oui',
+          text: this.yesBtn.value,
           handler: () => {
             this.saveEcimee();
           }

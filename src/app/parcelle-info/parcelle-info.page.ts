@@ -36,6 +36,37 @@ export class ParcelleInfoPage implements OnInit {
   newNameParcelle = null;
   public myDate: any = new Date().toISOString();
 
+  //Trad objects
+  sucessShare = { key : "sucessShare", value : ""};
+  emailForShareError = { key : "emailForShareError", value : ""};
+  needNetwork = { key : "needNetwork", value : ""};
+  nullEmailForShare = { key : "nullEmailForShare", value : ""};
+  successRenameParcel = { key : "successRenameParcel", value : ""};
+  deleteSessionQst = { key : "deleteSessionQst", value : ""};
+  noBtn = { key : "noBtn", value : ""};
+  delete = { key : "delete", value : ""};
+  successDeleteObs = { key : "successDeleteObs", value : ""};
+  deleteParcelQst = { key : "deleteParcelQst", value : ""};
+  warningDelete = { key : "warningDelete", value : ""};
+  parcelDeleted = { key : "parcelDeleted", value : ""};
+  infoHeader = { key : "infoHeader", value : ""};
+  okBtn = { key : "okBtn", value : ""};
+  shareParcelInfo = { key : "shareParcelInfo", value : ""};
+  graphFullGrowth = { key : "graphFullGrowth", value : ""};
+  graphSlowedGrowth = { key : "graphSlowedGrowth", value : ""};
+  graphGrowthArrest = { key : "graphGrowthArrest", value : ""};
+  growthInd = { key : "growthInd", value : ""};
+  percentApex = { key : "percentApex", value : ""};
+  waterStressLvl = { key : "waterStressLvl", value : ""};
+  absent = { key : "absent", value : ""};
+  moderate = { key : "moderate", value : ""};
+  strong = { key : "strong", value : ""};
+  strict = { key : "strict", value : ""};
+  tabOfVars = [ this.sucessShare, this.emailForShareError, this.needNetwork, this.nullEmailForShare, this.successRenameParcel, this.deleteSessionQst,
+    this.noBtn, this.delete, this.successDeleteObs, this.deleteParcelQst, this.warningDelete, this.parcelDeleted, this.infoHeader, this.okBtn, 
+    this.shareParcelInfo, this.graphFullGrowth, this.graphSlowedGrowth, this.graphGrowthArrest, this.growthInd, this.percentApex, this.waterStressLvl,
+    this.absent, this.moderate, this.strong, this.strict];
+
   constructor(
     private plt: Platform,
     public toastController: ToastController,
@@ -91,6 +122,15 @@ export class ParcelleInfoPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
+    GlobalConstants.absent = this.absent.value;
+    GlobalConstants.moderate = this.moderate.value;
+    GlobalConstants.strong = this.strong.value;
+    GlobalConstants.strict = this.strict.value;
   }
 
   public initInfoParcelle() {
@@ -135,16 +175,16 @@ export class ParcelleInfoPage implements OnInit {
         console.log(dataShare);
         this.serveur.shareParcelle(dataShare).subscribe(res => {
           if (res.status) {
-            this.presentToast('Parcelle partagée avec succès. En attente de validation!');
+            this.presentToast(this.sucessShare.value);
           } else {
-            this.presentToast('Email de partage non reconnu. Etes-vous sur que cet email est associé à un compte existant ?');
+            this.presentToast(this.emailForShareError.value);
           }
         });
       } else {
-        this.presentToast('Cette fonctionnalité ne fonctionne qu\'avec du réseau');
+        this.presentToast(this.needNetwork.value);
       }
     } else {
-      this.presentToast('Email de partage est incorrect ou vide. Merci d\'essayer à nouveau');
+      this.presentToast(this.nullEmailForShare.value);
     }
     this.isShare = false;
   }
@@ -163,7 +203,7 @@ export class ParcelleInfoPage implements OnInit {
           this.parcelle.nom_parcelle = this.newNameParcelle;
           this.newNameParcelle = null;
           this.isRename = false;
-          this.presentToast('Parcelle renommée avec succès!');
+          this.presentToast(this.successRenameParcel.value);
         }
       });
     }
@@ -200,23 +240,23 @@ export class ParcelleInfoPage implements OnInit {
 
   public async deleteSession(idSession) {
     const alert = await this.alertCtrl.create({
-      header: 'Voulez-vous supprimer cette session ?',
+      header: this.deleteSessionQst.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           cssClass: 'secondary',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Supprimer',
+          text: this.delete.value,
           handler: () => {
             console.log('Confirm Okay');
             this.database.updateSessionBeforeDelete(idSession).then(data => {
               if (data) {
                 this.initInfoParcelle();
-                this.presentToast('Observation supprimée avec succès!');
+                this.presentToast(this.successDeleteObs.value);
               }
             });
           }
@@ -228,23 +268,23 @@ export class ParcelleInfoPage implements OnInit {
 
   public async deleteParcelle() {
     const alert = await this.alertCtrl.create({
-      header: 'Voulez-vous supprimer cette parcelle ?',
-      message: 'Cette action est irréversible',
+      header: this.deleteParcelQst.value,
+      message: this.warningDelete.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel');
           }
         }, {
-          text: 'Supprimer',
+          text: this.delete.value,
           handler: () => {
             console.log('Confirm Okay');
             this.database.updateParcelleBeforeDelete(this.parcelle.id_parcelle).then(async data => {
               if (data) {
                 this.router.navigateByUrl('/home');
-                this.presentToast('Parcelle supprimée avec succès!');
+                this.presentToast(this.parcelDeleted.value);
               }
             });
           }
@@ -260,12 +300,9 @@ export class ParcelleInfoPage implements OnInit {
 
   async help() {
     const alert = await this.alertCtrl.create({
-      header: 'Informations',
-      message: 'Vous pouvez <b>partager une parcelle</b> avec un <b>destinataire</b> en ajoutant son email. '
-      + 'Le destinaire doit déjà être inscrit sur l\'application ApeX-Vigne pour que le partage ait lieu.'
-      + '<br /><br />Seuls l\'identifiant et le nom de la parcelle seront partagés. Vos données '
-      + 'déjà collectées ne seront pas transmises au destinataire.',
-      buttons: ['OK']
+      header: this.infoHeader.value,
+      message: this.shareParcelInfo.value,
+      buttons: [this.okBtn.value]
     });
 
     await alert.present();
@@ -306,7 +343,7 @@ export class ParcelleInfoPage implements OnInit {
             data: dataSession.ica
           },
           {
-            label: '% pleine croiss.',
+            label: this.graphFullGrowth.value,
             yAxisID: 'B',
             fill: true,
             hidden: true,
@@ -329,7 +366,7 @@ export class ParcelleInfoPage implements OnInit {
             data: dataSession.purcentApex0
           },
           {
-            label: '% croiss. ralentie',
+            label: this.graphSlowedGrowth.value,
             yAxisID: 'B',
             fill: true,
             hidden: false,
@@ -352,7 +389,7 @@ export class ParcelleInfoPage implements OnInit {
             data: dataSession.purcentApex1
           },
           {
-            label: '% arrêt croiss.',
+            label: this.graphGrowthArrest.value,
             yAxisID: 'B',
             fill: true,
             hidden: true,
@@ -394,7 +431,7 @@ export class ParcelleInfoPage implements OnInit {
             position: 'left',
             scaleLabel: {
               display: true,
-              labelString: 'Indice croiss.',
+              labelString: this.growthInd.value,
               fontSize: 15
             },
             ticks: {
@@ -408,7 +445,7 @@ export class ParcelleInfoPage implements OnInit {
             position: 'right',
             scaleLabel: {
               display: true,
-              labelString: '% Apex',
+              labelString: this.percentApex.value,
               fontSize: 15
             },
             ticks: {
@@ -428,7 +465,7 @@ export class ParcelleInfoPage implements OnInit {
       data: {
         labels: dataSession.dateSession,
         datasets: [{
-            label: 'Niveau contrainte hydrique',
+            label: this.waterStressLvl.value,
             yAxisID: 'CH',
             fill: true,
             steppedLine: 'middle',
@@ -478,19 +515,19 @@ export class ParcelleInfoPage implements OnInit {
               min: 0,
               stepSize: 1,
               // tslint:disable-next-line:only-arrow-functions
-              callback: function(label, index, labels) {
+              callback: function(label, index, labels) {   
                 switch (label) {
-                    case 0:
-                        return 'Absente';
-                    case 1:
-                        return 'Modérée';
-                    case 2:
-                        return 'Forte';
-                    case 3:
-                        return 'Sévère';
+                  case 0:
+                      return GlobalConstants.absent;
+                  case 1:
+                      return GlobalConstants.moderate;
+                  case 2:
+                      return GlobalConstants.strong;
+                  case 3:
+                      return GlobalConstants.strict;
                 }
-            }
-            }
+              }
+            },
           }]
         }
       }

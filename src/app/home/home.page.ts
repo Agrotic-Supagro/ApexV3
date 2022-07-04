@@ -92,7 +92,6 @@ export class HomePage {
     }
 
   ngOnInit(){
-    this._translateLanguage();
   }
 
   _translateLanguage(): void {
@@ -105,6 +104,7 @@ export class HomePage {
   }
 
   ionViewWillEnter() {
+    this._translateLanguage();
     this.menuCtrl.enable(true);
     this.storage.get('TOKEN_KEY')
     .then(val => {
@@ -138,7 +138,6 @@ export class HomePage {
   }
 
   ionViewDidEnter() {
-    // this.computeChart();
   }
 
   public async sendParcelle(parcelle, slidingItem) {

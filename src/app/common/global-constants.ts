@@ -1,12 +1,21 @@
 import { File } from '@awesome-cordova-plugins/file/ngx';
 import { Capacitor } from '@capacitor/core';
+import { TranslateService } from '@ngx-translate/core';
 
 export class GlobalConstants {
 
     private static file : File = new File();
+
+    private static _translate: TranslateService;
     
     //App's Language
     private static languageSelected : string;
+
+    //For parcelle-info.page.ts contrainte's graph
+    public static absent : string;
+    public static moderate : string;
+    public static strong : string;
+    public static strict : string;
 
     //Based on Server file countryCodeConversion.json
     private static supportedLanguages = new Map<string, string>();

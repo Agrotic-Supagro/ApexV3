@@ -76,20 +76,7 @@ export class AccountPage implements OnInit {
     structure: ['', [Validators.required, Validators.maxLength(256)]]
     }
   );
-  public errorMessages = {
-    prenom: [
-      { type: 'required', message: this.tabOfVars[this.tabOfVars.indexOf(this.surnameMand)] },
-      { type: 'maxlength', message: this.surnameInd }
-    ],
-    nom: [
-      { type: 'required', message: this.nameMand },
-      { type: 'maxlength', message: this.nameInd }
-    ],
-    email: [
-      { type: 'required', message: this.emailMand },
-      { type: 'pattern', message: this.emailInd }
-    ]
-  };
+  public errorMessages = {};
 
   constructor(
     private plt: Platform,
@@ -134,6 +121,20 @@ export class AccountPage implements OnInit {
         elem.value = res;
       })
     }
+    this.errorMessages = {
+      prenom: [
+        { type: 'required', message: this.surnameMand.value },
+        { type: 'maxlength', message: this.surnameInd.value }
+      ],
+      nom: [
+        { type: 'required', message: this.nameMand.value },
+        { type: 'maxlength', message: this.nameInd.value }
+      ],
+      email: [
+        { type: 'required', message: this.emailMand.value },
+        { type: 'pattern', message: this.emailInd.value }
+      ]
+    };
   }
 
   async changeLanguage() {

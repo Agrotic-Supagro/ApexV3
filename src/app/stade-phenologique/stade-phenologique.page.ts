@@ -16,6 +16,10 @@ export class StadePhenologiquePage implements OnInit {
   public dataList;
   public isSelected = {id_stade: ''};
 
+  //Trad objects
+  okBtn = { key : "okBtn", value : ""};
+  tabOfVars = [this.okBtn,];
+
   constructor(
     private alertCtrl: AlertController,
     private plt: Platform,
@@ -46,6 +50,11 @@ export class StadePhenologiquePage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   ionViewDidEnter() {
@@ -68,7 +77,7 @@ export class StadePhenologiquePage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: data.nom,
       message: data.descriptif,
-      buttons: ['OK']
+      buttons: [this.okBtn.value]
     });
 
     await alert.present();

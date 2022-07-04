@@ -38,6 +38,24 @@ export class ParcelleInputPage implements OnInit {
   public commentairetext = '';
   public idStade = '';
 
+  //Trad objects
+  error = { key : "error", value : ""};
+  newParcelInd = { key : "newParcelInd", value : ""};
+  okBtn = { key : "okBtn", value : ""};
+  markAsToppedQstn = { key : "markAsToppedQstn", value : ""};
+  noBtn = { key : "noBtn", value : ""};
+  yesBtn = { key : "yesBtn", value : ""};
+  warning = { key : "warning", value : ""};
+  compute = { key : "compute", value : ""};
+  threshold1 = { key : "threshold1", value : ""};
+  threshold2 = { key : "threshold2", value : ""};
+  newParcel = { key : "newParcel", value : ""};
+  nameOfParcel = { key : "nameOfParcel", value : ""};
+  add = { key : "add", value : ""};
+  cancel = { key : "cancel", value : ""};
+  tabOfVars = [this.error, this.newParcelInd, this.okBtn, this.markAsToppedQstn, this.noBtn, this.yesBtn, this.warning, 
+    this.compute, this.threshold1, this.threshold2, this.newParcel, this.nameOfParcel, this.add, this.cancel,];
+
   constructor(
     private plt: Platform,
     public toastController: ToastController,
@@ -88,6 +106,11 @@ export class ParcelleInputPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   public updateTotApex() {
@@ -113,16 +136,16 @@ export class ParcelleInputPage implements OnInit {
   }
   public async parcelleEcimee() {
     const alertEcimee = await this.alertCtrl.create({
-      message: 'Marquer la parcelle comme écimée ?',
+      message: this.markAsToppedQstn.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Oui',
+          text: this.yesBtn.value,
           handler: () => {
             this.saveEcimee();
           }
@@ -173,9 +196,9 @@ export class ParcelleInputPage implements OnInit {
 
     } else {
       const alert = await this.alertCtrl.create({
-        header: 'Erreur',
-        message: 'Veuillez choisir un nom de parcelle ou en ajouter un nouveau !',
-        buttons: ['OK']
+        header: this.error.value,
+        message: this.newParcelInd.value,
+        buttons: [this.okBtn.value]
       });
       await alert.present();
     }
@@ -189,19 +212,19 @@ export class ParcelleInputPage implements OnInit {
     if (this.idParcelle !== null) {
       if (this.totApex < 50) {
         const alertNumber = await this.alertCtrl.create({
-          header: 'Attention!',
+          header: this.warning.value,
           // tslint:disable-next-line:max-line-length
-          message: 'Vous n\'avez pas atteint le seuil des ' + this.thresholdApex + ' apex, êtes-vous sûrs de vouloir calculer les indices ?',
+          message: this.threshold1.value + this.thresholdApex + this.threshold2.value,
           buttons: [
             {
-              text: 'Annuler',
+              text: this.cancel.value,
               role: 'cancel',
               cssClass: 'secondary',
               handler: (blah) => {
                 console.log('Confirm Cancel' + blah);
               }
             }, {
-              text: 'Calculer',
+              text: this.compute.value,
               handler: async () => {
                 const dateSession = this.dateformat.getDatetime(this.myDate);
                 console.log('>> Save Session - Proprietaire Id : ' + this.idProprietaire);
@@ -281,9 +304,9 @@ export class ParcelleInputPage implements OnInit {
 
     } else {
       const alert = await this.alertCtrl.create({
-        header: 'Erreur',
-        message: 'Veuillez choisir un nom de parcelle ou en ajouter un nouveau !',
-        buttons: ['OK']
+        header: this.error.value,
+        message: this.newParcelInd.value,
+        buttons: [this.okBtn.value]
       });
       await alert.present();
     }
@@ -304,13 +327,13 @@ export class ParcelleInputPage implements OnInit {
 
   public async newNameParcelle() {
     const alert = await this.alertCtrl.create({
-      header: 'Nouvelle parcelle',
+      header: this.newParcel.value,
       inputs: [{
         name: 'nom_parcelle',
-        placeholder: 'nom de la parelle'
+        placeholder: this.nameOfParcel.value
       }],
       buttons: [{
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'Annuler',
           handler: data => {
             this.idParcelle = null;
@@ -318,7 +341,7 @@ export class ParcelleInputPage implements OnInit {
           }
         },
         {
-          text: 'Ajouter',
+          text: this.add.value,
           handler: data => {
             if (data.nom_parcelle === '' || data.nom_parcelle.length === 0 || /^\s*$/.test(data.nom_parcelle)) {
               this.idParcelle = null;

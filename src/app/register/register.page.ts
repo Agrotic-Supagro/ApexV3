@@ -28,25 +28,23 @@ export class RegisterPage {
     structure: ['', [Validators.required, Validators.maxLength(256)]]
     }
   );
-  public errorMessages = {
-    prenom: [
-      { type: 'required', message: 'Le prénom est obligatoire ' },
-      { type: 'maxlength', message: 'Le prénom ne peut pas comporter plus de 40 caractères' }
-    ],
-    nom: [
-      { type: 'required', message: 'Le nom est obligatoire ' },
-      { type: 'maxlength', message: 'Le nom ne peut pas comporter plus de 40 caractères' }
-    ],
-    email: [
-      { type: 'required', message: 'L\'email est obligatoire ' },
-      { type: 'pattern', message: 'Veuillez saisir une adresse électronique valide' }
-    ],
-    mot_de_passe: [
-      { type: 'required', message: 'Le mot de passe est obligatoire ' },
-      { type: 'maxlength', message: 'Le nom ne peut pas comporter plus de 40 caractères' }
-    ]
-  };
+  
 
+  //Trad objects
+  nameMand = { key : "nameMand", value : ""};
+  nameInd = { key : "nameInd", value : ""};
+  surnameMand = { key : "surnameMand", value : ""};
+  surnameInd = { key : "surnameInd", value : ""};
+  emailMand = { key : "emailMand", value : ""};
+  emailInd = { key : "emailInd", value : ""};
+  pwdMand = { key : "pwdMand", value : ""};
+  pwdInd = { key : "pwdInd", value : ""};
+  successRegister = { key : "successRegister", value : ""};
+  emailAlreadyExists = { key : "emailAlreadyExists", value : ""};
+  tabOfVars = [this.nameMand, this.nameInd, this.surnameMand, this.surnameInd, this.emailMand, this.emailInd, this.pwdMand, 
+    this.pwdInd, this.successRegister, this.emailAlreadyExists];
+
+  public errorMessages = {};
 
   constructor(
               public toastController: ToastController,
@@ -64,6 +62,29 @@ export class RegisterPage {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
+    this.errorMessages = {
+      prenom: [
+        { type: 'required', message: this.surnameMand.value },
+        { type: 'maxlength', message: this.surnameInd.value }
+      ],
+      nom: [
+        { type: 'required', message: this.nameMand.value },
+        { type: 'maxlength', message: this.nameInd.value }
+      ],
+      email: [
+        { type: 'required', message: this.emailMand.value },
+        { type: 'pattern', message: this.emailInd.value }
+      ],
+      mot_de_passe: [
+        { type: 'required', message: this.pwdMand.value },
+        { type: 'maxlength', message: this.pwdInd.value }
+      ]
+    };
   }
 
   get prenom() {
@@ -87,10 +108,10 @@ export class RegisterPage {
       console.log('in register return: ', res);
       if (res.status) {
         this.router.navigateByUrl('/login');
-        this.presentToast('Inscription réussie ! Vous pouvez vous connecter.');
+        this.presentToast(this.successRegister.value);
       } else {
         // tslint:disable-next-line:max-line-length
-        this.presentToast('Cet e-mail est déjà inscrit. Si vous ne vous souvenez pas de votre mot de passe utilisez la procédure mot de passe oublié, merci.');
+        this.presentToast(this.emailAlreadyExists.value);
         this.registrationForm.controls.email.setValue('');
       }
     });

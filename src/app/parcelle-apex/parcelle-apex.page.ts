@@ -42,6 +42,25 @@ export class ParcelleApexPage implements OnInit {
   public commentairetext = '';
   public idStade = '';
 
+  //Trad objects
+  error = { key : "error", value : ""};
+  lastObsDeleted = { key : "lastObsDeleted", value : ""};
+  newParcelInd = { key : "newParcelInd", value : ""};
+  okBtn = { key : "okBtn", value : ""};
+  markAsToppedQstn = { key : "markAsToppedQstn", value : ""};
+  noBtn = { key : "noBtn", value : ""};
+  yesBtn = { key : "yesBtn", value : ""};
+  apexMethd = { key : "apexMethd", value : ""};
+  apexMthMsg1 = { key : "apexMthMsg1", value : ""};
+  apexMthMsg2 = { key : "apexMthMsg2", value : ""};
+  apexMthMsg3 = { key : "apexMthMsg3", value : ""};
+  newParcel = { key : "newParcel", value : ""};
+  nameOfParcel = { key : "nameOfParcel", value : ""};
+  add = { key : "add", value : ""};
+  cancel = { key : "cancel", value : ""};
+  tabOfVars = [this.error, this.lastObsDeleted, this.newParcelInd, this.okBtn, this.markAsToppedQstn, this.noBtn, this.yesBtn, this.apexMethd, 
+    this.apexMthMsg1, this.apexMthMsg2, this.apexMthMsg3, this.newParcel, this.nameOfParcel, this.add, this.cancel,];
+
   constructor(
     private plt: Platform,
     public vibration: Vibration,
@@ -96,6 +115,11 @@ export class ParcelleApexPage implements OnInit {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
+    for(var elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   async notifications(ev: any) {
@@ -167,7 +191,7 @@ export class ParcelleApexPage implements OnInit {
     this.numberApex --;
     this.listObservation.pop();
     console.log(this.listObservation);
-    this.presentToast('Dernière observation supprimée !');
+    this.presentToast(this.lastObsDeleted.value);
   }
 
   public async saveSession() {
@@ -219,9 +243,9 @@ export class ParcelleApexPage implements OnInit {
       }
     } else {
       const alert = await this.alertCtrl.create({
-        header: 'Erreur',
-        message: 'Veuillez choisir un nom de parcelle ou en ajouter un nouveau !',
-        buttons: ['OK']
+        header: this.error.value,
+        message: this.newParcelInd.value,
+        buttons: [this.okBtn.value]
       });
       await alert.present();
     }
@@ -229,16 +253,16 @@ export class ParcelleApexPage implements OnInit {
 
   public async parcelleEcimee() {
     const alertEcimee = await this.alertCtrl.create({
-      message: 'Marquer la parcelle comme écimée ?',
+      message: this.markAsToppedQstn.value,
       buttons: [
         {
-          text: 'Non',
+          text: this.noBtn.value,
           role: 'cancel',
           handler: (blah) => {
             console.log('Confirm Cancel: blah');
           }
         }, {
-          text: 'Oui',
+          text: this.yesBtn.value,
           handler: () => {
             this.saveEcimee();
           }
@@ -285,9 +309,9 @@ export class ParcelleApexPage implements OnInit {
       this.router.navigateByUrl('/home');
     } else {
       const alert = await this.alertCtrl.create({
-        header: 'Erreur',
-        message: 'Veuillez choisir un nom de parcelle ou en ajouter un nouveau !',
-        buttons: ['OK']
+        header: this.error.value,
+        message: this.newParcelInd.value,
+        buttons: [this.okBtn.value]
       });
       await alert.present();
     }
@@ -295,10 +319,10 @@ export class ParcelleApexPage implements OnInit {
 
   public async apexAlert() {
     const alert = await this.alertCtrl.create({
-      header: 'Méthode des Apex',
-      message: 'Pour calculer les indices, il est nécessaire de réaliser des observations sur au moins '
-      + this.thresholdApex + ' apex. Vous n\'avez réalisé pour l\'instant que ' + this.numberApex + ' observations.',
-      buttons: ['OK']
+      header: this.apexMethd.value,
+      message: this.apexMthMsg1.value
+      + this.thresholdApex + this.apexMthMsg2.value + this.numberApex + this.apexMthMsg3.value,
+      buttons: [this.okBtn.value]
     });
     await alert.present();
   }
@@ -319,13 +343,13 @@ export class ParcelleApexPage implements OnInit {
 
   public async newNameParcelle() {
     const alert = await this.alertCtrl.create({
-      header: 'Nouvelle parcelle',
+      header: this.newParcel.value,
       inputs: [{
         name: 'nom_parcelle',
-        placeholder: 'nom de la parelle'
+        placeholder: this.nameOfParcel.value
       }],
       buttons: [{
-          text: 'Annuler',
+          text: this.cancel.value,
           role: 'Annuler',
           handler: data => {
             this.idParcelle = null;
@@ -333,7 +357,7 @@ export class ParcelleApexPage implements OnInit {
           }
         },
         {
-          text: 'Ajouter',
+          text: this.add.value,
           handler: data => {
             if (data.nom_parcelle === '' || data.nom_parcelle.length === 0 || /^\s*$/.test(data.nom_parcelle)) {
               this.idParcelle = null;
