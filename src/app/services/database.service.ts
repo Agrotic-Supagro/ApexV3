@@ -10,6 +10,8 @@ import { Parcelle } from './parcelle-service';
 import { DateService } from './dates.service';
 import { ServerService } from './server.service';
 import { GUIDGenerator } from './guidgenerator.service';
+import { TranslateService } from '@ngx-translate/core';
+import { GlobalConstants } from '../common/global-constants';
 
 const DATABASE_APEX_NAME = 'dataApexV3.db';
 
@@ -37,7 +39,8 @@ export class DatabaseService {
     private serveur: ServerService,
     private guid: GUIDGenerator,
     private dateformat: DateService,
-    private sqlite: SQLite
+    private sqlite: SQLite,
+    private _translate: TranslateService
   ) {
 
     this.plt.ready().then(() => {
@@ -1011,18 +1014,119 @@ fetchSongs(): Observable<Parcelle[]> {
         const dataPheno = [];
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < data.rows.length; i++) {
-          const std = {
-            id_stade: data.rows.item(i).id_stade,
-            nom: data.rows.item(i).nom,
-            resume: data.rows.item(i).resume,
-            descriptif: data.rows.item(i).descriptif,
-            url_image: data.rows.item(i).url_image
-          };
-          dataPheno.push(std);
+          if(data.rows.item(i).nom != "" && data.rows.item(i).nom != null && data.rows.item(i).nom != undefined){
+            let tabOfKeys = this.getTradKeysFromDBName(data.rows.item(i).nom);
+            this._translate.use(GlobalConstants.getLanguageSelected());
+            let nameTraded = "";
+            let descriptifTraded = "";
+            let resumeTraded = "";
+            this._translate.get(tabOfKeys[0]).subscribe( res => {
+              nameTraded = res;
+            });
+             this._translate.get(tabOfKeys[1]).subscribe( res => {
+              descriptifTraded = res;
+            });
+             this._translate.get(tabOfKeys[2]).subscribe( res => {
+              resumeTraded = res;
+            });
+            const std = {
+              id_stade: data.rows.item(i).id_stade,
+              nom: nameTraded,
+              resume: resumeTraded,
+              descriptif: descriptifTraded,
+              url_image: data.rows.item(i).url_image
+            };
+            dataPheno.push(std);
+          }
         }
         return dataPheno;
       }
     });
+  }
+
+  getTradKeysFromDBName(elem : string) : string[]{
+    let tabRes = [];
+    if(elem.toLowerCase().includes("stade a")){
+      tabRes.push("nameStadeA");
+      tabRes.push("descStadeA");
+      tabRes.push("resumStadeA");
+    }
+    else if(elem.toLowerCase().includes("stade b")){
+      tabRes.push("nameStadeB");
+      tabRes.push("descStadeB");
+      tabRes.push("resumStadeB");
+    }
+    else if(elem.toLowerCase().includes("stade c")){
+      tabRes.push("nameStadeC");
+      tabRes.push("descStadeC");
+      tabRes.push("resumStadeC");
+    }
+    else if(elem.toLowerCase().includes("stade d")){
+      tabRes.push("nameStadeD");
+      tabRes.push("descStadeD");
+      tabRes.push("resumStadeD");
+    }
+    else if(elem.toLowerCase().includes("stade e")){
+      tabRes.push("nameStadeE");
+      tabRes.push("descStadeE");
+      tabRes.push("resumStadeE");
+    }
+    else if(elem.toLowerCase().includes("stade f")){
+      tabRes.push("nameStadeF");
+      tabRes.push("descStadeF");
+      tabRes.push("resumStadeF");
+    }
+    else if(elem.toLowerCase().includes("stade g")){
+      tabRes.push("nameStadeG");
+      tabRes.push("descStadeG");
+      tabRes.push("resumStadeG");
+    }
+    else if(elem.toLowerCase().includes("stade h")){
+      tabRes.push("nameStadeH");
+      tabRes.push("descStadeH");
+      tabRes.push("resumStadeH");
+    }
+    else if(elem.toLowerCase().includes("stade i")){
+      tabRes.push("nameStadeI");
+      tabRes.push("descStadeI");
+      tabRes.push("resumStadeI");
+    }
+    else if(elem.toLowerCase().includes("stade j")){
+      tabRes.push("nameStadeJ");
+      tabRes.push("descStadeJ");
+      tabRes.push("resumStadeJ");
+    }
+    else if(elem.toLowerCase().includes("stade k")){
+      tabRes.push("nameStadeK");
+      tabRes.push("descStadeK");
+      tabRes.push("resumStadeK");
+    }
+    else if(elem.toLowerCase().includes("stade l")){
+      tabRes.push("nameStadeL");
+      tabRes.push("descStadeL");
+      tabRes.push("resumStadeL");
+    }
+    else if(elem.toLowerCase().includes("stade m")){
+      tabRes.push("nameStadeM");
+      tabRes.push("descStadeM");
+      tabRes.push("resumStadeM");
+    }
+    else if(elem.toLowerCase().includes("stade n")){
+      tabRes.push("nameStadeN");
+      tabRes.push("descStadeN");
+      tabRes.push("resumStadeN");
+    }
+    else if(elem.toLowerCase().includes("stade o")){
+      tabRes.push("nameStadeO");
+      tabRes.push("descStadeO");
+      tabRes.push("resumStadeO");
+    }
+    else if(elem.toLowerCase().includes("stade p")){
+      tabRes.push("nameStadeP");
+      tabRes.push("descStadeP");
+      tabRes.push("resumStadeP");
+    }
+    return tabRes;
   }
 
   getStadePhenobyId(idParcelle) {
