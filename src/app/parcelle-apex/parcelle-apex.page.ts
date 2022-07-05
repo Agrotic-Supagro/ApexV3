@@ -374,7 +374,7 @@ export class ParcelleApexPage implements OnInit {
               this.idParcelle = null;
             }
             for(const parcel of this.selectParcelle ){
-              if (parcel.nom_parcelle == data.nom_parcelle){
+              if (parcel.nom_parcelle.toLowerCase() == data.nom_parcelle.toLowerCase()){
                 sameNameFound = true;
               }
             }
