@@ -62,7 +62,7 @@ export class RegisterPage {
 
   _translateLanguage(): void {
     this._translate.use(GlobalConstants.getLanguageSelected());
-    for(var elem of this.tabOfVars){
+    for(const elem of this.tabOfVars){
       this._translate.get(elem.key).subscribe( res => {
         elem.value = res;
       })
