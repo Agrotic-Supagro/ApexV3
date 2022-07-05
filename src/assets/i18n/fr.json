@@ -212,5 +212,6 @@
     "pwdInd" : "Le mot de passe ne peut pas comporter plus de 40 caractères",
     "successRegister" : "Inscription réussie ! Vous pouvez vous connecter.",
     "emailAlreadyExists" : "Cet e-mail est déjà inscrit. Si vous ne vous souvenez pas de votre mot de passe utilisez la procédure mot de passe oublié, merci.",
-    "createAccount" : "Créez votre compte"
+    "createAccount" : "Créez votre compte",
+    "sameNameMsg" : "Vous possédez déjà une parcelle avec ce nom, veuillez en choisir un autre."
 }

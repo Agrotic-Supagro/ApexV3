@@ -58,8 +58,9 @@ export class ParcelleApexPage implements OnInit {
   nameOfParcel = { key : "nameOfParcel", value : ""};
   add = { key : "add", value : ""};
   cancel = { key : "cancel", value : ""};
+  sameNameMsg = { key : "sameNameMsg", value : ""};
   tabOfVars = [this.error, this.lastObsDeleted, this.newParcelInd, this.okBtn, this.markAsToppedQstn, this.noBtn, this.yesBtn, this.apexMethd, 
-    this.apexMthMsg1, this.apexMthMsg2, this.apexMthMsg3, this.newParcel, this.nameOfParcel, this.add, this.cancel,];
+    this.apexMthMsg1, this.apexMthMsg2, this.apexMthMsg3, this.newParcel, this.nameOfParcel, this.add, this.cancel, this.sameNameMsg,];
 
   constructor(
     private plt: Platform,
@@ -327,6 +328,15 @@ export class ParcelleApexPage implements OnInit {
     await alert.present();
   }
 
+  public async sameNameAlert() {
+    const alert = await this.alertCtrl.create({
+      header: this.error.value,
+      message: this.sameNameMsg.value,
+      buttons: [this.okBtn.value]
+    });
+    await alert.present();
+  }
+
 
   public resetNomParcelle() {
     this.idParcelle = null;
@@ -359,15 +369,31 @@ export class ParcelleApexPage implements OnInit {
         {
           text: this.add.value,
           handler: data => {
+            let sameNameFound = false;
             if (data.nom_parcelle === '' || data.nom_parcelle.length === 0 || /^\s*$/.test(data.nom_parcelle)) {
               this.idParcelle = null;
-            } else {
+            }
+            for(const parcel of this.selectParcelle ){
+              console.log(parcel.nom_parcelle);
+              console.log(data.nom_parcelle)
+              if (parcel.nom_parcelle == data.nom_parcelle){
+                console.log("entré found")
+                sameNameFound = true;
+              }
+            }
+            if(!sameNameFound){
+              console.log("entré a")
               const guidParcelle = this.guid.getGuid();
               this.selectParcelle.push({id_parcelle: guidParcelle, nom_parcelle: data.nom_parcelle, id_proprietaire: this.idUser});
               this.idParcelle = guidParcelle;
               this.nomParcelle = data.nom_parcelle;
               this.idProprietaire = this.idUser;
               this.isList = true;
+            } 
+            else {
+              console.log("entré b")
+              this.idParcelle = null;
+              this.sameNameAlert();
             }
           }
         }

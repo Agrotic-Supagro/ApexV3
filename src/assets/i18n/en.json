@@ -212,5 +212,6 @@
     "pwdInd" : "Password cannot be longer than 40 characters",
     "successRegister" : "Successful registration ! You can login.",
     "emailAlreadyExists" : "This email is already subscribed. If you do not remember your password use the forgotten password procedure, thank you.",
-    "createAccount" : "Create your account"
+    "createAccount" : "Create your account",
+    "sameNameMsg" : "You already own a parcel with this name, please choose another one."
 }   
