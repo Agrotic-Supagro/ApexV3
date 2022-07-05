@@ -374,15 +374,11 @@ export class ParcelleApexPage implements OnInit {
               this.idParcelle = null;
             }
             for(const parcel of this.selectParcelle ){
-              console.log(parcel.nom_parcelle);
-              console.log(data.nom_parcelle)
               if (parcel.nom_parcelle == data.nom_parcelle){
-                console.log("entré found")
                 sameNameFound = true;
               }
             }
             if(!sameNameFound){
-              console.log("entré a")
               const guidParcelle = this.guid.getGuid();
               this.selectParcelle.push({id_parcelle: guidParcelle, nom_parcelle: data.nom_parcelle, id_proprietaire: this.idUser});
               this.idParcelle = guidParcelle;
@@ -391,7 +387,6 @@ export class ParcelleApexPage implements OnInit {
               this.isList = true;
             } 
             else {
-              console.log("entré b")
               this.idParcelle = null;
               this.sameNameAlert();
             }
