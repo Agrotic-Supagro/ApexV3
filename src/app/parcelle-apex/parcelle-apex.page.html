@@ -18,7 +18,7 @@
           <td class="paddinLeft">
             <ion-item class="shadowInput" *ngIf="isList">
               <ion-label [translate]="'chooseParcel'"></ion-label>
-              <ion-select [(ngModel)]="idParcelle" okText="Ok" cancelText="Annuler" (ionCancel)="onCancel()"
+              <ion-select [(ngModel)]="idParcelle" okText="{{ 'okBtn' | translate }}" cancelText="{{ 'cancel' | translate }}" (ionCancel)="onCancel()"
                 (ionChange)="changeParcelle()">
                 <ion-select-option *ngFor="let parcelle of selectParcelle" value="{{parcelle.id_parcelle}}">{{parcelle.nom_parcelle}}</ion-select-option>
               </ion-select>

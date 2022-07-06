@@ -125,7 +125,7 @@
     <ion-card-content>
       <p class="titlecard" [translate]="'appLang'"></p>
         <ion-row class="langage">
-          <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="color: black;">
+          <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" okText="{{ 'okBtn' | translate }}" cancelText="{{ 'cancel' | translate }}" style="color: black;">
             <ion-select-option *ngFor="let country of supportedLanguages | keyvalue" value="{{country.value}}"> {{country.key}} </ion-select-option>
           </ion-select>
           <ion-img [src]="languageIconPath" style="margin-left: 3%;"></ion-img>

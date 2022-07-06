@@ -24,7 +24,7 @@
 
     <ion-row class="langage">
       <p [translate]="'language'" style="color: white;"></p>
-      <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" style="margin-left: 5%; color: white;">
+      <ion-select [(ngModel)]="language" (ionChange)="changeLanguage()" okText="{{ 'okBtn' | translate }}" cancelText="{{ 'cancel' | translate }}" style="margin-left: 5%; color: white;">
         <ion-select-option *ngFor="let country of supportedLanguages | keyvalue" value="{{country.value}}"> {{country.key}} </ion-select-option>
       </ion-select>
       <ion-img [src]="languageIconPath" style="margin-left: 3%;"></ion-img>
