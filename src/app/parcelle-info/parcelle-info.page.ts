@@ -26,9 +26,9 @@ export class ParcelleInfoPage implements OnInit {
   infoSession: any;
   user: any;
   emailForShare: any = null;
+  public selectParcelle = [];
 
   isDelete = false;
-  isList = false;
   isRename = false;
   isShare = false;
   isIFV = true;
@@ -37,6 +37,8 @@ export class ParcelleInfoPage implements OnInit {
   public myDate: any = new Date().toISOString();
 
   //Trad objects
+  error = { key : "error", value : ""};
+  sameNameMsg = { key : "sameNameMsg", value : ""};
   sucessShare = { key : "sucessShare", value : ""};
   emailForShareError = { key : "emailForShareError", value : ""};
   needNetwork = { key : "needNetwork", value : ""};
@@ -62,7 +64,7 @@ export class ParcelleInfoPage implements OnInit {
   moderate = { key : "moderate", value : ""};
   strong = { key : "strong", value : ""};
   strict = { key : "strict", value : ""};
-  tabOfVars = [ this.sucessShare, this.emailForShareError, this.needNetwork, this.nullEmailForShare, this.successRenameParcel, this.deleteSessionQst,
+  tabOfVars = [ this.sameNameMsg, this.error, this.sucessShare, this.emailForShareError, this.needNetwork, this.nullEmailForShare, this.successRenameParcel, this.deleteSessionQst,
     this.noBtn, this.delete, this.successDeleteObs, this.deleteParcelQst, this.warningDelete, this.parcelDeleted, this.infoHeader, this.okBtn, 
     this.shareParcelInfo, this.graphFullGrowth, this.graphSlowedGrowth, this.graphGrowthArrest, this.growthInd, this.percentApex, this.waterStressLvl,
     this.absent, this.moderate, this.strong, this.strict];
@@ -117,7 +119,16 @@ export class ParcelleInfoPage implements OnInit {
   }
 
   ngOnInit() {
+    this.selectParcelle = [];
     this._translateLanguage();
+    this.database.getListParcelle().then( data => {
+      if (data === null) {
+        console.log(data);
+      } else {
+        console.log(data);
+        this.selectParcelle = data;
+      }
+    });
   }
 
   _translateLanguage(): void {
@@ -189,9 +200,16 @@ export class ParcelleInfoPage implements OnInit {
     this.isShare = false;
   }
   public renameParcelle() {
+    let sameNameFound = false;
     if (this.newNameParcelle === '' || this.newNameParcelle === 0 || /^\s*$/.test(this.newNameParcelle) || this.newNameParcelle === null) {
       // mettre une alerte
-    } else {
+    }
+    for(const parcel of this.selectParcelle ){
+      if (parcel.nom_parcelle.toLowerCase() == this.newNameParcelle.toLowerCase()){
+        sameNameFound = true;
+      }
+    }
+    if(!sameNameFound){
       const dataUpdateParcelle = {
         nom_parcelle: this.newNameParcelle,
         date_maj: this.dateformat.getDatetime(this.myDate),
@@ -206,7 +224,19 @@ export class ParcelleInfoPage implements OnInit {
           this.presentToast(this.successRenameParcel.value);
         }
       });
+    } 
+    else {
+      this.sameNameAlert();
     }
+  }
+
+  public async sameNameAlert() {
+    const alert = await this.alertCtrl.create({
+      header: this.error.value,
+      message: this.sameNameMsg.value,
+      buttons: [this.okBtn.value]
+    });
+    await alert.present();
   }
 
   public async openEditSessionPage(idSession) {
