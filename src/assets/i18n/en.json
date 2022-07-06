@@ -96,7 +96,7 @@
     "stopGrow" : "Growth arrest",
     "nbObs" : "Observation : ",
     "computeApex" : "Compute (",
-    "computeApex2" : "apex)",
+    "computeApex2" : " apex)",
     "growthMonitor" : "Growth tracking",
     "obsList" : "List of comments",
     "the" : "The",
