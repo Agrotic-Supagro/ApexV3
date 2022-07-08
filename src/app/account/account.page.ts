@@ -58,10 +58,11 @@ export class AccountPage implements OnInit {
   incorrectPwd  = { key : "incorrectPwd", value : ""};
   ifvDesac  = { key : "ifvDesac", value : ""};
   ifvAct  = { key : "ifvAct", value : ""};
-  dataSendToApex  = { key : "dataSendToApex", value : ""};
+  dataSendToApex  = { key : "dataSendToApex", value : ""};$
+  errorSync  = { key : "errorSync", value : ""};
   tabOfVars = [this.surnameMand, this.surnameInd, this.nameMand, this.nameInd, this.emailMand, this.emailInd, this.waitMsg, this.error,
     this.dlMsg, this.okBtn, this.dataSent, this.dataNotSent, this.updateInfoDone, this.updateNbApexDone, this.infoDl, this.infoHeader, this.dlInfoMsg, this.waitDlData,
-    this.inputPwd, this.cancel, this.send, this.successPwdChanged, this.incorrectPwd, this.ifvDesac, this.ifvAct, this.dataSendToApex];
+    this.inputPwd, this.cancel, this.send, this.successPwdChanged, this.incorrectPwd, this.ifvDesac, this.ifvAct, this.dataSendToApex, this.errorSync];
 
   public registrationForm = this.formBuilder.group({
     prenom: ['', [Validators.required, Validators.maxLength(256)]],
@@ -209,14 +210,19 @@ export class AccountPage implements OnInit {
   }
 
   async sendData() {
+    const loading = await this.loadingController.create({
+      message: this.waitMsg.value,
+    });
+    loading.present()
     const data = { email: this.user.email, method: 'all', userName: this.user.nom, idUser: this.user.id_utilisateur};
     console.log(data);
     this.serveur.sendData(data).subscribe(async res => {
-        if (res.status) {
-          this.presentToast(this.dataSent.value);
-        } else {
-          this.presentToast(this.dataNotSent.value);
-        }
+      loading.dismiss();
+      if (res.status) {
+        this.presentToast(this.dataSent.value);
+      } else {
+        this.presentToast(this.dataNotSent.value);
+      }
     });
   }
 
@@ -255,12 +261,22 @@ export class AccountPage implements OnInit {
     this.presentToast(this.updateNbApexDone.value);
   }
 
-  receiveData() {
-    this.showLoading();
+  async receiveData() {
+    const loading = await this.loadingController.create({
+      message: this.waitMsg.value,
+    });
+    loading.present()
     console.log('>> Recieve Data');
-    this.database.recieveData(this.user);
-    this.dismissLoader();
-    this.presentToast(this.infoDl.value);
+    this.database.recieveData(this.user)
+    .then( () => {
+      loading.dismiss();
+      this.presentToast(this.infoDl.value);
+    })
+    .catch( error => {
+      console.log("Error during sync : "+error);
+      loading.dismiss();
+      this.presentToast(this.errorSync.value);
+    })
   }
 
   async info() {

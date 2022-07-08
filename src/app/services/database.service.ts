@@ -1628,37 +1628,79 @@ fetchSongs(): Observable<Parcelle[]> {
     // const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'observation'];
     const tables = ['utilisateur_parcelle', 'parcelle', 'session', 'commentaire', 'session_stadepheno'];
     // const tables = ['session'];
-    for (const table of tables) {
-      const jsonData = {
-        table: table,
-        idUser: user.id_utilisateur
-      };
-      console.log('Data to download', jsonData);
-      this.serveur.recieveData(jsonData).subscribe(res => {
+    return new Promise( async (resolve, reject) => {
+      for (const table of tables) {
+        const jsonData = {
+          table: table,
+          idUser: user.id_utilisateur
+        };
+        console.log('Data to download', jsonData);
+        await this.retreiveData(jsonData, table)
+        .catch( error => {
+          reject(error);
+        });
+      }
+      resolve("data retreived");
+    })
+  }
+
+  retreiveData(jsonData : any, table : string){
+    console.log('table : '+jsonData.table)
+    return new Promise((resolve, reject) => {
+      this.serveur.recieveData(jsonData).subscribe(async res => {
         console.log('Return serveur : ', res);
-        if (res.status) {
-          if (table === 'session') {
-            for (const dataToAdd of res.data) {
-              console.log(dataToAdd);
-              this.addSyncSession(dataToAdd);
+        try{
+          if (res.status) {
+            if (table === 'session') {
+              for (const dataToAdd of res.data) {
+                console.log(dataToAdd);
+                await this.addSyncSession(dataToAdd)
+                .then( (res) => {
+                  resolve(res)
+                })
+                .catch(error => {
+                  reject(error);
+                })
+              }
             }
+            if (table === 'parcelle') {
+              for (const dataToAdd of res.data) {
+                console.log(dataToAdd);
+                await this.addSyncParcelle(dataToAdd)
+                .then( (res) => {
+                  resolve(res)
+                })
+                .catch(error => {
+                  reject(error);
+                })
+              }
+            }
+            if (table === 'utilisateur_parcelle') {
+              for (const dataToAdd of res.data) {
+                console.log(dataToAdd);
+                await this.addSyncUserParcelle(dataToAdd)
+                .then( (res) => {
+                  resolve(res)
+                })
+                .catch(error => {
+                  reject(error);
+                })
+              }
+            }
+            resolve("table non prise en compte");
           }
-          if (table === 'parcelle') {
-            for (const dataToAdd of res.data) {
-              console.log(dataToAdd);
-              this.addSyncParcelle(dataToAdd);
-            }
-          }
-          if (table === 'utilisateur_parcelle') {
-            for (const dataToAdd of res.data) {
-              console.log(dataToAdd);
-              this.addSyncUserParcelle(dataToAdd);
-            }
+          else{
+            resolve("fini");
           }
         }
+        catch(error){
+          reject(error);
+        }
       });
-    }
+    })
   }
+
+
 
     // SYNC ADD METHODS
     addSyncCommentaire(dataSql) {
@@ -1696,8 +1738,12 @@ fetchSongs(): Observable<Parcelle[]> {
       + 'VALUES (?, ?, ?, ?)', dataTosql)
       .then(data => {
         console.log('>> Success Add sync User_Parcelle');
+        return data;
       })
-      .catch(e => console.log('Fail Add User_Parcelle | ' , e));
+      .catch(e => {
+        console.log('Fail Add User_Parcelle | ' , e);
+        throw e;
+      });
     }
 
     addSyncParcelle(parcelleData) {
@@ -1710,8 +1756,12 @@ fetchSongs(): Observable<Parcelle[]> {
       + 'VALUES (?, ?, ?, ?, ?, ?)', dataTosql)
       .then(data => {
         console.log('>> Success Add sync Parcelle');
+        return data;
       })
-      .catch(e => console.log('Fail Add Parcelle | ' , e));
+      .catch(e => {
+        console.log('Fail Add Parcelle | ' , e);
+        throw e;
+      })
     }
 
     addSyncSession(sessionData) {
@@ -1724,8 +1774,12 @@ fetchSongs(): Observable<Parcelle[]> {
       + 'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', dataTosql)
       .then(data => {
         console.log('>> Success Add sync Session');
+        return data
       })
-      .catch(e => console.log('Fail Add Session | ' , e));
+      .catch(e => {
+        console.log('Fail Add Session | ' , e);
+        throw e;
+      })
     }
 
     sendAlldata(user) {

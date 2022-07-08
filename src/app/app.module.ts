@@ -28,6 +28,7 @@ import { File } from '@awesome-cordova-plugins/file/ngx';
 import { FtpServerService } from './services/ftp-server.service';
 import { DeviceService } from './services/device.service';
 import { NativeStorage } from '@awesome-cordova-plugins/native-storage/ngx';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
 
 
 export function HttpLoaderFactory(http: HttpClient) {
@@ -122,6 +123,7 @@ export function initTradContent(ftpServerService: FtpServerService) {
     }),
   ],
   providers: [
+    OpenNativeSettings,
     File,
     FTP,
     StatusBar,

@@ -5,7 +5,7 @@
     "language": "Language",
     "register": "Register",
     "connect": "Log in !",
-    "newObservation": "New sighting",
+    "newObservation": "New Observation",
     "home": "Home",
     "listOfParcels" : "List of plots",
     "sortby" : "Sort by : ",
@@ -155,7 +155,7 @@
     "infoDl" : "Your data has been successfully uploaded",
     "infoHeader" : "Information",
     "dlInfoMsg" : "The function <b>sends</b> data, allows you to receive by email a file (spreadsheet) containing all of your data acquired with the ApexVigne application.<br /><br />The function <b>synchronization</b> of data, allows you to recover your data saved on the server on the ApexVigne application.",
-    "waitDlData" : "Please wait while uploading your data...",
+    "waitDlData" : "Please wait while downloading your data...",
     "inputPwd" : "Type your new password",
     "successPwdChanged" : "Password successfully changed !",
     "errorPwdChanged" : "An error has occurred, try again",
@@ -261,5 +261,6 @@
     "resumStadeO" : "End of wood hardening",
     "nameStadeP" : "Stage P (BBCH 92 to 97)",
     "descStadeP" : "The leaves color and then fall. The vine enters vegetative rest.",
-    "resumStadeP" : "Leaf fall"
+    "resumStadeP" : "Leaf fall",
+    "errorSync" : "Error while synchronizing your data"
 }   

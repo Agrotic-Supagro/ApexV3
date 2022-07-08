@@ -202,7 +202,7 @@
     "deleteSessionQst" : "Voulez-vous supprimer cette session ?",
     "successDeleteObs" : "Observation supprimée avec succès !",
     "shareParcelInfo" : "Vous pouvez <b>partager une parcelle</b> avec un <b>destinataire</b> en ajoutant son email. Le destinaire doit déjà être inscrit sur l'application ApeX-Vigne pour que le partage ait lieu. <br /><br />Seuls l'identifiant et le nom de la parcelle seront partagés. Vos données déjà collectées ne seront pas transmises au destinataire.",
-    "growthInd" : "Indice croiss.",
+    "growthInd" : "iC-Apex",
     "percentApex" : "% Apex",
     "waterStressLvl" : "Niveau contrainte hydrique",
     "compute" : "Calculer",
@@ -261,5 +261,6 @@
     "resumStadeO" : "Fin aoûtement du bois",
     "nameStadeP" : "Stade P (BBCH 92 à 97)",
     "descStadeP" : "Les feuilles se colorent puis tombent. La vigne entre en repos végétatif.",
-    "resumStadeP" : "Chute des feuilles"
+    "resumStadeP" : "Chute des feuilles",
+    "errorSync" : "Erreur pendant la synchronisation de vos données"
 }

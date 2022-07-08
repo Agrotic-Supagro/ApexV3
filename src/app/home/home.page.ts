@@ -57,7 +57,7 @@ export class HomePage {
   activateLoc  = { key : "activateLoc", value : ""};
   gpsMsg  = { key : "gpsMsg", value : ""};
   activateLocRights  = { key : "activateLocRights", value : ""};
-  rightsMsg  = { key : "activateLocRights", value : ""};
+  rightsMsg  = { key : "rightsMsg", value : ""};
   graphFullGrowth  = { key : "graphFullGrowth", value : ""};
   graphSlowedGrowth  = { key : "graphSlowedGrowth", value : ""};
   graphGrowthArrest  = { key : "graphGrowthArrest", value : ""};
@@ -83,6 +83,7 @@ export class HomePage {
     private conf: UserConfigurationService,
     private trakcerService: LocationTrackerService,
     private _translate: TranslateService,
+    private locationTracker: LocationTrackerService
     ) {
       setInterval(() => {
         if (this.networkService.getCurrentNetworkStatus() === 0) {
@@ -157,7 +158,7 @@ export class HomePage {
             if (this.networkService.getCurrentNetworkStatus() === 0) {
               this.serveur.sendData(data).subscribe(async res => {
                 if (res.status) {
-                  this.presentToast(this.dataSent);
+                  this.presentToast(this.dataSent.value);
                 } else {
                   this.presentToast(this.dataNotSent.value);
                 }

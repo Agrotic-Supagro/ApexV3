@@ -5,6 +5,9 @@ import { BackgroundGeolocation,
   BackgroundGeolocationResponse } from '@ionic-native/background-geolocation/ngx';
 import { Geolocation } from '@ionic-native/geolocation/ngx';
 import { GlobalConstants } from '../common/global-constants';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
+import { AlertController } from '@ionic/angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -15,14 +18,34 @@ export class LocationTrackerService {
   public lat = 0;
   public lng = 0;
 
+  // activateLocRights  = { key : "activateLocRights", value : ""};
+  rightsMsg  = { key : "rightsMsg", value : ""};
+  // okBtn  = { key : "okBtn", value : ""};
+  // cancel  = { key : "cancel", value : ""};
+  tabOfVars = [ this.rightsMsg];
+
   constructor(
     public zone: NgZone,
     public geolocation: Geolocation,
     public backgroundGeolocation: BackgroundGeolocation,
-  ) { }
+    public openNativeSettings: OpenNativeSettings,
+    public alertCtrl: AlertController,
+    public _translate: TranslateService
+  ) { 
+    this._translateLanguage();
+  }
 
   askToTurnOnGPS() {
     return this.backgroundGeolocation.checkStatus();
+  }
+
+  _translateLanguage(): void {
+    this._translate.use(GlobalConstants.getLanguageSelected());
+    for(const elem of this.tabOfVars){
+      this._translate.get(elem.key).subscribe( res => {
+        elem.value = res;
+      })
+    }
   }
 
   startTracking() {
@@ -55,22 +78,33 @@ export class LocationTrackerService {
 
     this.backgroundGeolocation.start();
 
-    //In order to not show up the notification when app is in background
     this.backgroundGeolocation
-      .on(BackgroundGeolocationEvents.background)
-      .subscribe((background: BackgroundGeolocationResponse) => {
-        console.log("APP is now in background, stoping the tracking");
-        this.backgroundGeolocation.stop();
-        //Checking Updates of trad files every 24h if app stays in background
-        // console.log("Time elapsed (in sec) since last update : "+GlobalConstants.getElapsedSeconds());
-        // if(GlobalConstants.getElapsedSeconds() >= 86400){
-        //   console.log("24h since last update, reloading the app to check updates on server (trad files)");
-        //   window.location.reload();
-        //   SplashScreen.show();
-        // }
+        .on(BackgroundGeolocationEvents.authorization)
+        .subscribe(async (auth: BackgroundGeolocationResponse) => {
+          console.log("Auth for GeoLocation has changed : "+auth);
+          if(auth as unknown == 0){
+            var showSettings = confirm(this.rightsMsg.value);
+            if (showSettings) {
+              return this.openNativeSettings.open("application_details");
+            }
+          }
     });
 
-    
+    //In order to not show up the notification when app is in background
+    this.backgroundGeolocation
+    .on(BackgroundGeolocationEvents.background)
+    .subscribe((background: BackgroundGeolocationResponse) => {
+      console.log("APP is now in background, stoping the tracking");
+      this.backgroundGeolocation.stop();
+      //Checking Updates of trad files every 24h if app stays in background
+      // console.log("Time elapsed (in sec) since last update : "+GlobalConstants.getElapsedSeconds());
+      // if(GlobalConstants.getElapsedSeconds() >= 86400){
+      //   console.log("24h since last update, reloading the app to check updates on server (trad files)");
+      //   window.location.reload();
+      //   SplashScreen.show();
+      // }
+    });
+
     this.backgroundGeolocation
     .on(BackgroundGeolocationEvents.foreground)
     .subscribe((background: BackgroundGeolocationResponse) => {
