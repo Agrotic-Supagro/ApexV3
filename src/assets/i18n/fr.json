@@ -95,7 +95,7 @@
     "slowGrow" : "Croissance ralentie",
     "stopGrow" : "Arrêt de croissance",
     "nbObs" : "Observation : ",
-    "computeApex" : "Calculer (",
+    "computeApex" : "Calculer ( ",
     "computeApex2" : " apex)",
     "growthMonitor" : "Suivi de la croissance",
     "obsList" : "Liste des observations",

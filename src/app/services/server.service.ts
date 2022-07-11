@@ -49,7 +49,6 @@ export class ServerService {
     return this.httpClient.post(`${this.AUTH_SERVER_ADDRESS}/retrieve_data.php`, data)
     .pipe(
       tap(async (res: any) => {
-        console.log("res server : "+res)
         return res;
       })
     );
