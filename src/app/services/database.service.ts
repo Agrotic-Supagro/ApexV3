@@ -1640,7 +1640,6 @@ fetchSongs(): Observable<Parcelle[]> {
           reject(error);
         });
       }
-      console.log("FOR TERMINEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
       resolve("data retreived");
     })
   }

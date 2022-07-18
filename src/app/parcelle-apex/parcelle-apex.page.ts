@@ -273,6 +273,10 @@ export class ParcelleApexPage implements OnInit {
     await alertEcimee.present();
   }
 
+  public backToHome(){
+    this.router.navigateByUrl('/home');
+  }
+
   public async saveEcimee() {
     if (this.idParcelle !== null) {
       const dateSession = this.dateformat.getDatetime(this.myDate);

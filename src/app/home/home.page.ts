@@ -2,7 +2,7 @@ import { Parcelle } from './../services/parcelle-service';
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AuthenticationService } from '../services/authentication.service';
 import { DatabaseService } from '../services/database.service';
-import { Platform, MenuController, ModalController, AlertController, ToastController } from '@ionic/angular';
+import { Platform, MenuController, ModalController, AlertController, ToastController, LoadingController } from '@ionic/angular';
 import { Storage } from '@ionic/storage';
 import { Router, ActivatedRoute, NavigationExtras } from '@angular/router';
 import { ParcelleInputPage } from '../parcelle-input/parcelle-input.page';
@@ -63,9 +63,11 @@ export class HomePage {
   graphGrowthArrest  = { key : "graphGrowthArrest", value : ""};
   comment  = { key : "comment", value : ""};
   okBtn  = { key : "okBtn", value : ""};
+  waitMsg  = { key : "waitMsg", value : ""};
   tabOfVars = [ this.recvPacelData, this.onEmail, this.cancel, this.send, this.dataSent, this.dataNotSent, this.needNetwork, this.shareParcel, 
     this.byEmail, this.email, this.share, this.sucessShare, this.emailForShareError, this.deleteParcelQst, this.warningDelete, this.noBtn, this.delete, this.parcelDeleted, 
-    this.activateLoc, this.gpsMsg, this.activateLocRights, this.rightsMsg, this.graphFullGrowth, this.graphSlowedGrowth, this.graphGrowthArrest, this.comment, this.okBtn];
+    this.activateLoc, this.gpsMsg, this.activateLocRights, this.rightsMsg, this.graphFullGrowth, this.graphSlowedGrowth, this.graphGrowthArrest, this.comment, this.okBtn,
+    this.waitMsg,];
 
   constructor(
     private plt: Platform,
@@ -83,6 +85,7 @@ export class HomePage {
     private conf: UserConfigurationService,
     private trakcerService: LocationTrackerService,
     private _translate: TranslateService,
+    public loadingController: LoadingController,
     private locationTracker: LocationTrackerService
     ) {
       setInterval(() => {
@@ -153,13 +156,19 @@ export class HomePage {
           }
         }, {
           text: this.send.value,
-          handler: (alertData) => {
+          handler: async (alertData) => {
             const data = { email: this.user.email, method: 'parcelle', idParcelle: parcelle.id_parcelle, userName: this.user.nom};
             if (this.networkService.getCurrentNetworkStatus() === 0) {
+              const loading = await this.loadingController.create({
+                message: this.waitMsg.value,
+              });
+              loading.present()
               this.serveur.sendData(data).subscribe(async res => {
                 if (res.status) {
+                  loading.dismiss();
                   this.presentToast(this.dataSent.value);
                 } else {
+                  loading.dismiss();
                   this.presentToast(this.dataNotSent.value);
                 }
             });
