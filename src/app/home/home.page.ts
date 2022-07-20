@@ -15,6 +15,7 @@ import { NetworkService } from '../services/network.service';
 import { LocationTrackerService } from '../services/location-tracker.service';
 import { TranslateService } from '@ngx-translate/core';
 import { GlobalConstants } from '../common/global-constants';
+import { OpenNativeSettings } from '@awesome-cordova-plugins/open-native-settings/ngx';
 
 @Component({
   selector: 'app-home',
@@ -86,7 +87,8 @@ export class HomePage {
     private trakcerService: LocationTrackerService,
     private _translate: TranslateService,
     public loadingController: LoadingController,
-    private locationTracker: LocationTrackerService
+    private locationTracker: LocationTrackerService,
+    public openNativeSettings: OpenNativeSettings,
     ) {
       setInterval(() => {
         if (this.networkService.getCurrentNetworkStatus() === 0) {
@@ -339,7 +341,19 @@ export class HomePage {
           header: this.activateLocRights.value,
           // tslint:disable-next-line:max-line-length
           message: this.rightsMsg.value,
-          buttons: [this.okBtn.value]
+          
+          buttons: [
+            {
+              text: this.okBtn.value,
+              role: 'cancel',
+              handler: data => {
+                var showSettings = confirm(this.rightsMsg.value);
+                if (showSettings) {
+                  return this.openNativeSettings.open("application_details");
+                }
+              }
+            }
+          ],
         });
         await alert.present();
       }
